@@ -123,7 +123,12 @@ const tnts=[];
 const masks=[];
 const fruitList=[];
 const tileSR={ground:[0,12,905,132],ground2:[0,168,955,122],slopeL:[0,306,430,140],small:[450,306,110,140],float:[958,50,255,155],floatS:[1220,55,165,140],bridge:[1015,450,500,170],rock:[8,477,150,95],bush:[155,478,190,100],flower:[350,470,190,115],totem:[550,455,190,210],question:[615,680,140,160]};
-const turtleSR={walk:[[0,0,190,135],[190,0,190,135],[380,0,190,135],[570,0,190,135],[760,0,190,135],[950,0,190,135],[1140,0,190,135],[1330,0,190,135]]};
+const turtleSR={
+ walk:[[0,0,220,170],[220,0,220,170],[440,0,220,170],[660,0,220,170],[880,0,220,170]],
+ hide:[[0,170,220,170],[220,170,220,170]],
+ shell:[440,170,220,170],
+ peek:[[660,170,220,170],[880,170,220,170]]
+};
 const enemySR={
  swampTurtle:[[26,77,166,129],[199,86,164,120],[369,68,197,138],[574,65,199,141]],
  frog:[[34,309,143,130],[186,311,136,128],[326,320,170,116],[496,312,164,124],[656,306,181,118]],
@@ -138,7 +143,7 @@ const enemies=[];
 function pushBox(x,y,q=false){normal.push({x,y,w:58,h:58,hit:false,q,breakT:0})}
 function pushTNT(x,y=groundY-58){tnts.push({x,y,w:58,h:58,active:false,t:3.0,dead:false,blast:0})}
 function pushFruit(x,y){fruitList.push({x,y,t:false})}
-function pushEnemy(x,a,b,v=65,y=groundY-56,type='turtle'){let dims={turtle:[70,56],swampTurtle:[76,58],frog:[62,52],mosquito:[58,45],penguin:[60,60],seal:[78,52],iceShell:[68,52],armadillo:[84,50],magmaBeetle:[82,62],emberBat:[64,58]}[type]||[70,56];const groundBase=groundY-dims[1];if(Math.abs(y-groundBase)<=14)y=groundBase;enemies.push({x,y,baseY:y,v,a,b,dead:false,hp:1,hitT:0,stompFx:0,h:dims[1],w:dims[0],type,phase:Math.random()*6.28})}
+function pushEnemy(x,a,b,v=65,y=groundY-56,type='turtle'){let dims={turtle:[70,56],swampTurtle:[76,58],frog:[62,52],mosquito:[58,45],penguin:[60,60],seal:[78,52],iceShell:[68,52],armadillo:[84,50],magmaBeetle:[82,62],emberBat:[64,58]}[type]||[70,56];const groundBase=groundY-dims[1];if(Math.abs(y-groundBase)<=14)y=groundBase;enemies.push({x,y,baseY:y,v,a,b,dead:false,hp:1,hitT:0,safeT:0,stompFx:0,h:dims[1],w:dims[0],type,phase:Math.random()*6.28,state:type==='turtle'?'walk':'walk',stateT:0,shellVX:0,shellDir:Math.sign(v)||1})}
 function clearMutableLevel(){[swingingLogs,stonePresses,spikeTraps,hazards,foreground,phaseDeco,scenery,rocks,platforms,normal,tnts,masks,fruitList,enemies].forEach(a=>a.length=0)}
 function setLevel(n=1){
  clearMutableLevel(); currentLevel=n;
@@ -284,6 +289,10 @@ function pad(){const g=connectedPad();if(!g)return{l:0,r:0,d:0,j:0,s:0,p:0};retu
 function puff(px,py,n=5){for(let i=0;i<n;i++)dustFx.push({x:px+(Math.random()-.5)*28,y:py+(Math.random()-.5)*10,vx:(Math.random()-.5)*90,vy:-35-Math.random()*80,t:.35+Math.random()*.25,s:4+Math.random()*8})}
 function spawnEnemyFx(e,mode='stomp'){enemyFx.push({x:e.x,y:e.y,w:e.w||70,h:e.h||56,type:e.type,v:e.v,t:mode==='stomp'?.30:.20,mode})}
 function spawnImpact(px,py,power=1){impactFx.push({x:px,y:py,t:.22,power});puff(px,py,Math.round(4+power*3))}
+function enemyRect(e){return{x:e.x,y:e.y,w:e.w||70,h:e.h||56}}
+function turtleSetShellForm(e){const bottom=e.y+(e.h||56);e.w=68;e.h=36;e.y=bottom-e.h;e.baseY=e.y}
+function turtleEnterShell(e){turtleSetShellForm(e);e.state='hide';e.stateT=.24;e.shellVX=0;e.v=0;e.safeT=.12}
+function turtleLaunch(e,dir=1){turtleSetShellForm(e);e.state='fly';e.stateT=0;e.shellDir=Math.sign(dir)||e.shellDir||1;e.shellVX=620*e.shellDir;e.safeT=.18;spawnImpact(e.x+e.w/2,e.y+e.h,1.1)}
 function breakBox(b,mode='spin'){if(b.hit)return;b.hit=true;b.breakT=.38;boxesBroken++;score+=100;fruits+=b.q?5:1;boxFx.push({x:b.x+29,y:b.y+29,t:.42,q:b.q,mode});for(let i=0;i<9;i++)boxFx.push({piece:true,x:b.x+29,y:b.y+29,vx:(Math.random()-.5)*300,vy:-80-Math.random()*220,r:Math.random()*6.28,vr:(Math.random()-.5)*14,t:.65+Math.random()*.35,s:5+Math.random()*7});if(mode==='stomp'){shake=Math.max(shake,.16);spawnImpact(b.x+29,b.y+4,1.0)}toast=b.q?'Caixa bônus! +5 frutas':'Caixa quebrada!';toastT=1.0;puff(b.x+29,b.y+54,7)}
 function beginDeath(msg='Crash caiu!'){if(deathAnim>0||state!=='play')return;deaths++;lives--;deathX=p.x;deathY=p.y;deathAnim=1.85;p.vx=p.vy=0;p.spin=0;shake=.38;toast=msg;toastT=1.0;if(lives<=0){setTimeout(()=>{if(state==='play'&&deathAnim>0){deathAnim=0;state='gameover'}},1750)}}
 function forceDeath(){beginDeath('BOOM! TNT explodiu!')}
@@ -295,7 +304,7 @@ function spikeTrapState(t){const c=(swingClock+t.phase)%3.25;let h=0,warning=fal
 function pressTrapState(ps){const c=(swingClock+ps.phase)%3.85,top=66,bottom=337;let y=top,warning=false,slam=false;if(c<1.35)y=top;else if(c<1.78){y=top+Math.sin(c*46)*3;warning=true}else if(c<1.98){let q=(c-1.78)/.20;q=1-Math.pow(1-q,3);y=top+(bottom-top)*q;slam=true}else if(c<2.55)y=bottom;else if(c<3.35){let q=(c-2.55)/.80;y=bottom-(bottom-top)*(q*q*(3-2*q))}return{y,warning,slam,active:y>245}}
 function swingTrapState(sw){const a=Math.sin(swingClock*2.15+sw.phase)*.88;const px=sw.x,py=sw.y;const len=176;const cx=px+Math.sin(a)*126,cy=py+74+Math.cos(a)*len;return{a,px,py,cx,cy}}
 function update(dt){if(state!=='play'||paused)return;swingClock+=dt;levelTime+=dt;if(inv>0)inv-=dt;if(toastT>0)toastT-=dt;if(shake>0)shake-=dt;if(deathAnim>0){deathAnim-=dt;if(deathAnim<=0&&lives>0)resetP();return}if(portalSeq>0){portalSeq+=dt;p.vx=0;p.vy=0;const cx=portal.x+portal.w/2-p.w/2,cy=portal.y+portal.h/2-p.h/2;p.x+=(cx-p.x)*Math.min(1,dt*3.6);p.y+=(cy-p.y)*Math.min(1,dt*3.6);if(portalSeq>2.15){resultGem=boxesBroken>=normal.length+tnts.length;if(currentLevel<5)assetManager.preloadPhase(currentLevel+1);if(currentLevel===3)unlockTrophy('pantano');if(currentLevel===4)unlockTrophy('gelo');if(currentLevel===5)unlockTrophy('canyon');state='results';if(fruits>=50)unlockTrophy('frutas50');if(resultGem){unlockTrophy('caixas');unlockTrophy('gema')}if(deaths===0)unlockTrophy('semMorrer');if(levelTime<150)unlockTrophy('veloz');saveGame(true)}return}if(forcedDeathT>0){forcedDeathT-=dt;return}if(p.land>0)p.land-=dt;if(p.takeoff>0)p.takeoff-=dt;for(let i=dustFx.length-1;i>=0;i--){let d=dustFx[i];d.t-=dt;d.x+=d.vx*dt;d.y+=d.vy*dt;d.vy+=220*dt;if(d.t<=0)dustFx.splice(i,1)}for(let i=boxFx.length-1;i>=0;i--){let f=boxFx[i];f.t-=dt;if(f.piece){f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=600*dt;f.r+=f.vr*dt}if(f.t<=0)boxFx.splice(i,1)}
-for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.splice(i,1)}for(let i=impactFx.length-1;i>=0;i--){let f=impactFx[i];f.t-=dt;if(f.t<=0)impactFx.splice(i,1)}if(p.stompSquash>0)p.stompSquash=Math.max(0,p.stompSquash-dt)
+for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.splice(i,1)}for(let i=impactFx.length-1;i>=0;i--){let f=impactFx[i];f.t-=dt;if(f.t<=0)impactFx.splice(i,1)}for(const e of enemies)if(!e.dead&&e.safeT>0)e.safeT=Math.max(0,e.safeT-dt);if(p.stompSquash>0)p.stompSquash=Math.max(0,p.stompSquash-dt)
  const g=pad(),L=actionDown('left')||g.l,R=actionDown('right')||g.r,D=actionDown('down')||g.d,J=actionDown('jump')||g.j,S=actionDown('spin')||g.s;
  const accel=currentLevel===4?720:950,max=currentLevel===4?305:285,fric=currentLevel===4?230:1000;
  // Agachar / escorregar: ao apertar para baixo correndo, Crash inicia um slide com impulso.
@@ -332,10 +341,98 @@ for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.
  for(const t of tnts){if(t.dead){if(t.blast>0)t.blast-=dt;continue}if(t.active){t.t-=dt;if(t.t<=0)explode(t)}const tr={x:t.x,y:t.y,w:t.w,h:t.h};if(rect(pr,tr)){const stomp=p.vy>0&&p.y+p.h-t.y<38;if(p.spin>0||p.slide>0){explode(t);forceDeath();return}else if(stomp){p.y=t.y-p.h;p.vy=-365;p.on=false;if(!t.active){t.active=true;t.t=3.0;toast='TNT: 3...';toastT=.9}p.stompSquash=.13;spawnImpact(t.x+t.w/2,t.y,0.7)}else if(p.vx>0)p.x=t.x-p.w;else if(p.vx<0)p.x=t.x+t.w}}
  for(const f of fruitList){if(!f.t&&rect(pr,{x:f.x,y:f.y,w:42,h:42})){f.t=true;fruits++;score+=25;if(fruits>=100){fruits-=100;lives++;toast='100 frutas = +1 vida!';toastT=2}}}
  for(const m of masks){if(!m.t&&rect(pr,{x:m.x,y:m.y,w:54,h:65})){m.t=true;aku=Math.min(2,aku+1);score+=500;toast=aku===2?'Aku Aku reforçado!':'Aku Aku adquirido!';toastT=1.7}}
- for(const e of enemies){if(e.dead)continue;if(e.hitT>0)e.hitT-=dt;let speedMul=1;if(e.type==='armadillo')speedMul=(Math.sin(swingClock*4.2+e.phase)>0.45?1.65:1);if(e.type==='magmaBeetle')speedMul=(Math.sin(swingClock*3.5+e.phase)>0?1.35:.62);e.x+=e.v*dt*speedMul;if(e.x<e.a||e.x>e.b){e.v*=-1;e.x=Math.max(e.a,Math.min(e.b,e.x))}if(e.type==='mosquito'||e.type==='emberBat')e.y=e.baseY+Math.sin(swingClock*(e.type==='emberBat'?2.7:3.1)+e.phase)*(e.type==='emberBat'?38:28);else if(e.type==='frog')e.y=e.baseY-Math.max(0,Math.sin(swingClock*2.4+e.phase))*34;else e.y=e.baseY;const er={x:e.x,y:e.y,w:e.w||70,h:e.h||56};
+ for(const e of enemies){
+   if(e.dead)continue;
+   if(e.hitT>0)e.hitT-=dt;
+   if(e.type==='turtle'){
+     if(e.state==='hide'||e.state==='shell'){
+       if(e.state==='hide'){
+         e.stateT-=dt;
+         if(e.stateT<=0)e.state='shell';
+       }
+       e.y=e.baseY;
+       const er=enemyRect(e);
+       if(rect(pr,er)){
+         const stomp=p.vy>0&&p.y+p.h<e.y+18;
+         if(p.spin>0||p.slide>0){
+           turtleLaunch(e,(p.facing||Math.sign(p.vx)||1));
+           score+=150;
+           toast='Casco lançado!';toastT=.8;
+           shake=Math.max(shake,.1);
+         }else if(stomp){
+           p.y=e.y-p.h;p.vy=-640;p.on=false;p.stompSquash=.15;shake=Math.max(shake,.15);spawnImpact(e.x+er.w/2,e.y+er.h,1.3);toast='Super pulo no casco!';toastT=.7;
+         }else if(p.vy<0){
+           p.y=e.y+e.h;p.vy=40;
+         }else if(p.x+p.w/2<e.x+er.w/2)p.x=e.x-p.w; else p.x=e.x+e.w;
+       }
+       continue;
+     }else if(e.state==='fly'){
+       e.x+=e.shellVX*dt;
+       e.y=e.baseY;
+       const er=enemyRect(e);
+       for(const b of normal){if(!b.hit&&rect(er,{x:b.x,y:b.y,w:b.w,h:b.h}))breakBox(b,'slide')}
+       for(const t of tnts){if(!t.dead&&rect(er,{x:t.x,y:t.y,w:t.w,h:t.h})){explode(t)}}
+       for(const o of enemies){
+         if(o===e||o.dead)continue;
+         const or=enemyRect(o);
+         if(rect(er,or)){
+           if(o.type==='turtle'&&o.state==='fly')continue;
+           spawnEnemyFx(o,'slide');
+           o.dead=true;
+           score+=250;
+           puff(o.x+or.w/2,o.y+or.h/2,5);
+         }
+       }
+       if(e.safeT<=0&&rect(pr,er)){lose();return}
+       if(e.x<-160||e.x>worldW+160){e.dead=true;continue}
+       continue;
+     }else{
+       e.x+=e.v*dt;
+       if(e.x<e.a||e.x>e.b){e.v*=-1;e.x=Math.max(e.a,Math.min(e.b,e.x))}
+       e.y=e.baseY;
+       const er=enemyRect(e);
+       for(const b of normal){if(b.hit)continue;const br={x:b.x,y:b.y,w:b.w,h:b.h};if(rect(er,br)){if(e.v>0)e.x=b.x-er.w-2;else e.x=b.x+b.w+2;e.v*=-1;er.x=e.x;break}}
+       for(const t of tnts){if(t.dead)continue;const tr={x:t.x,y:t.y,w:t.w,h:t.h};if(rect(er,tr)){if(e.v>0)e.x=t.x-er.w-2;else e.x=t.x+t.w+2;e.v*=-1;er.x=e.x;break}}
+       if(rect(pr,er)){
+         const stomp=p.vy>0&&p.y+p.h<e.y+Math.min(26,(e.h||56)*.62);
+         if(stomp){
+           turtleEnterShell(e);
+           score+=200;
+           toast='Tartaruga recolhida!';toastT=.9;
+           p.y=e.y-p.h;p.vy=-395;p.on=false;p.stompSquash=.16;shake=Math.max(shake,.14);spawnImpact(e.x+er.w/2,e.y+er.h,1.15);
+         }else if(p.spin>0||p.slide>0){
+           turtleLaunch(e,(p.facing||Math.sign(p.vx)||1));
+           score+=250;
+           toast='Casco lançado!';toastT=.9;
+           shake=Math.max(shake,.12);
+         }else lose();
+       }
+       continue;
+     }
+   }
+   let speedMul=1;
+   if(e.type==='armadillo')speedMul=(Math.sin(swingClock*4.2+e.phase)>0.45?1.65:1);
+   if(e.type==='magmaBeetle')speedMul=(Math.sin(swingClock*3.5+e.phase)>0?1.35:.62);
+   e.x+=e.v*dt*speedMul;
+   if(e.x<e.a||e.x>e.b){e.v*=-1;e.x=Math.max(e.a,Math.min(e.b,e.x))}
+   if(e.type==='mosquito'||e.type==='emberBat')e.y=e.baseY+Math.sin(swingClock*(e.type==='emberBat'?2.7:3.1)+e.phase)*(e.type==='emberBat'?38:28);
+   else if(e.type==='frog')e.y=e.baseY-Math.max(0,Math.sin(swingClock*2.4+e.phase))*34;
+   else e.y=e.baseY;
+   const er=enemyRect(e);
    for(const b of normal){if(b.hit)continue;const br={x:b.x,y:b.y,w:b.w,h:b.h};if(rect(er,br)){if(e.v>0)e.x=b.x-er.w-2;else e.x=b.x+b.w+2;e.v*=-1;er.x=e.x;break}}
    for(const t of tnts){if(t.dead)continue;const tr={x:t.x,y:t.y,w:t.w,h:t.h};if(rect(er,tr)){if(e.v>0)e.x=t.x-er.w-2;else e.x=t.x+t.w+2;e.v*=-1;er.x=e.x;break}}
-   if(rect(pr,er)){const stomp=p.vy>0&&p.y+p.h<e.y+Math.min(34,(e.h||56)*.65);if(p.spin>0||p.slide>0||(stomp&&e.type!=='magmaBeetle')){const defeatMode=stomp?'stomp':(p.slide>0?'slide':'spin');spawnEnemyFx(e,defeatMode);e.dead=true;e.hitT=.5;score+=250;toast=(e.type==='mosquito'?'Mosquito':e.type==='frog'?'Sapo':e.type==='penguin'?'Pinguim':e.type==='seal'?'Foca':e.type==='iceShell'?'Casco de gelo':e.type==='emberBat'?'Morcego de brasa':e.type==='swampTurtle'?'Tartaruga do pântano':e.type==='armadillo'?'Tatu':e.type==='magmaBeetle'?'Besouro de magma':e.type==='emberBat'?'Morcego de brasa':'Tartaruga')+' derrotado!';toastT=1;if(stomp){p.vy=-410;p.on=false;p.stompSquash=.17;shake=Math.max(shake,.18);spawnImpact(e.x+er.w/2,e.y+er.h-2,1.25)}else{shake=Math.max(shake,.08);puff(e.x+er.w/2,e.y+er.h/2,5)}}else lose()}}
+   if(rect(pr,er)){
+     const stomp=p.vy>0&&p.y+p.h<e.y+Math.min(34,(e.h||56)*.65);
+     if(p.spin>0||p.slide>0||(stomp&&e.type!=='magmaBeetle')){
+       const defeatMode=stomp?'stomp':(p.slide>0?'slide':'spin');
+       spawnEnemyFx(e,defeatMode);e.dead=true;e.hitT=.5;score+=250;
+       toast=(e.type==='mosquito'?'Mosquito':e.type==='frog'?'Sapo':e.type==='penguin'?'Pinguim':e.type==='seal'?'Foca':e.type==='iceShell'?'Casco de gelo':e.type==='emberBat'?'Morcego de brasa':e.type==='swampTurtle'?'Tartaruga do pântano':e.type==='armadillo'?'Tatu':e.type==='magmaBeetle'?'Besouro de magma':e.type==='emberBat'?'Morcego de brasa':'Tartaruga')+' derrotado!';
+       toastT=1;
+       if(stomp){p.vy=-410;p.on=false;p.stompSquash=.17;shake=Math.max(shake,.18);spawnImpact(e.x+er.w/2,e.y+er.h-2,1.25)}
+       else{shake=Math.max(shake,.08);puff(e.x+er.w/2,e.y+er.h/2,5)}
+     }else lose();
+   }
+ }
  if(p.x>2480&&checkpoint<2600){checkpoint=2710;checkpointAnim=1.25;toast='CHECKPOINT ATIVADO!';toastT=2;score+=250;unlockTrophy('checkpoint');saveGame(true)}if(checkpointAnim>0)checkpointAnim=Math.max(0,checkpointAnim-dt);if(rect(pr,{x:portal.x+28,y:portal.y+22,w:portal.w-56,h:portal.h-28})&&portalSeq===0){portalSeq=.001;p.spin=0;toast='PORTAL ATIVADO!';toastT=.8;}p.anim+=dt*(p.slide>0?18:p.crouch?9:p.spin>0?16:Math.abs(p.vx)>30?12:3);camX+=(Math.max(0,Math.min(worldW-W,p.x-W*.35))-camX)*Math.min(1,dt*6)
 }
 function ds(img,s,px,py,w,h,flip=false,a=1){if(!img)return;x.save();x.globalAlpha=a;if(flip){x.translate(px+w,py);x.scale(-1,1);if(s)x.drawImage(img,...s,0,0,w,h);else x.drawImage(img,0,0,img.naturalWidth||img.width,img.naturalHeight||img.height,0,0,w,h)}else{if(s)x.drawImage(img,...s,px,py,w,h);else x.drawImage(img,0,0,img.naturalWidth||img.width,img.naturalHeight||img.height,px,py,w,h)}x.restore()}
@@ -349,8 +446,30 @@ function bg(){
  }
  if(currentLevel===2&&bgImg){x.fillStyle='rgba(62,35,18,.22)';x.fillRect(0,0,W,H);x.fillStyle='rgba(15,9,4,.18)';for(let i=0;i<8;i++)x.fillRect(i*140+((camX*.08)%55),265+(i%3)*18,110,170)}else if(currentLevel===3&&bgImg){x.fillStyle='rgba(25,44,12,.25)';x.fillRect(0,0,W,H);x.globalAlpha=.18;x.fillStyle='#d2d6ae';for(let i=0;i<5;i++)x.fillRect((i*230-(camX*.05)%120),330+i%2*35,260,28);x.globalAlpha=1}else if(currentLevel===4&&bgImg){x.fillStyle='rgba(180,225,255,.10)';x.fillRect(0,0,W,H);x.fillStyle='rgba(235,250,255,.7)';for(let i=0;i<24;i++){let xx=(i*79+(performance.now()/18))%W,yy=(i*47+Math.floor(performance.now()/35))%360;x.fillRect(xx,yy,2+(i%2),2+(i%2))}}else if(currentLevel===5){x.fillStyle='rgba(145,32,18,.38)';x.fillRect(0,0,W,H);x.fillStyle='rgba(255,173,59,.35)';for(let i=0;i<9;i++){x.fillRect((i*137-(camX*.18)%137),300+(i%3)*30,78,7)}}
 }
-function drawEnemySprite(e,px=e.x,py=e.y,pw=e.w||70,ph=e.h||56,flip=e.v<0){let img=turtleImg,fr=turtleSR.walk[Math.floor(swingClock*8)%turtleSR.walk.length],dw=88,dh=62,drawX=px-(dw-pw)/2,drawY=py+ph-dh+(ENEMY_GROUND_OFFSET[e.type]??VISUAL_OFFSETS.enemy);if(e.type==='magmaBeetle'&&magmaBeetleImg){ds(magmaBeetleImg,null,px-30,py-72+(ENEMY_GROUND_OFFSET[e.type]??VISUAL_OFFSETS.enemy),112,112,flip);return}else if(e.type==='emberBat'&&emberBatImg){ds(emberBatImg,null,px-30,py-75+(ENEMY_GROUND_OFFSET[e.type]??VISUAL_OFFSETS.enemy),110,110,flip);return}else if(e.type==='armadillo'&&armadilloImg){img=armadilloImg;fr=enemySR.armadillo[0];dw=94;dh=44;drawX=px-(dw-pw)/2;drawY=py+ph-dh+(ENEMY_GROUND_OFFSET[e.type]??VISUAL_OFFSETS.enemy)}else if(e.type!=='turtle'&&biomeEnemyImg){img=biomeEnemyImg;const frames=enemySR[e.type]||enemySR.frog;fr=frames[Math.floor(swingClock*(e.type==='mosquito'?11:7)+e.phase)%frames.length];const sz={swampTurtle:[96,70],frog:[76,62],mosquito:[78,62],penguin:[70,76],seal:[92,66],iceShell:[82,62]}[e.type]||[82,62];dw=sz[0];dh=sz[1];drawX=px-(dw-pw)/2;drawY=py+ph-dh+(ENEMY_GROUND_OFFSET[e.type]??VISUAL_OFFSETS.enemy)}ds(img,fr,drawX,drawY,dw,dh,flip);}
-function drawEnemy(e){drawEnemySprite(e,e.x,e.y,e.w||70,e.h||56,e.v<0)}
+function drawFrameRot(img,s,cx,cy,w,h,ang=0,flip=false,a=1){if(!img)return;x.save();x.globalAlpha=a;x.translate(cx,cy);if(flip)x.scale(-1,1);x.rotate(ang);if(s)x.drawImage(img,...s,-w/2,-h/2,w,h);else x.drawImage(img,-w/2,-h/2,w,h);x.restore()}
+function drawEnemySprite(e,px=e.x,py=e.y,pw=e.w||70,ph=e.h||56,flip=e.v<0){
+ if(e.type==='turtle'){
+   const baseX=px+pw/2, baseY=py+ph;
+   if(e.state==='walk'){
+     const frames=turtleSR.walk; const fr=frames[Math.floor(swingClock*9)%frames.length];
+     const dw=114,dh=86; drawFrameRot(turtleImg,fr,baseX,baseY-dh/2+4,dw,dh,0,flip);
+   }else if(e.state==='hide'){
+     const fr=e.stateT>.12?turtleSR.hide[0]:turtleSR.hide[1]; const dw=106,dh=68; drawFrameRot(turtleImg,fr,baseX,baseY-dh/2+3,dw,dh,0,flip);
+   }else if(e.state==='shell'){
+     const fr=(Math.sin(swingClock*2.4+e.x*.01)>0.55?turtleSR.peek[0]:turtleSR.shell); const dw=100,dh=62; drawFrameRot(turtleImg,fr,baseX,baseY-dh/2+2,dw,dh,Math.PI,flip);
+   }else if(e.state==='fly'){
+     const dw=102,dh=62; const ang=(e.x*.045)*(e.shellDir||1); drawFrameRot(turtleImg,turtleSR.shell,baseX,baseY-dh/2+2,dw,dh,ang,flip);
+   }
+   return;
+ }
+ let img=turtleImg,fr=turtleSR.walk[Math.floor(swingClock*8)%turtleSR.walk.length],dw=88,dh=62,drawX=px-(dw-pw)/2,drawY=py+ph-dh+(ENEMY_GROUND_OFFSET[e.type]??VISUAL_OFFSETS.enemy);
+ if(e.type==='magmaBeetle'&&magmaBeetleImg){ds(magmaBeetleImg,null,px-30,py-72+(ENEMY_GROUND_OFFSET[e.type]??VISUAL_OFFSETS.enemy),112,112,flip);return}
+ else if(e.type==='emberBat'&&emberBatImg){ds(emberBatImg,null,px-30,py-75+(ENEMY_GROUND_OFFSET[e.type]??VISUAL_OFFSETS.enemy),110,110,flip);return}
+ else if(e.type==='armadillo'&&armadilloImg){img=armadilloImg;fr=enemySR.armadillo[0];dw=94;dh=44;drawX=px-(dw-pw)/2;drawY=py+ph-dh+(ENEMY_GROUND_OFFSET[e.type]??VISUAL_OFFSETS.enemy)}
+ else if(e.type!=='turtle'&&biomeEnemyImg){img=biomeEnemyImg;const frames=enemySR[e.type]||enemySR.frog;fr=frames[Math.floor(swingClock*(e.type==='mosquito'?11:7)+e.phase)%frames.length];const sz={swampTurtle:[96,70],frog:[76,62],mosquito:[78,62],penguin:[70,76],seal:[92,66],iceShell:[82,62]}[e.type]||[82,62];dw=sz[0];dh=sz[1];drawX=px-(dw-pw)/2;drawY=py+ph-dh+(ENEMY_GROUND_OFFSET[e.type]??VISUAL_OFFSETS.enemy)}
+ ds(img,fr,drawX,drawY,dw,dh,flip);
+}
+function drawEnemy(e){drawEnemySprite(e,e.x,e.y,e.w||70,e.h||56,e.type==='turtle'?(e.state==='fly'?(e.shellDir||1)<0:e.v<0):e.v<0)}
 function draw(){bg();x.save();let sx=shake>0?(Math.random()-.5)*12:0,sy=shake>0?(Math.random()-.5)*8:0;x.translate(-camX+sx,sy);
  // Buracos ficam entre o background e a camada jogável.
  for(const h of hazards)if(h.type==='pit'){x.fillStyle='#020604';x.fillRect(h.x,h.y,h.w,110);x.fillStyle='#101a13';x.fillRect(h.x,h.y,h.w,8);for(let yy=h.y+15;yy<h.y+105;yy+=18){x.globalAlpha=.35;x.fillStyle='#27422d';x.fillRect(h.x+8,yy,h.w-16,3)}x.globalAlpha=1}
