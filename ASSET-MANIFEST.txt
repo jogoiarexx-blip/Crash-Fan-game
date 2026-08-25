@@ -1,0 +1,58 @@
+V0.8 — ASSET MANAGER
+
+CORE (menu)
+- menu_logo.webp
+
+SHARED (carregados ao entrar em qualquer fase)
+- player_clean.webp
+- crash_crouch_slide.webp
+- aku_sheet_transparent.webp
+- tnt_sheet_transparent.webp
+- jungle_sheet.webp
+- traps_sheet.jpg
+- swing_log_sheet.webp
+- stone_press_sheet.jpg
+- portal_sheet.webp
+- checkpoint_sheet.webp
+- death_soul_sheet.webp
+- death_winged_soul.webp
+- tileset_v05.webp
+- turtle_walk_better.png
+- armadillo_enemy.webp
+- trap_retractable_spikes.png
+- trap_swinging_log.png
+- trap_stone_press.png
+- trap_poison_surface.png
+- trap_ice_spikes.png
+- volcanic_magma_beetle.png
+- volcanic_ember_bat.png
+
+FASE 1 — ILHA SELVAGEM
+- background_fase1.webp
+- usa tileset_v05 + scenery de jungle_sheet
+
+FASE 2 — TEMPLO PERDIDO
+- background_fase2.webp
+
+FASE 3 — PÂNTANO SOMBRIO
+- background_fase3.webp
+- swamp_tiles.webp
+- swamp_enemies.webp
+
+FASE 4 — PICOS CONGELADOS
+- background_fase4.webp
+- ice_tiles.webp
+- ice_enemies.webp
+
+FASE 5 — CÂNION RUBRO
+- reutiliza background_fase2.webp com composição cromática inédita
+- reutiliza tiles e sprites compartilhados
+- novos desafios: rajadas de vento, plataformas alternadas, TNT em cadeia, prensas e troncos
+- inimigos exclusivos: Besouro de magma e Morcego de brasa
+
+ESTRATÉGIA
+- menu carrega apenas CORE;
+- fase carrega SHARED + grupo da fase;
+- assets compartilhados permanecem em cache;
+- fim de uma fase pré-carrega o grupo da próxima;
+- sprites de teste/debug foram removidos do pacote final.
