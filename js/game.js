@@ -34,7 +34,8 @@ const DEFAULT_KEYS={left:'ArrowLeft',right:'ArrowRight',down:'ArrowDown',jump:'S
 const DEFAULT_PAD={jump:0,spin:2,pause:9};
 let keybinds={...DEFAULT_KEYS},padbinds={...DEFAULT_PAD},captureAction=null,captureType=null,capturedKeyCode=null;
 try{keybinds={...DEFAULT_KEYS,...JSON.parse(localStorage.getItem('crashV05Keybinds')||'{}')};padbinds={...DEFAULT_PAD,...JSON.parse(localStorage.getItem('crashV05Padbinds')||'{}')}}catch(_){ }
-function actionDown(a){const code=keybinds[a];return !!keys[code]||!!touchState[a]}
+const KEY_ALIASES={left:['KeyA'],right:['KeyD'],down:['KeyS'],jump:['KeyW']};
+function actionDown(a){const code=keybinds[a];return !!keys[code]||!!touchState[a]||!!KEY_ALIASES[a]?.some(k=>keys[k])}
 function keyName(code){return ({ArrowLeft:'←',ArrowRight:'→',ArrowDown:'↓',ArrowUp:'↑',Space:'ESPAÇO',Escape:'ESC',Enter:'ENTER',KeyP:'P',KeyX:'X',KeyZ:'Z',KeyA:'A',KeyD:'D',KeyS:'S',KeyW:'W',KeyK:'K'}[code]||code.replace('Key','').replace('Digit',''))}
 function connectedPad(){const gs=navigator.getGamepads?.()||[];for(const g of gs)if(g&&g.connected)return g;return null}
 function padFamily(g=connectedPad()){const id=(g?.id||'').toLowerCase();if(/playstation|dualshock|dualsense|sony|054c/.test(id))return'playstation';if(/xbox|xinput|microsoft|045e/.test(id))return'xbox';return g?'generic':'keyboard'}
@@ -44,11 +45,11 @@ function confirmHint(){return connectedPad()?padButtonName(0):'ENTER'}
 function backHint(){return connectedPad()?padButtonName(1):'ESC'}
 function extraHint(){return connectedPad()?padButtonName(2):'X'}
 function deleteHint(){return connectedPad()?padButtonName(3):'DELETE'}
-function moveHint(){return connectedPad()?'D-PAD / ANALÓGICO':keyName(keybinds.left)+' / '+keyName(keybinds.right)}
+function moveHint(){return connectedPad()?'D-PAD / ANALÓGICO':keyName(keybinds.left)+' / '+keyName(keybinds.right)+' ou A / D'}
 function actionHint(a){if(!connectedPad())return keyName(keybinds[a]);if(a==='left'||a==='right'||a==='down')return'D-PAD / ANALÓGICO';if(a==='jump')return padButtonName(padbinds.jump);if(a==='spin')return padButtonName(padbinds.spin);if(a==='pause')return padButtonName(padbinds.pause);return'?'}
 function refreshHelp(){const h=document.getElementById('help');if(!h)return;h.textContent=connectedPad()?inputBrand()+' conectado • '+padButtonName(padbinds.pause)+' pausa • controles adaptáveis':'Controles configuráveis • 3 slots de save • '+keyName(keybinds.pause)+' pausa • conecte um controle'}
 addEventListener('gamepadconnected',refreshHelp);addEventListener('gamepaddisconnected',refreshHelp);setTimeout(refreshHelp,250);
-addEventListener('keydown',e=>{keys[e.code]=true;if(['ArrowLeft','ArrowRight','ArrowDown','ArrowUp','Space'].includes(e.code))e.preventDefault();if(captureType==='keyboard'&&captureAction){e.preventDefault();keybinds[captureAction]=e.code;capturedKeyCode=e.code;captureAction=null;captureType=null;try{localStorage.setItem('crashV05Keybinds',JSON.stringify(keybinds))}catch(_){ }toast='Controle atualizado!';toastT=1;}});
+addEventListener('keydown',e=>{keys[e.code]=true;if(['ArrowLeft','ArrowRight','ArrowDown','ArrowUp','Space','KeyW','KeyA','KeyS','KeyD'].includes(e.code))e.preventDefault();if(captureType==='keyboard'&&captureAction){e.preventDefault();keybinds[captureAction]=e.code;capturedKeyCode=e.code;captureAction=null;captureType=null;try{localStorage.setItem('crashV05Keybinds',JSON.stringify(keybinds))}catch(_){ }toast='Controle atualizado!';toastT=1;}});
 addEventListener('keyup',e=>keys[e.code]=false);
 let state='menu',paused=false,last=0,camX=0,score=0,fruits=0,lives=4,checkpoint=80,checkpointAnim=0,inv=0,toast='',toastT=0,shake=0,aku=0,boxesBroken=0,deaths=0,levelTime=0,deathAnim=0,deathX=0,deathY=0,portalSeq=0,resultGem=false;
 let menuIndex=0,pauseIndex=0,menuSub='main',uiButtons=[],slotIndex=0,activeSlot=0,configTab=0,configIndex=0,trophyScroll=0,saveNotice='',levelSelectIndex=0;
@@ -85,14 +86,14 @@ function trophyDefs(){return[
 function unlockTrophy(id){if(!activeSlot)return;const sl=readSlot(activeSlot);if(!sl.trophies)sl.trophies={};if(!sl.trophies[id]){sl.trophies[id]=Date.now();writeSlot(activeSlot,sl);toast='🏆 TROFÉU: '+(trophyDefs().find(t=>t[0]===id)?.[1]||id);toastT=2.3}}
 function buildSave(completed=false){const old=activeSlot?readSlot(activeSlot):blankSlot();const done=completed||state==='results'||state==='levelselect';const unlocked=done?Math.max(old.levelsUnlocked||1,Math.min(5,currentLevel+1)):Math.max(old.levelsUnlocked||1,Math.min(5,currentLevel));return{empty:false,version:SAVE_VERSION,updated:Date.now(),currentLevel,phaseName:currentLevelName,checkpoint,score,fruits,lives,deaths,levelTime,boxesBroken,aku,gem:resultGem,completed:done,levelsUnlocked:unlocked,normal:normal.map(b=>!!b.hit),tnts:tnts.map(t=>!!t.dead),fruitList:fruitList.map(f=>!!f.t),masks:masks.map(m=>!!m.t),enemies:enemies.map(e=>!!e.dead),trophies:(old.trophies||{})}}
 function saveGame(auto=false){if(!activeSlot)return false;const ok=writeSlot(activeSlot,buildSave());if(ok&&!auto){saveNotice='Jogo salvo no Slot '+activeSlot;toast=saveNotice;toastT=1.5}return ok}
-function applySaveData(i,sl){state='play';paused=false;menuSub='main';score=sl.score||0;fruits=sl.fruits||0;lives=Math.max(1,sl.lives||4);deaths=sl.deaths||0;levelTime=sl.levelTime||0;checkpoint=sl.checkpoint||currentCheckpointDefault;aku=sl.aku||0;boxesBroken=sl.boxesBroken||0;resultGem=!!sl.gem;deathAnim=0;portalSeq=0;checkpointAnim=0;normal.forEach((b,n)=>{b.hit=!!sl.normal?.[n];b.breakT=0});tnts.forEach((t,n)=>{t.dead=!!sl.tnts?.[n];t.active=false;t.t=3;t.blast=0});fruitList.forEach((f,n)=>f.t=!!sl.fruitList?.[n]);masks.forEach((m,n)=>m.t=!!sl.masks?.[n]);enemies.forEach((e,n)=>e.dead=!!sl.enemies?.[n]);boxFx.length=0;dustFx.length=0;enemyFx.length=0;impactFx.length=0;resetP();inv=1;toast='Slot '+i+' carregado';toastT=1.4}
+function applySaveData(i,sl){state='play';paused=false;menuSub='main';score=sl.score||0;fruits=sl.fruits||0;lives=Math.max(1,sl.lives||4);deaths=sl.deaths||0;levelTime=sl.levelTime||0;checkpoint=sl.checkpoint||currentCheckpointDefault;aku=sl.aku||0;boxesBroken=sl.boxesBroken||0;resultGem=!!sl.gem;deathAnim=0;portalSeq=0;checkpointAnim=0;normal.forEach((b,n)=>{b.hit=!!sl.normal?.[n];b.breakT=0});tnts.forEach((t,n)=>{t.dead=!!sl.tnts?.[n];t.active=false;t.t=3;t.blast=0});fruitList.forEach((f,n)=>f.t=!!sl.fruitList?.[n]);masks.forEach((m,n)=>m.t=!!sl.masks?.[n]);enemies.forEach((e,n)=>e.dead=!!sl.enemies?.[n]);boxFx.length=0;dustFx.length=0;enemyFx.length=0;impactFx.length=0;akuFx.length=0;akuProtectT=0;resetP();inv=1;toast='Slot '+i+' carregado';toastT=1.4}
 function applySave(i){const sl=readSlot(i);if(sl.empty)return false;activeSlot=i;setLevel(sl.currentLevel||1);if(!assetManager.phaseReady(currentLevel)){ensurePhase(currentLevel,()=>applySaveData(i,sl));return true}bindPhaseAssets(currentLevel);applySaveData(i,sl);return true}
 const worldW=5600,groundY=455;const portal={x:5360,y:245,w:180,h:210};
 const sr={idle:[4,4,125,186],run1:[137,4,125,179],run2:[270,4,132,177],run3:[410,4,117,172],run4:[535,4,93,152],jump1:[636,4,151,177],jump2:[795,4,135,148],jump3:[4,198,115,176],jump4:[127,198,123,159],jump5:[258,198,115,171],fall:[381,198,110,145],spin1:[499,198,134,183],spin2:[641,198,146,173],box:[795,198,96,94],qbox:[899,198,95,104],fruit:[4,389,64,72],run5:[137,4,125,179],run6:[270,4,132,177],run7:[410,4,117,172],run8:[535,4,93,152],spin3:[499,198,134,183],hurt:[4,4,125,186],mask:[4,4,125,186]};
-const akuSR={mask:[60,760,115,145],mask2:[192,760,110,145],power:[1320,760,130,145],charMask:[45,10,125,185]};
+const akuSR={hover:[[0,0,320,320],[320,0,320,320],[640,0,320,320],[960,0,320,320]],blink:[0,320,320,320],protect:[320,320,320,320],spin:[640,320,320,320],power:[960,320,320,320],hud:[0,0,320,320]};
 const tntSR={idle:[45,35,160,150],three:[43,390,175,165],two:[425,390,185,165],one:[785,390,180,165],blast:[205,575,225,180],smoke:[820,575,210,170]};
 const p={x:80,y:groundY-78,w:46,h:78,standH:78,crouchH:48,vx:0,vy:0,on:false,facing:1,spin:0,anim:0,land:0,takeoff:0,crouch:false,slide:0,slideDir:1,stompSquash:0};
-const boxFx=[]; const dustFx=[]; const enemyFx=[]; const impactFx=[]; let forcedDeathT=0,swingClock=0;
+const boxFx=[]; const dustFx=[]; const enemyFx=[]; const impactFx=[]; const akuFx=[]; let forcedDeathT=0,swingClock=0,akuProtectT=0;
 const VISUAL_OFFSETS={player:-5,box:-3,tnt:0,enemy:1};const ENEMY_GROUND_OFFSET={turtle:3,swampTurtle:2,frog:2,penguin:2,seal:2,iceShell:2,armadillo:4,magmaBeetle:3,mosquito:0,emberBat:0};
 // Armadilhas/buracos da Fase 1. Os recortes vêm do sprite sheet enviado pelo usuário.
 const trapSR={spikes:[12,30,490,310],bridge:[905,20,315,325],boulder:[500,385,430,205],snake:[990,375,500,190],swing:[1225,20,310,330],breakBridge:[12,585,490,180],totem:[1040,585,480,225]};
@@ -144,6 +145,17 @@ function pushBox(x,y,q=false){normal.push({x,y,w:58,h:58,hit:false,q,breakT:0})}
 function pushTNT(x,y=groundY-58){tnts.push({x,y,w:58,h:58,active:false,t:3.0,dead:false,blast:0})}
 function pushFruit(x,y){fruitList.push({x,y,t:false})}
 function pushEnemy(x,a,b,v=65,y=groundY-56,type='turtle'){let dims={turtle:[70,56],swampTurtle:[76,58],frog:[62,52],mosquito:[58,45],penguin:[60,60],seal:[78,52],iceShell:[68,52],armadillo:[84,50],magmaBeetle:[82,62],emberBat:[64,58]}[type]||[70,56];const groundBase=groundY-dims[1];if(Math.abs(y-groundBase)<=14)y=groundBase;enemies.push({x,y,baseY:y,v,a,b,dead:false,hp:1,hitT:0,safeT:0,stompFx:0,h:dims[1],w:dims[0],type,phase:Math.random()*6.28,state:type==='turtle'?'walk':'walk',stateT:0,shellVX:0,shellDir:Math.sign(v)||1})}
+function enforceTrapClearance(){
+ const zones=[];
+ for(const t of spikeTraps)zones.push([t.x-34,t.x+(t.w||112)+34]);
+ for(const sw of swingingLogs)zones.push([sw.x-165,sw.x+165]);
+ for(const ps of stonePresses)zones.push([ps.x-30,ps.x+210]);
+ for(const h of hazards){if(['spikes','iceSpike','poison'].includes(h.type))zones.push([h.x-28,h.x+h.w+28])}
+ const blocked=o=>{if(!o)return false;const bottom=o.y+(o.h||58);if(bottom<groundY-18)return false;return zones.some(z=>o.x+(o.w||58)>z[0]&&o.x<z[1])};
+ for(let i=normal.length-1;i>=0;i--)if(blocked(normal[i]))normal.splice(i,1);
+ for(let i=tnts.length-1;i>=0;i--)if(blocked(tnts[i]))tnts.splice(i,1);
+}
+
 function clearMutableLevel(){[swingingLogs,stonePresses,spikeTraps,hazards,foreground,phaseDeco,scenery,rocks,platforms,normal,tnts,masks,fruitList,enemies].forEach(a=>a.length=0)}
 function setLevel(n=1){
  clearMutableLevel(); currentLevel=n;
@@ -239,12 +251,12 @@ function setLevel(n=1){
    );
 
    // Armadilhas refeitas: possuem aviso, janela segura e hitbox sincronizada com a arte.
-   spikeTraps.push({x:1860,y:groundY,w:112,phase:.15});
-   swingingLogs.push({x:2015,y:105,phase:.25});
+   spikeTraps.push({x:1680,y:groundY,w:112,phase:.15});
+   swingingLogs.push({x:2070,y:105,phase:.25});
    stonePresses.push({x:3530,phase:.35});
 
    // Caixas no chão ficam exatamente apoiadas (397 = 455 - 58).
-   [250,590,930,1040,1560,1940,2660,3000,3230,3400,3840,4070,4260,4550,4860,5280]
+   [250,590,930,1040,1560,1840,2660,3000,3230,3400,3840,4070,4260,4550,4860,5280]
     .forEach((px,i)=>pushBox(px,groundY-58,i%4===0));
 
    // Caixas sobre plataformas seguem a mesma regra: y = topo - 58.
@@ -253,7 +265,7 @@ function setLevel(n=1){
    pushBox(4140,307,true); pushBox(5160,277,false);
 
    // TNT apoiadas no chão, longe de saltos obrigatórios.
-   [1280,2240,4930].forEach(px=>pushTNT(px));
+   [1280,2500,4930].forEach(px=>pushTNT(px));
 
    // Aku Aku em rotas opcionais/seguras.
    masks.push({x:1160,y:268,t:false},{x:2810,y:268,t:false},{x:5180,y:268,t:false});
@@ -270,6 +282,7 @@ function setLevel(n=1){
    pushEnemy(4410,4300,4610,-68,groundY-56,'turtle');
    pushEnemy(5160,5030,5290,78,groundY-50,'armadillo');
  }
+ enforceTrapClearance();
 }
 setLevel(1);
 
@@ -285,6 +298,8 @@ function canStandAt(px,bottom){
 }
 function setPlayerHeight(nextH){if(nextH===p.h)return true;const bottom=p.y+p.h;if(nextH>p.h&&!canStandAt(p.x,bottom))return false;p.h=nextH;p.y=bottom-p.h;return true}
 function visibleWorldX(px,pw=0,margin=180){return px+pw>=camX-margin&&px<=camX+W+margin}
+function akuHoverFrame(seed=0){const t=performance.now()/170+seed;const frames=akuSR.hover;if(Math.floor((performance.now()/950+seed)%7)===6)return akuSR.blink;return frames[Math.floor(t)%frames.length]}
+function drawAkuFrame(frame,x,y,w,h,flip=false,a=1){ds(akuImg,frame,x,y,w,h,flip,a)}
 function pad(){const g=connectedPad();if(!g)return{l:0,r:0,d:0,j:0,s:0,p:0};return{l:g.axes[0]<-.25||g.buttons[14]?.pressed,r:g.axes[0]>.25||g.buttons[15]?.pressed,d:g.axes[1]>.45||g.buttons[13]?.pressed,j:!!g.buttons[padbinds.jump]?.pressed,s:!!g.buttons[padbinds.spin]?.pressed,p:!!g.buttons[padbinds.pause]?.pressed}}
 function puff(px,py,n=5){for(let i=0;i<n;i++)dustFx.push({x:px+(Math.random()-.5)*28,y:py+(Math.random()-.5)*10,vx:(Math.random()-.5)*90,vy:-35-Math.random()*80,t:.35+Math.random()*.25,s:4+Math.random()*8})}
 function spawnEnemyFx(e,mode='stomp'){enemyFx.push({x:e.x,y:e.y,w:e.w||70,h:e.h||56,type:e.type,v:e.v,t:mode==='stomp'?.30:.20,mode})}
@@ -296,15 +311,15 @@ function turtleLaunch(e,dir=1){turtleSetShellForm(e);e.state='fly';e.stateT=0;e.
 function breakBox(b,mode='spin'){if(b.hit)return;b.hit=true;b.breakT=.38;boxesBroken++;score+=100;fruits+=b.q?5:1;boxFx.push({x:b.x+29,y:b.y+29,t:.42,q:b.q,mode});for(let i=0;i<9;i++)boxFx.push({piece:true,x:b.x+29,y:b.y+29,vx:(Math.random()-.5)*300,vy:-80-Math.random()*220,r:Math.random()*6.28,vr:(Math.random()-.5)*14,t:.65+Math.random()*.35,s:5+Math.random()*7});if(mode==='stomp'){shake=Math.max(shake,.16);spawnImpact(b.x+29,b.y+4,1.0)}toast=b.q?'Caixa bônus! +5 frutas':'Caixa quebrada!';toastT=1.0;puff(b.x+29,b.y+54,7)}
 function beginDeath(msg='Crash caiu!'){if(deathAnim>0||state!=='play')return;deaths++;lives--;deathX=p.x;deathY=p.y;deathAnim=1.85;p.vx=p.vy=0;p.spin=0;shake=.38;toast=msg;toastT=1.0;if(lives<=0){setTimeout(()=>{if(state==='play'&&deathAnim>0){deathAnim=0;state='gameover'}},1750)}}
 function forceDeath(){beginDeath('BOOM! TNT explodiu!')}
-function resetP(){p.h=p.standH;p.x=checkpoint;p.y=groundY-p.h;p.vx=p.vy=0;p.spin=0;p.slide=0;p.crouch=false;p.land=0;p.takeoff=0;p.stompSquash=0;forcedDeathT=0;inv=1.5}
-function lose(){if(inv>0||deathAnim>0)return;if(aku>0){aku--;inv=2;shake=.25;toast='Aku Aku protegeu você!';toastT=1.7;return}beginDeath('Crash perdeu uma vida!')}
+function resetP(){p.h=p.standH;p.x=checkpoint;p.y=groundY-p.h;p.vx=p.vy=0;p.spin=0;p.slide=0;p.crouch=false;p.land=0;p.takeoff=0;p.stompSquash=0;forcedDeathT=0;akuProtectT=0;inv=1.5}
+function lose(){if(inv>0||deathAnim>0)return;if(aku>0){aku--;inv=2;shake=.25;akuProtectT=.65;toast='Aku Aku protegeu você!';toastT=1.7;return}beginDeath('Crash perdeu uma vida!')}
 function explode(t){if(t.dead)return;t.dead=true;t.blast=.55;shake=.55;score+=150;const cx=t.x+t.w/2,cy=t.y+t.h/2;for(const b of normal){if(!b.hit&&Math.hypot(b.x+29-cx,b.y+29-cy)<150){b.hit=true;boxesBroken++;score+=100}}for(const u of tnts){if(!u.dead&&u!==t&&Math.hypot(u.x+u.w/2-cx,u.y+u.h/2-cy)<170){u.active=true;u.t=Math.min(u.t,.35)}}for(const e of enemies){if(!e.dead&&Math.hypot(e.x+29-cx,e.y+26-cy)<150){e.dead=true;score+=250}}if(Math.hypot(p.x+p.w/2-cx,p.y+p.h/2-cy)<155)lose()}
 let prevJ=false,prevS=false,prevDown=false;
 function spikeTrapState(t){const c=(swingClock+t.phase)%3.25;let h=0,warning=false;if(c<1.05)h=0;else if(c<1.42){h=5;warning=true}else if(c<1.62)h=55*((c-1.42)/.20);else if(c<2.42)h=55;else if(c<2.68)h=55*(1-(c-2.42)/.26);return{h,warning,active:h>28}}
 function pressTrapState(ps){const c=(swingClock+ps.phase)%3.85,top=66,bottom=337;let y=top,warning=false,slam=false;if(c<1.35)y=top;else if(c<1.78){y=top+Math.sin(c*46)*3;warning=true}else if(c<1.98){let q=(c-1.78)/.20;q=1-Math.pow(1-q,3);y=top+(bottom-top)*q;slam=true}else if(c<2.55)y=bottom;else if(c<3.35){let q=(c-2.55)/.80;y=bottom-(bottom-top)*(q*q*(3-2*q))}return{y,warning,slam,active:y>245}}
 function swingTrapState(sw){const a=Math.sin(swingClock*2.15+sw.phase)*.88;const px=sw.x,py=sw.y;const len=176;const cx=px+Math.sin(a)*126,cy=py+74+Math.cos(a)*len;return{a,px,py,cx,cy}}
 function update(dt){if(state!=='play'||paused)return;swingClock+=dt;levelTime+=dt;if(inv>0)inv-=dt;if(toastT>0)toastT-=dt;if(shake>0)shake-=dt;if(deathAnim>0){deathAnim-=dt;if(deathAnim<=0&&lives>0)resetP();return}if(portalSeq>0){portalSeq+=dt;p.vx=0;p.vy=0;const cx=portal.x+portal.w/2-p.w/2,cy=portal.y+portal.h/2-p.h/2;p.x+=(cx-p.x)*Math.min(1,dt*3.6);p.y+=(cy-p.y)*Math.min(1,dt*3.6);if(portalSeq>2.15){resultGem=boxesBroken>=normal.length+tnts.length;if(currentLevel<5)assetManager.preloadPhase(currentLevel+1);if(currentLevel===3)unlockTrophy('pantano');if(currentLevel===4)unlockTrophy('gelo');if(currentLevel===5)unlockTrophy('canyon');state='results';if(fruits>=50)unlockTrophy('frutas50');if(resultGem){unlockTrophy('caixas');unlockTrophy('gema')}if(deaths===0)unlockTrophy('semMorrer');if(levelTime<150)unlockTrophy('veloz');saveGame(true)}return}if(forcedDeathT>0){forcedDeathT-=dt;return}if(p.land>0)p.land-=dt;if(p.takeoff>0)p.takeoff-=dt;for(let i=dustFx.length-1;i>=0;i--){let d=dustFx[i];d.t-=dt;d.x+=d.vx*dt;d.y+=d.vy*dt;d.vy+=220*dt;if(d.t<=0)dustFx.splice(i,1)}for(let i=boxFx.length-1;i>=0;i--){let f=boxFx[i];f.t-=dt;if(f.piece){f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=600*dt;f.r+=f.vr*dt}if(f.t<=0)boxFx.splice(i,1)}
-for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.splice(i,1)}for(let i=impactFx.length-1;i>=0;i--){let f=impactFx[i];f.t-=dt;if(f.t<=0)impactFx.splice(i,1)}for(const e of enemies)if(!e.dead&&e.safeT>0)e.safeT=Math.max(0,e.safeT-dt);if(p.stompSquash>0)p.stompSquash=Math.max(0,p.stompSquash-dt)
+for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.splice(i,1)}for(let i=impactFx.length-1;i>=0;i--){let f=impactFx[i];f.t-=dt;if(f.t<=0)impactFx.splice(i,1)}for(let i=akuFx.length-1;i>=0;i--){let f=akuFx[i];f.t-=dt;if(f.t<=0)akuFx.splice(i,1)}if(akuProtectT>0)akuProtectT=Math.max(0,akuProtectT-dt);for(const e of enemies)if(!e.dead&&e.safeT>0)e.safeT=Math.max(0,e.safeT-dt);if(p.stompSquash>0)p.stompSquash=Math.max(0,p.stompSquash-dt)
  const g=pad(),L=actionDown('left')||g.l,R=actionDown('right')||g.r,D=actionDown('down')||g.d,J=actionDown('jump')||g.j,S=actionDown('spin')||g.s;
  const accel=currentLevel===4?720:950,max=currentLevel===4?305:285,fric=currentLevel===4?230:1000;
  // Agachar / escorregar: ao apertar para baixo correndo, Crash inicia um slide com impulso.
@@ -337,10 +352,42 @@ for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.
  for(const sw of swingingLogs){const z=swingTrapState(sw);const hit={x:z.cx-36,y:z.cy-48,w:72,h:96};if(rect(pr,hit)){lose();return}}
  for(const ps of stonePresses){const z=pressTrapState(ps);if(z.active){const hit={x:ps.x+16,y:z.y+34,w:150,h:78};if(rect(pr,hit)){lose();return}}}
  for(const h of hazards){if(h.type==='pit')continue;if(h.type==='gust'&&rect(pr,{x:h.x,y:h.y,w:h.w,h:h.h})){p.x=Math.max(0,Math.min(worldW-p.w,p.x+h.dir*h.power*dt));p.vx+=h.dir*h.power*.18*dt;continue}if(rect(pr,{x:h.x+8,y:h.y+8,w:h.w-16,h:h.h-8})){lose();return}}
- for(const b of normal){if(b.hit)continue;const br={x:b.x,y:b.y,w:b.w,h:b.h};if(rect(pr,br)){const stomp=p.vy>0&&p.y+p.h-b.y<34;if(p.spin>0||p.slide>0){breakBox(b,p.slide>0?'slide':'spin')}else if(stomp){breakBox(b,'stomp');p.y=b.y-p.h;p.vy=-335;p.on=false;p.land=.16;p.stompSquash=.16}else if(p.vy<0){p.y=b.y+b.h;p.vy=70}else if(p.vx>0)p.x=b.x-p.w;else if(p.vx<0)p.x=b.x+b.w}}
- for(const t of tnts){if(t.dead){if(t.blast>0)t.blast-=dt;continue}if(t.active){t.t-=dt;if(t.t<=0)explode(t)}const tr={x:t.x,y:t.y,w:t.w,h:t.h};if(rect(pr,tr)){const stomp=p.vy>0&&p.y+p.h-t.y<38;if(p.spin>0||p.slide>0){explode(t);forceDeath();return}else if(stomp){p.y=t.y-p.h;p.vy=-365;p.on=false;if(!t.active){t.active=true;t.t=3.0;toast='TNT: 3...';toastT=.9}p.stompSquash=.13;spawnImpact(t.x+t.w/2,t.y,0.7)}else if(p.vx>0)p.x=t.x-p.w;else if(p.vx<0)p.x=t.x+t.w}}
+ for(const b of normal){
+   if(b.hit)continue;
+   const br={x:b.x,y:b.y,w:b.w,h:b.h};
+   if(!rect(pr,br))continue;
+   const currBottom=p.y+p.h, currTop=p.y;
+   const cameFromAbove=p.vy>0&&prevBottom<=b.y+14&&currBottom>=b.y;
+   const cameFromBelow=p.vy<0&&prevY>=b.y+b.h-12&&currTop<=b.y+b.h;
+   if(p.spin>0||p.slide>0){breakBox(b,p.slide>0?'slide':'spin')}
+   else if(cameFromAbove){breakBox(b,'stomp');p.y=b.y-p.h;p.vy=-335;p.on=false;p.land=.16;p.stompSquash=.16;pr.y=p.y}
+   else if(cameFromBelow){p.y=b.y+b.h;p.vy=70;pr.y=p.y}
+   else {
+     const prevRight=p.x-p.vx*dt+p.w, prevLeft=p.x-p.vx*dt;
+     if(p.vx>0&&prevRight<=b.x+b.w*0.5)p.x=b.x-p.w;
+     else if(p.vx<0&&prevLeft>=b.x+b.w*0.5)p.x=b.x+b.w;
+     else if(p.x+p.w/2<b.x+b.w/2)p.x=b.x-p.w; else p.x=b.x+b.w;
+     p.vx=0;pr.x=p.x;
+   }
+ }
+ for(const t of tnts){
+   if(t.dead){if(t.blast>0)t.blast-=dt;continue}
+   if(t.active){t.t-=dt;if(t.t<=0)explode(t)}
+   const tr={x:t.x,y:t.y,w:t.w,h:t.h};
+   if(!rect(pr,tr))continue;
+   const currBottom=p.y+p.h, currTop=p.y;
+   const cameFromAbove=p.vy>0&&prevBottom<=t.y+14&&currBottom>=t.y;
+   const cameFromBelow=p.vy<0&&prevY>=t.y+t.h-12&&currTop<=t.y+t.h;
+   if(p.spin>0||p.slide>0){explode(t);forceDeath();return}
+   else if(cameFromAbove){p.y=t.y-p.h;p.vy=-365;p.on=false;if(!t.active){t.active=true;t.t=3.0;toast='TNT: 3...';toastT=.9}p.stompSquash=.13;spawnImpact(t.x+t.w/2,t.y,0.7);pr.y=p.y}
+   else if(cameFromBelow){p.y=t.y+t.h;p.vy=70;pr.y=p.y}
+   else {
+     if(p.vx>0)p.x=t.x-p.w; else if(p.vx<0)p.x=t.x+t.w; else if(p.x+p.w/2<t.x+t.w/2)p.x=t.x-p.w; else p.x=t.x+t.w;
+     p.vx=0;pr.x=p.x;
+   }
+ }
  for(const f of fruitList){if(!f.t&&rect(pr,{x:f.x,y:f.y,w:42,h:42})){f.t=true;fruits++;score+=25;if(fruits>=100){fruits-=100;lives++;toast='100 frutas = +1 vida!';toastT=2}}}
- for(const m of masks){if(!m.t&&rect(pr,{x:m.x,y:m.y,w:54,h:65})){m.t=true;aku=Math.min(2,aku+1);score+=500;toast=aku===2?'Aku Aku reforçado!':'Aku Aku adquirido!';toastT=1.7}}
+ for(const m of masks){if(!m.t&&rect(pr,{x:m.x,y:m.y,w:54,h:65})){m.t=true;aku=Math.min(2,aku+1);akuFx.push({x:m.x+27,y:m.y+26,t:.7,kind:'pickup'});score+=500;toast=aku===2?'Aku Aku reforçado!':'Aku Aku adquirido!';toastT=1.7}}
  for(const e of enemies){
    if(e.dead)continue;
    if(e.hitT>0)e.hitT-=dt;
@@ -481,10 +528,10 @@ function draw(){bg();x.save();let sx=shake>0?(Math.random()-.5)*12:0,sy=shake>0?
  // Prensa: ciclo com aviso, queda rápida, pausa no chão e subida lenta.
  for(const ps of stonePresses){if(!visibleWorldX(ps.x,180))continue;const z=pressTrapState(ps);x.save();x.strokeStyle='#4e4b40';x.lineWidth=7;x.beginPath();x.moveTo(ps.x+36,42);x.lineTo(ps.x+36,z.y+20);x.moveTo(ps.x+144,42);x.lineTo(ps.x+144,z.y+20);x.stroke();if(z.warning){x.globalAlpha=.9;x.fillStyle='#ffcf3a';for(let i=0;i<3;i++){x.beginPath();x.moveTo(ps.x+65+i*28,395);x.lineTo(ps.x+76+i*28,410);x.lineTo(ps.x+54+i*28,410);x.closePath();x.fill()}x.globalAlpha=1}if(z.slam||z.active){x.globalAlpha=.32;x.fillStyle='#d7c3a2';for(let i=0;i<6;i++){x.beginPath();x.arc(ps.x+30+i*24,443,5+(i%2)*3,0,7);x.fill()}x.globalAlpha=1}if(pressAssetImg)ds(pressAssetImg,null,ps.x,z.y-8,180,150);else ds(pressImg,pressSR,ps.x,z.y,180,118);x.restore()}
  for(const b of normal)if(!b.hit&&visibleWorldX(b.x,b.w)){const bob=b.q?Math.sin(performance.now()/180+b.x)*2:0;ds(playerImg,sr[b.q?'qbox':'box'],b.x,b.y+bob+3,b.w,b.h)}for(const f of fruitList)if(!f.t&&visibleWorldX(f.x,44))ds(playerImg,sr.fruit,f.x,f.y,44,48);
- for(const m of masks)if(!m.t&&visibleWorldX(m.x,92))ds(akuImg,akuSR.mask,m.x-18,m.y-20,92,112);
+ for(const m of masks)if(!m.t&&visibleWorldX(m.x,92)){const bob=Math.sin(performance.now()/180+m.x*.01)*4;const fr=akuHoverFrame(m.x*.013);x.save();x.globalAlpha=.35;x.fillStyle='#ffe676';x.beginPath();x.ellipse(m.x+28,m.y+88+bob,20,6,0,0,7);x.fill();x.restore();drawAkuFrame(fr,m.x-22,m.y-28+bob,100,122,false);}
  for(const t of tnts){if(!visibleWorldX(t.x,t.w,220))continue;if(t.dead){if(t.blast>0)ds(tntImg,tntSR.blast,t.x-75,t.y-70,215,175);continue}let s=tntSR.idle;if(t.active)s=t.t>2?tntSR.three:t.t>1?tntSR.two:tntSR.one;ds(tntImg,s,t.x,t.y,t.w,t.h)}
- for(const f of boxFx){if(f.piece){x.save();x.translate(f.x,f.y);x.rotate(f.r);x.globalAlpha=Math.max(0,Math.min(1,f.t*2));x.fillStyle='#9a5427';x.fillRect(-f.s,-3,f.s*2,6);x.fillStyle='#d4853d';x.fillRect(-f.s,-3,f.s*1.2,2);x.restore()}else{const a=Math.max(0,f.t/.42),sc=1+(1-a)*.55,sy=f.mode==='stomp'?1-(1-a)*.26:sc,sx=f.mode==='stomp'?1+(1-a)*.22:sc;x.save();x.globalAlpha=a;x.translate(f.x,f.y);x.rotate((1-a)*(f.mode==='spin'?2.3:(f.mode==='slide'?1.0:.18)));x.scale(sx,sy);ds(playerImg,sr[f.q?'qbox':'box'],-29,-29,58,58);if(f.mode==='stomp'){x.globalAlpha=a*.55;x.fillStyle='#fff4b8';x.beginPath();x.ellipse(0,22,18+(1-a)*12,4+(1-a)*2,0,0,Math.PI*2);x.fill()}x.restore()}}for(const d of dustFx){x.globalAlpha=Math.max(0,d.t*2);x.fillStyle='#e8e0cf';x.beginPath();x.arc(d.x,d.y,d.s,0,7);x.fill();x.globalAlpha=1}for(const f of impactFx){const q=Math.max(0,f.t/.22),r=(1-q)*34*f.power+8;x.save();x.globalAlpha=q*.72;x.strokeStyle='#fff0a6';x.lineWidth=Math.max(1,4*q);x.beginPath();x.ellipse(f.x,f.y,r,Math.max(3,r*.22),0,0,Math.PI*2);x.stroke();x.globalAlpha=q*.38;x.fillStyle='#ffd55d';x.beginPath();x.ellipse(f.x,f.y+2,r*.7,Math.max(2,r*.12),0,0,Math.PI*2);x.fill();x.restore()}for(const e of enemies)if(!e.dead&&visibleWorldX(e.x,e.w||90,220))drawEnemy(e);
- if(checkpoint<2600){ds(checkpointImg,[28,76,197,197],2488,314,120,120)}else{let cpGlow=.55+.35*Math.sin(swingClock*7);x.save();x.globalAlpha=cpGlow;x.fillStyle='#ffd84d';x.beginPath();x.ellipse(2548,430,58,13,0,0,Math.PI*2);x.fill();x.restore();if(checkpointAnim>.8)ds(checkpointImg,[312,32,213,241],2480,286,132,150);else if(checkpointAnim>.35)ds(checkpointImg,[312,32,213,241],2476,282,138,156);else ds(checkpointImg,[633,78,147,166],2488,304,118,124)};
+ for(const f of boxFx){if(f.piece){x.save();x.translate(f.x,f.y);x.rotate(f.r);x.globalAlpha=Math.max(0,Math.min(1,f.t*2));x.fillStyle='#9a5427';x.fillRect(-f.s,-3,f.s*2,6);x.fillStyle='#d4853d';x.fillRect(-f.s,-3,f.s*1.2,2);x.restore()}else{const a=Math.max(0,f.t/.42),sc=1+(1-a)*.55,sy=f.mode==='stomp'?1-(1-a)*.26:sc,sx=f.mode==='stomp'?1+(1-a)*.22:sc;x.save();x.globalAlpha=a;x.translate(f.x,f.y);x.rotate((1-a)*(f.mode==='spin'?2.3:(f.mode==='slide'?1.0:.18)));x.scale(sx,sy);ds(playerImg,sr[f.q?'qbox':'box'],-29,-29,58,58);if(f.mode==='stomp'){x.globalAlpha=a*.55;x.fillStyle='#fff4b8';x.beginPath();x.ellipse(0,22,18+(1-a)*12,4+(1-a)*2,0,0,Math.PI*2);x.fill()}x.restore()}}for(const d of dustFx){x.globalAlpha=Math.max(0,d.t*2);x.fillStyle='#e8e0cf';x.beginPath();x.arc(d.x,d.y,d.s,0,7);x.fill();x.globalAlpha=1}for(const f of impactFx){const q=Math.max(0,f.t/.22),r=(1-q)*34*f.power+8;x.save();x.globalAlpha=q*.72;x.strokeStyle='#fff0a6';x.lineWidth=Math.max(1,4*q);x.beginPath();x.ellipse(f.x,f.y,r,Math.max(3,r*.22),0,0,Math.PI*2);x.stroke();x.globalAlpha=q*.38;x.fillStyle='#ffd55d';x.beginPath();x.ellipse(f.x,f.y+2,r*.7,Math.max(2,r*.12),0,0,Math.PI*2);x.fill();x.restore()}for(const f of akuFx){const q=Math.max(0,f.t/.7);x.save();x.globalAlpha=q;drawAkuFrame(q>.45?akuSR.spin:akuSR.power,f.x-48,f.y-58-(1-q)*24,96,118,false,q);x.restore()}for(const e of enemies)if(!e.dead&&visibleWorldX(e.x,e.w||90,220))drawEnemy(e);
+ {const cpX=2490,cpY=groundY-58,cpSize=58;if(checkpoint<2600){const idleFrame=Math.floor(swingClock*2.4)%6===0?1:0;ds(checkpointImg,[idleFrame*96,0,96,96],cpX,cpY,cpSize,cpSize)}else{let cpGlow=.42+.28*Math.sin(swingClock*7);x.save();x.globalAlpha=cpGlow;x.fillStyle='#ffd84d';x.beginPath();x.ellipse(cpX+cpSize/2,cpY+cpSize-2,25,7,0,0,Math.PI*2);x.fill();x.restore();let fr=5;if(checkpointAnim>1.02)fr=2;else if(checkpointAnim>.78)fr=3;else if(checkpointAnim>.48)fr=4;else fr=5;ds(checkpointImg,[fr*96,0,96,96],cpX,cpY,cpSize,cpSize)}};
  const pf=Math.floor(swingClock*9)%8;ds(portalImg,[pf*360,0,360,450],portal.x,portal.y,portal.w,portal.h);x.save();x.globalAlpha=.22+.12*Math.sin(swingClock*5);x.strokeStyle='#57d9ff';x.lineWidth=8;x.beginPath();x.ellipse(portal.x+portal.w/2,portal.y+portal.h/2,58,78,0,0,Math.PI*2);x.stroke();x.restore();
  if(portalSeq>0){x.save();const glow=Math.min(1,portalSeq/1.1);x.globalAlpha=.18+.55*glow;x.fillStyle='#8eefff';x.beginPath();x.arc(portal.x+portal.w/2,portal.y+portal.h/2,80+glow*65,0,Math.PI*2);x.fill();x.restore();}
  if(deathAnim>0){const elapsed=1.85-deathAnim;
@@ -498,14 +545,14 @@ function draw(){bg();x.save();let sx=shake>0?(Math.random()-.5)*12:0,sy=shake>0?
    if(p.slide>0){const sf=Math.min(8,Math.floor((.58-p.slide)*17));ds(crouchImg,[sf*280,220,280,220],-64,p.h/2-45+VISUAL_OFFSETS.player,128,96,p.facing<0,pa)}
    else if(p.crouch){const cf=Math.floor(p.anim*1.15)%8;ds(crouchImg,[cf*280,0,280,220],-57,p.h/2-73+VISUAL_OFFSETS.player,114,88,p.facing<0,pa)}
    else ds(playerImg,sr[key],-pw/2,p.h/2-ph+7+VISUAL_OFFSETS.player,pw,ph,p.facing<0,pa*Math.min(1,pscale*1.4));x.restore()}x.globalAlpha=1;
- if(aku>0){let bob=Math.sin(performance.now()/160)*5;ds(akuImg,akuSR.mask,p.x+(p.facing>0?-75:70),p.y-35+bob,62,78,p.facing<0);if(aku===2){x.strokeStyle='#ffe45c';x.lineWidth=4;x.globalAlpha=.65;x.beginPath();x.arc(p.x+31,p.y+42,58,0,7);x.stroke();x.globalAlpha=1}}
+ if(aku>0||akuProtectT>0){const bob=Math.sin(performance.now()/160)*5;const sideX=p.facing>0?-82:66;const followX=p.x+sideX;const followY=p.y-46+bob+Math.sin(performance.now()/320)*2;const hover=aku===2?((Math.floor(performance.now()/220)%3===0)?akuSR.power:akuHoverFrame(.4)):akuHoverFrame(.4);if(aku>0){if(aku===2){x.strokeStyle='#ffe45c';x.lineWidth=4;x.globalAlpha=.65;x.beginPath();x.arc(p.x+31,p.y+42,58,0,7);x.stroke();x.globalAlpha=1;drawAkuFrame(akuSR.power,followX-6,followY-6,76,94,p.facing<0,.4)}drawAkuFrame(hover,followX,followY,68,84,p.facing<0,1)}if(akuProtectT>0){const q=akuProtectT/.65;drawAkuFrame(q>.33?akuSR.protect:akuSR.spin,p.x-10,p.y-56-(1-q)*8,90,112,p.facing<0,Math.min(1,q*1.3));x.save();x.globalAlpha=q*.5;x.strokeStyle='#fff3a6';x.lineWidth=5;x.beginPath();x.arc(p.x+31,p.y+42,52+(1-q)*16,0,7);x.stroke();x.restore()}}
  // Foreground: elementos passam visualmente na frente do Crash.
  for(const f of foreground)ds(trapImg,trapSR[f.s],f.x,f.y,f.w,f.h);
  x.restore();
  // HUD compacto com ícones, separado do cenário e sem cobrir tanta tela.
  const totalBoxes=normal.length+tnts.length;const tm=fmtTime(levelTime);
  x.save();x.fillStyle='#06141de8';x.strokeStyle='#70c8b955';x.lineWidth=2;x.beginPath();x.roundRect(12,12,610,62,12);x.fill();x.stroke();
- const hudItem=(hx,icon,txt,sub,kind)=>{x.fillStyle='#ffffff';x.font='bold 20px Arial';if(kind==='life')ds(playerImg,sr.idle,hx+5,20,34,42);else if(kind==='fruit')ds(playerImg,sr.fruit,hx,21,36,40);else if(kind==='box')ds(playerImg,sr.box,hx,22,38,38);else if(kind==='aku')ds(akuImg,akuSR.mask,hx,18,38,45);else if(kind==='time'){x.font='28px Arial';x.fillText('⏱',hx+1,50)}x.font='bold 19px Arial';x.fillStyle='#fff';x.fillText(txt,hx+48,39);x.font='bold 10px Arial';x.fillStyle='#9ed8c7';x.fillText(sub,hx+48,57)};
+ const hudItem=(hx,icon,txt,sub,kind)=>{x.fillStyle='#ffffff';x.font='bold 20px Arial';if(kind==='life')ds(playerImg,sr.idle,hx+5,20,34,42);else if(kind==='fruit')ds(playerImg,sr.fruit,hx,21,36,40);else if(kind==='box')ds(playerImg,sr.box,hx,22,38,38);else if(kind==='aku'){const fr=aku>=2?akuSR.power:akuHoverFrame(.25);drawAkuFrame(fr,hx-2,14,42,48,false,.98);}else if(kind==='time'){x.font='28px Arial';x.fillText('⏱',hx+1,50)}x.font='bold 19px Arial';x.fillStyle='#fff';x.fillText(txt,hx+48,39);x.font='bold 10px Arial';x.fillStyle='#9ed8c7';x.fillText(sub,hx+48,57)};
  hudItem(24,0,'× '+lives,'VIDAS','life');hudItem(132,0,String(fruits),'FRUTAS','fruit');hudItem(238,0,boxesBroken+'/'+totalBoxes,'CAIXAS','box');hudItem(376,0,tm,'TEMPO','time');hudItem(500,0,String(aku),'AKU','aku');x.fillStyle='#ffd45d';x.font='bold 14px Arial';x.fillText('FASE '+currentLevel+' • '+currentLevelName,22,86);x.restore();
  if(toastT>0){x.font='bold 20px Arial';let tw=x.measureText(toast).width+30;x.fillStyle='#00131dee';x.fillRect(W/2-tw/2,98,tw,38);x.fillStyle='#fff';x.fillText(toast,W/2-tw/2+15,124)}if(paused)drawPauseMenu();
 }
@@ -520,7 +567,7 @@ function drawMainMenu(){if(menuLogoImg&&menuLogoImg.complete&&menuLogoImg.natura
  const opts=[['NEW GAME','Escolher slot'],['LOAD GAME','Continuar save'],['COMO JOGAR','Movimentos'],['CONTROLES','Teclado / gamepad'],['TROFÉUS','Conquistas'],['CRÉDITOS','Projeto']];opts.forEach((o,i)=>woodButton(302,165+i*52,360,42,o[0],menuIndex===i,o[1]));
  x.textAlign='center';x.font='bold 12px Arial';x.fillStyle='#d7e5d4';x.fillText((connectedPad()?'D-PAD / ANALÓGICO':'↑ ↓')+' selecionar  •  '+confirmHint()+' confirmar  •  mouse também funciona',W/2,508);x.textAlign='left';x.fillStyle='#ff9d32';x.font='900 16px Arial';x.fillText('V0.8',18,522)}
 function drawSlots(mode){x.fillStyle='#ffd45d';x.font='bold 32px Arial';x.textAlign='center';x.fillText(mode==='new'?'NEW GAME — ESCOLHA UM SLOT':'LOAD GAME — ESCOLHA UM SLOT',W/2,125);for(let i=1;i<=3;i++)slotCard(i,155+(i-1)*105,slotIndex===i-1,mode);x.font='14px Arial';x.fillStyle='#cce6d1';x.fillText((mode==='new'?confirmHint()+' cria/reinicia o slot':confirmHint()+' carrega o slot')+' • '+deleteHint()+' apaga • '+backHint()+' volta',W/2,490);button(375,505,210,38,'VOLTAR',false)}
-function drawHow(){panel(110,125,740,365,.95);x.textAlign='center';x.fillStyle='#ffd45d';x.font='bold 32px Arial';x.fillText('COMO JOGAR',W/2,166);x.textAlign='left';x.font='bold 18px Arial';x.fillStyle='#fff';const lines=['Objetivo: atravesse cada fase e alcance o portal.','Quebre todas as caixas (incluindo TNT) para ganhar a gema.','Pule sobre inimigos ou use o giro/escorregão para derrotá-los.','TNT: pule em cima para iniciar 3-2-1. Girar nela = explosão imediata.','Aku Aku absorve dano. A caixa C ativa o checkpoint e salva automaticamente.','100 frutas concedem +1 vida. Complete a fase sem morrer para um troféu.'];lines.forEach((t,i)=>x.fillText('• '+t,155,215+i*39));x.fillStyle='#a9cdb5';x.font='15px Arial';x.fillText('Controles ('+inputBrand()+'): '+moveHint()+' andar • '+actionHint('down')+' agachar • '+actionHint('jump')+' pular • '+actionHint('spin')+' girar',155,462);button(375,500,210,38,'VOLTAR',false);x.textAlign='left'}
+function drawHow(){panel(110,125,740,365,.95);x.textAlign='center';x.fillStyle='#ffd45d';x.font='bold 32px Arial';x.fillText('COMO JOGAR',W/2,166);x.textAlign='left';x.font='bold 18px Arial';x.fillStyle='#fff';const lines=['Objetivo: atravesse cada fase e alcance o portal.','Quebre todas as caixas (incluindo TNT) para ganhar a gema.','Pule sobre inimigos ou use o giro/escorregão para derrotá-los.','TNT: pule em cima para iniciar 3-2-1. Girar nela = explosão imediata.','Aku Aku absorve dano. A caixa C ativa o checkpoint e salva automaticamente.','100 frutas concedem +1 vida. Complete a fase sem morrer para um troféu.'];lines.forEach((t,i)=>x.fillText('• '+t,155,215+i*39));x.fillStyle='#a9cdb5';x.font='15px Arial';x.fillText('Controles ('+inputBrand()+'): Setas ou WASD • W/ESPAÇO pular • S agachar • '+actionHint('spin')+' girar',155,462);button(375,500,210,38,'VOLTAR',false);x.textAlign='left'}
 function drawControls(){panel(115,118,730,385,.96);x.textAlign='center';x.fillStyle='#ffd45d';x.font='bold 30px Arial';x.fillText('CONFIGURAR CONTROLES',W/2,155);button(260,172,205,38,'TECLADO',configTab===0);button(495,172,205,38,'GAMEPAD',configTab===1);const acts=[['left','ESQUERDA'],['right','DIREITA'],['down','AGACHAR/SLIDE'],['jump','PULAR'],['spin','GIRAR'],['pause','PAUSAR']];x.textAlign='left';acts.forEach((a,i)=>{let yy=232+i*39;x.fillStyle=configIndex===i?'#ffd65a':'#e7f1e8';x.font='bold 17px Arial';x.fillText(a[1],245,yy);x.textAlign='right';let val=configTab===0?keyName(keybinds[a[0]]):(a[0]==='jump'?padButtonName(padbinds.jump):a[0]==='spin'?padButtonName(padbinds.spin):a[0]==='pause'?padButtonName(padbinds.pause):'D-PAD / ANALÓGICO');x.fillStyle='#bfe6d0';x.fillText(val,700,yy);x.textAlign='left'});x.textAlign='center';x.font='14px Arial';x.fillStyle=captureAction?'#ffcf55':'#aac9b0';x.fillText(captureAction?(captureType==='keyboard'?'Pressione a nova tecla...':'Pressione um botão do '+inputBrand()+'...'):(connectedPad()?'D-PAD seleciona • '+confirmHint()+' redefine • '+backHint()+' volta • '+deleteHint()+' restaura':'↑ ↓ seleciona • ← → troca aba • ENTER redefine ação • R restaura padrão'),W/2,478);button(375,500,210,38,'VOLTAR',false)}
 function drawTrophies(){panel(105,118,750,385,.96);x.textAlign='center';x.fillStyle='#ffd45d';x.font='bold 31px Arial';x.fillText('TROFÉUS',W/2,155);let all={};for(let i=1;i<=3;i++){const t=readSlot(i).trophies||{};Object.assign(all,t)}const defs=trophyDefs();defs.forEach((t,i)=>{let yy=205+i*39,got=!!all[t[0]];x.textAlign='left';x.font='bold 17px Arial';x.fillStyle=got?'#ffe475':'#72807a';x.fillText(got?'🏆 '+t[1]:'🔒 '+t[1],165,yy);x.font='13px Arial';x.fillStyle=got?'#bdd8c2':'#66736d';x.fillText(t[2],475,yy)});x.textAlign='center';x.fillStyle='#9dc4a8';x.font='14px Arial';x.fillText(Object.keys(all).length+'/'+defs.length+' conquistados',W/2,482);button(375,500,210,38,'VOLTAR',false)}
 function drawCredits(){panel(190,145,580,315,.95);x.textAlign='center';x.fillStyle='#ffd45d';x.font='bold 34px Arial';x.fillText('ILHA SELVAGEM',W/2,200);x.fillStyle='#fff';x.font='18px Arial';x.fillText('Fangame de plataforma • versão 0.8',W/2,238);x.fillStyle='#bcd8c3';x.font='15px Arial';x.fillText('Sistema atual: 3 saves • auto-save • controles • troféus • AssetManager',W/2,280);x.fillText('Fases 1–5: selva, templo, pântano, gelo e Cânion Rubro • inimigos e tiles próprios',W/2,312);x.fillStyle='#8fb59a';x.fillText('Projeto em desenvolvimento',W/2,350);button(375,395,210,42,'VOLTAR',false)}
@@ -551,7 +598,7 @@ function levelSelect(){
 }
 function enterSelectedLevel(){const sl=activeSlot?readSlot(activeSlot):blankSlot();const unlocked=Math.max(1,sl.levelsUnlocked||1);if(levelSelectIndex>=5){toast='FASE '+(levelSelectIndex+1)+' • EM BREVE';toastT=1.8;return}if(levelSelectIndex>=unlocked){toast='FASE BLOQUEADA';toastT=1.2;return}setLevel(levelSelectIndex+1);start(false)}
 function start(newGame=true){if(!assetManager.phaseReady(currentLevel)){ensurePhase(currentLevel,()=>startNow(newGame));return}bindPhaseAssets(currentLevel);startNow(newGame)}
-function startNow(newGame=true){state='play';paused=false;menuSub='main';swingClock=0;score=0;fruits=0;lives=4;deaths=0;levelTime=0;deathAnim=0;portalSeq=0;resultGem=false;checkpoint=currentCheckpointDefault;checkpointAnim=0;aku=0;boxesBroken=0;normal.forEach(b=>{b.hit=false;b.breakT=0});boxFx.length=0;dustFx.length=0;enemyFx.length=0;impactFx.length=0;forcedDeathT=0;tnts.forEach(t=>{t.active=false;t.t=3;t.dead=false;t.blast=0});fruitList.forEach(f=>f.t=false);masks.forEach(m=>m.t=false);enemies.forEach(e=>e.dead=false);resetP();inv=0;if(newGame&&activeSlot){const old=readSlot(activeSlot);writeSlot(activeSlot,{...blankSlot(),empty:false,version:SAVE_VERSION,trophies:old.trophies||{},updated:Date.now(),currentLevel:1,phaseName:'ILHA SELVAGEM'});unlockTrophy('primeiro');saveGame(true)}}
+function startNow(newGame=true){state='play';paused=false;menuSub='main';swingClock=0;score=0;fruits=0;lives=4;deaths=0;levelTime=0;deathAnim=0;portalSeq=0;resultGem=false;checkpoint=currentCheckpointDefault;checkpointAnim=0;aku=0;boxesBroken=0;normal.forEach(b=>{b.hit=false;b.breakT=0});boxFx.length=0;dustFx.length=0;enemyFx.length=0;impactFx.length=0;akuFx.length=0;akuProtectT=0;forcedDeathT=0;tnts.forEach(t=>{t.active=false;t.t=3;t.dead=false;t.blast=0});fruitList.forEach(f=>f.t=false);masks.forEach(m=>m.t=false);enemies.forEach(e=>e.dead=false);resetP();inv=0;if(newGame&&activeSlot){const old=readSlot(activeSlot);writeSlot(activeSlot,{...blankSlot(),empty:false,version:SAVE_VERSION,trophies:old.trophies||{},updated:Date.now(),currentLevel:1,phaseName:'ILHA SELVAGEM'});unlockTrophy('primeiro');saveGame(true)}}
 function newGameAtSlot(i){activeSlot=i;setLevel(1);start(true)}
 function chooseMain(){if(menuIndex===0){menuSub='new';slotIndex=0}else if(menuIndex===1){menuSub='load';slotIndex=0}else if(menuIndex===2)menuSub='how';else if(menuIndex===3){menuSub='config';configTab=0;configIndex=0}else if(menuIndex===4)menuSub='trophies';else menuSub='credits'}
 function choosePause(){if(pauseIndex===0)paused=false;else if(pauseIndex===1)saveGame(false);else if(pauseIndex===2){paused=false;state='menu';menuSub='config';configTab=0;configIndex=0;saveGame(true)}else if(pauseIndex===3)start(false);else{saveGame(true);paused=false;state='menu';menuSub='main';menuIndex=0}}

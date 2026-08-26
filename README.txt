@@ -106,3 +106,9 @@ V0.9.4 - CONTROLES MOBILE
 - Botao de pausa dedicado.
 - Reset automatico de toques para evitar comandos presos.
 - Layout responsivo com safe areas para celulares com notch.
+
+
+V0.9.7 - CORREÇÃO DE SOBREPOSIÇÃO DE ARMADILHAS
+- Fase 1: espinhos e armadilha suspensa foram afastados.
+- Caixa e TNT do corredor foram reposicionadas.
+- Nova verificação automática remove caixas/TNT de zonas de ação de armadilhas.
