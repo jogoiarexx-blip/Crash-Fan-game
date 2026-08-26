@@ -1,11 +1,11 @@
 (()=>{
 const c=document.getElementById('game'),x=c.getContext('2d');x.imageSmoothingEnabled=false;const W=c.width,H=c.height;
-let playerImg=null,crouchImg=null,akuImg=null,tntImg=null,jungleImg=null,bgImg=null,trapImg=null,swingImg=null,pressImg=null,portalImg=null,checkpointImg=null,deathImg=null,soulImg=null,tileImg=null,turtleImg=null,armadilloImg=null,magmaBeetleImg=null,emberBatImg=null,spikeAssetImg=null,logAssetImg=null,pressAssetImg=null,poisonAssetImg=null,iceSpikeAssetImg=null,menuLogoImg=null,biomeTileImg=null,biomeEnemyImg=null;
+let playerImg=null,crouchImg=null,akuImg=null,tntImg=null,jungleImg=null,bgImg=null,trapImg=null,swingImg=null,pressImg=null,portalImg=null,checkpointImg=null,deathImg=null,soulImg=null,tileImg=null,turtleImg=null,armadilloImg=null,magmaBeetleImg=null,emberBatImg=null,spikeAssetImg=null,floorSpikeAssetImg=null,logAssetImg=null,pressAssetImg=null,poisonAssetImg=null,iceSpikeAssetImg=null,menuLogoImg=null,biomeTileImg=null,biomeEnemyImg=null;
 const ASSET_GROUPS={
  core:{menuLogo:'assets/menu_logo.webp'},
  shared:{
   player:'assets/player_clean.webp',crouch:'assets/crash_crouch_slide.webp',aku:'assets/aku_sheet_transparent.webp',tnt:'assets/tnt_sheet_transparent.webp',
-  jungle:'assets/jungle_sheet.webp',trap:'assets/traps_sheet.jpg',swing:'assets/swing_log_sheet.webp',press:'assets/stone_press_sheet.jpg',spikeAsset:'assets/trap_retractable_spikes.png',logAsset:'assets/trap_swinging_log.png',pressAsset:'assets/trap_stone_press.png',poisonAsset:'assets/trap_poison_surface.png',iceSpikeAsset:'assets/trap_ice_spikes.png',
+  jungle:'assets/jungle_sheet.webp',trap:'assets/traps_sheet.jpg',swing:'assets/swing_log_sheet.webp',press:'assets/stone_press_sheet.jpg',spikeAsset:'assets/trap_retractable_spikes.png',floorSpikeAsset:'assets/trap_floor_spikes.png',logAsset:'assets/trap_swinging_log.png',pressAsset:'assets/trap_stone_press.png',poisonAsset:'assets/trap_poison_surface.png',iceSpikeAsset:'assets/trap_ice_spikes.png',
   portal:'assets/portal_sheet.webp',checkpoint:'assets/checkpoint_sheet.webp',death:'assets/death_soul_sheet.webp',soul:'assets/death_winged_soul.webp',tile:'assets/tileset_v05.webp',turtle:'assets/turtle_walk_better.png',armadillo:'assets/armadillo_enemy.webp',magmaBeetle:'assets/volcanic_magma_beetle.png',emberBat:'assets/volcanic_ember_bat.png'
  },
  phase1:{bg1:'assets/background_fase1.webp'},
@@ -25,7 +25,7 @@ class AssetManager{
 }
 	const assetManager=new AssetManager(ASSET_GROUPS);let loadingProgress=0,loadingText='CARREGANDO...',loadingError='',loadSerial=0;
 function bindCoreAssets(){menuLogoImg=assetManager.get('menuLogo')||menuLogoImg}
-function bindSharedAssets(){playerImg=assetManager.get('player');crouchImg=assetManager.get('crouch');akuImg=assetManager.get('aku');tntImg=assetManager.get('tnt');jungleImg=assetManager.get('jungle');trapImg=assetManager.get('trap');swingImg=assetManager.get('swing');pressImg=assetManager.get('press');spikeAssetImg=assetManager.get('spikeAsset');logAssetImg=assetManager.get('logAsset');pressAssetImg=assetManager.get('pressAsset');poisonAssetImg=assetManager.get('poisonAsset');iceSpikeAssetImg=assetManager.get('iceSpikeAsset');portalImg=assetManager.get('portal');checkpointImg=assetManager.get('checkpoint');deathImg=assetManager.get('death');soulImg=assetManager.get('soul');tileImg=assetManager.get('tile');turtleImg=assetManager.get('turtle');armadilloImg=assetManager.get('armadillo');magmaBeetleImg=assetManager.get('magmaBeetle');emberBatImg=assetManager.get('emberBat')}
+function bindSharedAssets(){playerImg=assetManager.get('player');crouchImg=assetManager.get('crouch');akuImg=assetManager.get('aku');tntImg=assetManager.get('tnt');jungleImg=assetManager.get('jungle');trapImg=assetManager.get('trap');swingImg=assetManager.get('swing');pressImg=assetManager.get('press');spikeAssetImg=assetManager.get('spikeAsset');floorSpikeAssetImg=assetManager.get('floorSpikeAsset');logAssetImg=assetManager.get('logAsset');pressAssetImg=assetManager.get('pressAsset');poisonAssetImg=assetManager.get('poisonAsset');iceSpikeAssetImg=assetManager.get('iceSpikeAsset');portalImg=assetManager.get('portal');checkpointImg=assetManager.get('checkpoint');deathImg=assetManager.get('death');soulImg=assetManager.get('soul');tileImg=assetManager.get('tile');turtleImg=assetManager.get('turtle');armadilloImg=assetManager.get('armadillo');magmaBeetleImg=assetManager.get('magmaBeetle');emberBatImg=assetManager.get('emberBat')}
 function bindPhaseAssets(level){bindSharedAssets();bgImg=assetManager.get('bg'+level)||bgImg;biomeTileImg=assetManager.get('biomeTile'+level)||null;biomeEnemyImg=assetManager.get('biomeEnemy'+level)||null}
 async function ensurePhase(level,done){const serial=++loadSerial;state='loading';loadingProgress=0;loadingError='';loadingText='CARREGANDO FASE '+level+'...';try{await assetManager.preparePhase(level,p=>loadingProgress=p);if(serial!==loadSerial)return;bindPhaseAssets(level);done()}catch(err){loadingError=String(err?.message||err);state='menu';menuSub='main';toast='Erro ao carregar assets da fase';toastT=2.2}}
 const keys={};
@@ -92,7 +92,7 @@ const worldW=5600,groundY=455;const portal={x:5360,y:245,w:180,h:210};
 const sr={idle:[4,4,125,186],run1:[137,4,125,179],run2:[270,4,132,177],run3:[410,4,117,172],run4:[535,4,93,152],jump1:[636,4,151,177],jump2:[795,4,135,148],jump3:[4,198,115,176],jump4:[127,198,123,159],jump5:[258,198,115,171],fall:[381,198,110,145],spin1:[499,198,134,183],spin2:[641,198,146,173],box:[795,198,96,94],qbox:[899,198,95,104],fruit:[4,389,64,72],run5:[137,4,125,179],run6:[270,4,132,177],run7:[410,4,117,172],run8:[535,4,93,152],spin3:[499,198,134,183],hurt:[4,4,125,186],mask:[4,4,125,186]};
 const akuSR={hover:[[0,0,320,320],[320,0,320,320],[640,0,320,320],[960,0,320,320]],blink:[0,320,320,320],protect:[320,320,320,320],spin:[640,320,320,320],power:[960,320,320,320],hud:[0,0,320,320]};
 const tntSR={idle:[45,35,160,150],three:[43,390,175,165],two:[425,390,185,165],one:[785,390,180,165],blast:[205,575,225,180],smoke:[820,575,210,170]};
-const p={x:80,y:groundY-78,w:46,h:78,standH:78,crouchH:48,vx:0,vy:0,on:false,facing:1,spin:0,anim:0,land:0,takeoff:0,crouch:false,slide:0,slideDir:1,stompSquash:0};
+const p={x:80,y:groundY-78,w:46,h:78,standH:78,crouchH:48,vx:0,vy:0,on:false,facing:1,spin:0,anim:0,land:0,takeoff:0,crouch:false,slide:0,slideDir:1,stompSquash:0,coyote:0,jumpBuffer:0};
 const boxFx=[]; const dustFx=[]; const enemyFx=[]; const impactFx=[]; const akuFx=[]; let forcedDeathT=0,swingClock=0,akuProtectT=0;
 const VISUAL_OFFSETS={player:-5,box:-3,tnt:0,enemy:1};const ENEMY_GROUND_OFFSET={turtle:3,swampTurtle:2,frog:2,penguin:2,seal:2,iceShell:2,armadillo:4,magmaBeetle:3,mosquito:0,emberBat:0};
 // Armadilhas/buracos da Fase 1. Os recortes vêm do sprite sheet enviado pelo usuário.
@@ -297,6 +297,78 @@ function canStandAt(px,bottom){
  return true
 }
 function setPlayerHeight(nextH){if(nextH===p.h)return true;const bottom=p.y+p.h;if(nextH>p.h&&!canStandAt(p.x,bottom))return false;p.h=nextH;p.y=bottom-p.h;return true}
+function hasGroundSupport(px,py,pw,ph,eps=3){const foot={x:px+3,y:py+ph-1,w:Math.max(1,pw-6),h:eps+2};for(const q of platforms){const r={x:q[0],y:q[1],w:q[2],h:q[3]};if(foot.x<r.x+r.w&&foot.x+foot.w>r.x&&py+ph<=r.y+eps&&py+ph>=r.y-eps)return true}for(const r of rocks){if(foot.x<r.x+r.w&&foot.x+foot.w>r.x&&py+ph<=r.y+eps&&py+ph>=r.y-eps)return true}for(const b of normal){if(!b.hit&&foot.x<b.x+b.w&&foot.x+foot.w>b.x&&py+ph<=b.y+eps&&py+ph>=b.y-eps)return true}for(const t of tnts){if(!t.dead&&foot.x<t.x+t.w&&foot.x+foot.w>t.x&&py+ph<=t.y+eps&&py+ph>=t.y-eps)return true}return false}
+function playerOverlapsY(r,skin=4){return p.y+skin<r.y+r.h&&p.y+p.h-skin>r.y}
+function playerOverlapsX(r,skin=3){return p.x+skin<r.x+r.w&&p.x+p.w-skin>r.x}
+function solidRectsForX(){const out=[];for(const q of platforms)if(!isSemiPlatform(q))out.push({x:q[0],y:q[1],w:q[2],h:q[3],kind:'platform'});for(const r of rocks)out.push({x:r.x,y:r.y,w:r.w,h:r.h,kind:'rock'});return out}
+function resolvePlayerHorizontal(dx){
+ const oldX=p.x,targetX=Math.max(0,Math.min(worldW-p.w,oldX+dx));
+ if(Math.abs(dx)<.0001){p.x=targetX;return true}
+ let resolvedX=targetX;
+ const oldLeft=oldX,oldRight=oldX+p.w,targetLeft=targetX,targetRight=targetX+p.w,skin=2;
+ const crosses=(r)=>playerOverlapsY(r,5)&&((dx>0&&oldRight<=r.x+skin&&targetRight>r.x)||(dx<0&&oldLeft>=r.x+r.w-skin&&targetLeft<r.x+r.w));
+ // Objetos quebráveis são tratados antes dos sólidos estáticos.
+ for(const b of normal){if(b.hit)continue;const r={x:b.x,y:b.y,w:b.w,h:b.h};if(!crosses(r)&&!(playerOverlapsY(r,5)&&targetRight>r.x&&targetLeft<r.x+r.w))continue;if(p.spin>0||p.slide>0){breakBox(b,p.slide>0?'slide':'spin');continue}if(dx>0)resolvedX=Math.min(resolvedX,r.x-p.w);else resolvedX=Math.max(resolvedX,r.x+r.w)}
+ for(const t of tnts){if(t.dead)continue;const r={x:t.x,y:t.y,w:t.w,h:t.h};if(!crosses(r)&&!(playerOverlapsY(r,5)&&targetRight>r.x&&targetLeft<r.x+r.w))continue;if(p.spin>0||p.slide>0){explode(t);forceDeath();return false}if(dx>0)resolvedX=Math.min(resolvedX,r.x-p.w);else resolvedX=Math.max(resolvedX,r.x+r.w)}
+ for(const r of solidRectsForX()){
+   if(!crosses(r)&&!(playerOverlapsY(r,5)&&targetRight>r.x&&targetLeft<r.x+r.w))continue;
+   if(dx>0)resolvedX=Math.min(resolvedX,r.x-p.w);else resolvedX=Math.max(resolvedX,r.x+r.w)
+ }
+ p.x=Math.max(0,Math.min(worldW-p.w,resolvedX));
+ if(Math.abs(p.x-targetX)>.001)p.vx=0;
+ return true
+}
+function resolvePlayerVertical(dy,prevY,prevBottom){
+ const oldTop=prevY,oldBottom=prevBottom,targetY=p.y+dy,targetTop=targetY,targetBottom=targetY+p.h;
+ const xL=p.x+3,xR=p.x+p.w-3;
+ const overlapsX=r=>xL<r.x+r.w&&xR>r.x;
+ p.on=false;
+ if(dy>=0){
+   const hits=[];
+   for(const q of platforms){const r={x:q[0],y:q[1],w:q[2],h:q[3],semi:isSemiPlatform(q),kind:'platform'};if(overlapsX(r)&&oldBottom<=r.y+(r.semi?10:16)&&targetBottom>=r.y)hits.push(r)}
+   for(const r0 of rocks){const r={x:r0.x,y:r0.y,w:r0.w,h:r0.h,kind:'rock'};if(overlapsX(r)&&oldBottom<=r.y+16&&targetBottom>=r.y)hits.push(r)}
+   for(const b of normal){if(b.hit)continue;const r={x:b.x,y:b.y,w:b.w,h:b.h,kind:'box',ref:b};if(overlapsX(r)&&oldBottom<=r.y+14&&targetBottom>=r.y)hits.push(r)}
+   for(const t of tnts){if(t.dead)continue;const r={x:t.x,y:t.y,w:t.w,h:t.h,kind:'tnt',ref:t};if(overlapsX(r)&&oldBottom<=r.y+14&&targetBottom>=r.y)hits.push(r)}
+   hits.sort((a,b)=>a.y-b.y);
+   if(hits.length){const r=hits[0];
+     if(r.kind==='box'){breakBox(r.ref,'stomp');p.y=r.y-p.h;p.vy=-335;p.land=.16;p.stompSquash=.16;return}
+     if(r.kind==='tnt'){p.y=r.y-p.h;p.vy=-365;if(!r.ref.active){r.ref.active=true;r.ref.t=3;toast='TNT: 3...';toastT=.9}p.stompSquash=.13;spawnImpact(r.x+r.w/2,r.y,.7);return}
+     if(p.vy>330){p.land=.14;puff(p.x+p.w/2,r.y,r.kind==='rock'?4:5)}p.y=r.y-p.h;p.vy=0;p.on=true;return
+   }
+   p.y=targetY;
+ }else{
+   const hits=[];
+   for(const q of platforms){if(isSemiPlatform(q))continue;const r={x:q[0],y:q[1],w:q[2],h:q[3],kind:'platform'};if(overlapsX(r)&&oldTop>=r.y+r.h-14&&targetTop<=r.y+r.h)hits.push(r)}
+   for(const r0 of rocks){const r={x:r0.x,y:r0.y,w:r0.w,h:r0.h,kind:'rock'};if(overlapsX(r)&&oldTop>=r.y+r.h-14&&targetTop<=r.y+r.h)hits.push(r)}
+   for(const b of normal){if(b.hit)continue;const r={x:b.x,y:b.y,w:b.w,h:b.h,kind:'box',ref:b};if(overlapsX(r)&&oldTop>=r.y+r.h-12&&targetTop<=r.y+r.h)hits.push(r)}
+   for(const t of tnts){if(t.dead)continue;const r={x:t.x,y:t.y,w:t.w,h:t.h,kind:'tnt',ref:t};if(overlapsX(r)&&oldTop>=r.y+r.h-12&&targetTop<=r.y+r.h)hits.push(r)}
+   hits.sort((a,b)=>(b.y+b.h)-(a.y+a.h));
+   if(hits.length){const r=hits[0];
+     if(r.kind==='box'&&(p.spin>0||p.slide>0)){breakBox(r.ref,p.slide>0?'slide':'spin');p.y=targetY;return}
+     if(r.kind==='tnt'&&(p.spin>0||p.slide>0)){explode(r.ref);forceDeath();return}
+     p.y=r.y+r.h;p.vy=70;return
+   }
+   p.y=targetY
+ }
+}
+function depenetratePlayerFromSolids(){
+ // Última rede de segurança: nunca permite que um sólido estático empurre Crash para baixo.
+ const body={x:p.x+2,y:p.y+2,w:p.w-4,h:p.h-4};
+ const solids=solidRectsForX();
+ for(const b of normal)if(!b.hit)solids.push({x:b.x,y:b.y,w:b.w,h:b.h,kind:'box'});
+ for(const t of tnts)if(!t.dead)solids.push({x:t.x,y:t.y,w:t.w,h:t.h,kind:'tnt'});
+ for(const r of solids){if(!rect(body,r))continue;const pushL=(body.x+body.w)-r.x,pushR=(r.x+r.w)-body.x,pushUp=(body.y+body.h)-r.y;const min=Math.min(pushL,pushR,pushUp);if(min===pushL){p.x-=pushL+2;p.vx=Math.min(0,p.vx)}else if(min===pushR){p.x+=pushR+2;p.vx=Math.max(0,p.vx)}else{p.y-=pushUp+2;p.vy=0;p.on=true}}
+}
+function snapPlayerToGround(eps=4){
+ const bottom=p.y+p.h,xL=p.x+4,xR=p.x+p.w-4;let bestY=null,bestD=Infinity;
+ const test=r=>{if(xL>=r.x+r.w||xR<=r.x)return;const d=r.y-bottom;if(d>=-eps&&d<=eps&&Math.abs(d)<bestD){bestD=Math.abs(d);bestY=r.y}};
+ for(const q of platforms)test({x:q[0],y:q[1],w:q[2],h:q[3]});
+ for(const r of rocks)test(r);
+ for(const b of normal)if(!b.hit)test(b);
+ for(const t of tnts)if(!t.dead)test(t);
+ if(bestY!=null){p.y=bestY-p.h;p.vy=0;p.on=true;return true}return false
+}
+
 function visibleWorldX(px,pw=0,margin=180){return px+pw>=camX-margin&&px<=camX+W+margin}
 function akuHoverFrame(seed=0){const t=performance.now()/170+seed;const frames=akuSR.hover;if(Math.floor((performance.now()/950+seed)%7)===6)return akuSR.blink;return frames[Math.floor(t)%frames.length]}
 function drawAkuFrame(frame,x,y,w,h,flip=false,a=1){ds(akuImg,frame,x,y,w,h,flip,a)}
@@ -311,15 +383,17 @@ function turtleLaunch(e,dir=1){turtleSetShellForm(e);e.state='fly';e.stateT=0;e.
 function breakBox(b,mode='spin'){if(b.hit)return;b.hit=true;b.breakT=.38;boxesBroken++;score+=100;fruits+=b.q?5:1;boxFx.push({x:b.x+29,y:b.y+29,t:.42,q:b.q,mode});for(let i=0;i<9;i++)boxFx.push({piece:true,x:b.x+29,y:b.y+29,vx:(Math.random()-.5)*300,vy:-80-Math.random()*220,r:Math.random()*6.28,vr:(Math.random()-.5)*14,t:.65+Math.random()*.35,s:5+Math.random()*7});if(mode==='stomp'){shake=Math.max(shake,.16);spawnImpact(b.x+29,b.y+4,1.0)}toast=b.q?'Caixa bônus! +5 frutas':'Caixa quebrada!';toastT=1.0;puff(b.x+29,b.y+54,7)}
 function beginDeath(msg='Crash caiu!'){if(deathAnim>0||state!=='play')return;deaths++;lives--;deathX=p.x;deathY=p.y;deathAnim=1.85;p.vx=p.vy=0;p.spin=0;shake=.38;toast=msg;toastT=1.0;if(lives<=0){setTimeout(()=>{if(state==='play'&&deathAnim>0){deathAnim=0;state='gameover'}},1750)}}
 function forceDeath(){beginDeath('BOOM! TNT explodiu!')}
-function resetP(){p.h=p.standH;p.x=checkpoint;p.y=groundY-p.h;p.vx=p.vy=0;p.spin=0;p.slide=0;p.crouch=false;p.land=0;p.takeoff=0;p.stompSquash=0;forcedDeathT=0;akuProtectT=0;inv=1.5}
+function resetP(){p.h=p.standH;p.x=checkpoint;p.y=groundY-p.h;p.vx=p.vy=0;p.spin=0;p.slide=0;p.crouch=false;p.land=0;p.takeoff=0;p.stompSquash=0;p.coyote=.10;p.jumpBuffer=0;forcedDeathT=0;akuProtectT=0;inv=1.5}
 function lose(){if(inv>0||deathAnim>0)return;if(aku>0){aku--;inv=2;shake=.25;akuProtectT=.65;toast='Aku Aku protegeu você!';toastT=1.7;return}beginDeath('Crash perdeu uma vida!')}
 function explode(t){if(t.dead)return;t.dead=true;t.blast=.55;shake=.55;score+=150;const cx=t.x+t.w/2,cy=t.y+t.h/2;for(const b of normal){if(!b.hit&&Math.hypot(b.x+29-cx,b.y+29-cy)<150){b.hit=true;boxesBroken++;score+=100}}for(const u of tnts){if(!u.dead&&u!==t&&Math.hypot(u.x+u.w/2-cx,u.y+u.h/2-cy)<170){u.active=true;u.t=Math.min(u.t,.35)}}for(const e of enemies){if(!e.dead&&Math.hypot(e.x+29-cx,e.y+26-cy)<150){e.dead=true;score+=250}}if(Math.hypot(p.x+p.w/2-cx,p.y+p.h/2-cy)<155)lose()}
 let prevJ=false,prevS=false,prevDown=false;
-function spikeTrapState(t){const c=(swingClock+t.phase)%3.25;let h=0,warning=false;if(c<1.05)h=0;else if(c<1.42){h=5;warning=true}else if(c<1.62)h=55*((c-1.42)/.20);else if(c<2.42)h=55;else if(c<2.68)h=55*(1-(c-2.42)/.26);return{h,warning,active:h>28}}
+function spikeCycle(c){let h=0,warning=false;if(c<1.05)h=0;else if(c<1.42){h=5;warning=true}else if(c<1.62)h=55*((c-1.42)/.20);else if(c<2.42)h=55;else if(c<2.68)h=55*(1-(c-2.42)/.26);return{h,warning,active:h>28}}
+function spikeTrapState(t){return spikeCycle((swingClock+t.phase)%3.25)}
+function floorSpikeState(h){const phase=h.phase!=null?h.phase:((h.x*.0037)%3.25);return spikeCycle((swingClock+phase)%3.25)}
 function pressTrapState(ps){const c=(swingClock+ps.phase)%3.85,top=66,bottom=337;let y=top,warning=false,slam=false;if(c<1.35)y=top;else if(c<1.78){y=top+Math.sin(c*46)*3;warning=true}else if(c<1.98){let q=(c-1.78)/.20;q=1-Math.pow(1-q,3);y=top+(bottom-top)*q;slam=true}else if(c<2.55)y=bottom;else if(c<3.35){let q=(c-2.55)/.80;y=bottom-(bottom-top)*(q*q*(3-2*q))}return{y,warning,slam,active:y>245}}
 function swingTrapState(sw){const a=Math.sin(swingClock*2.15+sw.phase)*.88;const px=sw.x,py=sw.y;const len=176;const cx=px+Math.sin(a)*126,cy=py+74+Math.cos(a)*len;return{a,px,py,cx,cy}}
 function update(dt){if(state!=='play'||paused)return;swingClock+=dt;levelTime+=dt;if(inv>0)inv-=dt;if(toastT>0)toastT-=dt;if(shake>0)shake-=dt;if(deathAnim>0){deathAnim-=dt;if(deathAnim<=0&&lives>0)resetP();return}if(portalSeq>0){portalSeq+=dt;p.vx=0;p.vy=0;const cx=portal.x+portal.w/2-p.w/2,cy=portal.y+portal.h/2-p.h/2;p.x+=(cx-p.x)*Math.min(1,dt*3.6);p.y+=(cy-p.y)*Math.min(1,dt*3.6);if(portalSeq>2.15){resultGem=boxesBroken>=normal.length+tnts.length;if(currentLevel<5)assetManager.preloadPhase(currentLevel+1);if(currentLevel===3)unlockTrophy('pantano');if(currentLevel===4)unlockTrophy('gelo');if(currentLevel===5)unlockTrophy('canyon');state='results';if(fruits>=50)unlockTrophy('frutas50');if(resultGem){unlockTrophy('caixas');unlockTrophy('gema')}if(deaths===0)unlockTrophy('semMorrer');if(levelTime<150)unlockTrophy('veloz');saveGame(true)}return}if(forcedDeathT>0){forcedDeathT-=dt;return}if(p.land>0)p.land-=dt;if(p.takeoff>0)p.takeoff-=dt;for(let i=dustFx.length-1;i>=0;i--){let d=dustFx[i];d.t-=dt;d.x+=d.vx*dt;d.y+=d.vy*dt;d.vy+=220*dt;if(d.t<=0)dustFx.splice(i,1)}for(let i=boxFx.length-1;i>=0;i--){let f=boxFx[i];f.t-=dt;if(f.piece){f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=600*dt;f.r+=f.vr*dt}if(f.t<=0)boxFx.splice(i,1)}
-for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.splice(i,1)}for(let i=impactFx.length-1;i>=0;i--){let f=impactFx[i];f.t-=dt;if(f.t<=0)impactFx.splice(i,1)}for(let i=akuFx.length-1;i>=0;i--){let f=akuFx[i];f.t-=dt;if(f.t<=0)akuFx.splice(i,1)}if(akuProtectT>0)akuProtectT=Math.max(0,akuProtectT-dt);for(const e of enemies)if(!e.dead&&e.safeT>0)e.safeT=Math.max(0,e.safeT-dt);if(p.stompSquash>0)p.stompSquash=Math.max(0,p.stompSquash-dt)
+for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.splice(i,1)}for(let i=impactFx.length-1;i>=0;i--){let f=impactFx[i];f.t-=dt;if(f.t<=0)impactFx.splice(i,1)}for(let i=akuFx.length-1;i>=0;i--){let f=akuFx[i];f.t-=dt;if(f.t<=0)akuFx.splice(i,1)}if(akuProtectT>0)akuProtectT=Math.max(0,akuProtectT-dt);for(const e of enemies)if(!e.dead&&e.safeT>0)e.safeT=Math.max(0,e.safeT-dt);if(p.stompSquash>0)p.stompSquash=Math.max(0,p.stompSquash-dt);for(const t of tnts){if(t.dead){if(t.blast>0)t.blast=Math.max(0,t.blast-dt)}else if(t.active){t.t-=dt;if(t.t<=0)explode(t)}}
  const g=pad(),L=actionDown('left')||g.l,R=actionDown('right')||g.r,D=actionDown('down')||g.d,J=actionDown('jump')||g.j,S=actionDown('spin')||g.s;
  const accel=currentLevel===4?720:950,max=currentLevel===4?305:285,fric=currentLevel===4?230:1000;
  // Agachar / escorregar: ao apertar para baixo correndo, Crash inicia um slide com impulso.
@@ -330,61 +404,24 @@ for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.
  else if(!setPlayerHeight(p.standH)){p.crouch=true;setPlayerHeight(p.crouchH)}
  if(p.slide>0){p.slide-=dt;p.vx-=Math.sign(p.vx)*430*dt;if(Math.abs(p.vx)<110||p.slide<=0){p.slide=0;if(!D&&!setPlayerHeight(p.standH)){p.crouch=true;setPlayerHeight(p.crouchH)}}}
  else {const moveAccel=p.crouch?520:accel,moveMax=p.crouch?125:max,moveFric=p.crouch?1250:fric;if(L){p.vx-=moveAccel*dt;p.facing=-1}if(R){p.vx+=moveAccel*dt;p.facing=1}if(!L&&!R){if(Math.abs(p.vx)<moveFric*dt)p.vx=0;else p.vx-=Math.sign(p.vx)*moveFric*dt}p.vx=Math.max(-moveMax,Math.min(moveMax,p.vx));}
- if(J&&!prevJ&&p.on&&!p.crouch){p.vy=-535;p.on=false;p.takeoff=.16;puff(p.x+31,p.y+p.h,4)}if(S&&!prevS&&p.slide<=0)p.spin=.58;prevJ=J;prevS=S;prevDown=D;if(p.spin>0)p.spin-=dt;p.vy=Math.min(780,p.vy+1400*dt);
- const prevY=p.y, prevBottom=p.y+p.h;
- p.x+=p.vx*dt;p.x=Math.max(0,Math.min(worldW-p.w,p.x));let pr={x:p.x,y:p.y,w:p.w,h:p.h};
- for(const q of platforms){if(isSemiPlatform(q))continue;const r={x:q[0],y:q[1],w:q[2],h:q[3]};if(rect(pr,r)){if(p.vx>0)p.x=r.x-p.w;else if(p.vx<0)p.x=r.x+r.w;p.vx=0;pr.x=p.x}}
- for(const r of rocks){if(rect(pr,r)){if(p.vx>0)p.x=r.x-p.w;else if(p.vx<0)p.x=r.x+r.w;p.vx=0;pr.x=p.x}}
- p.on=false;p.y+=p.vy*dt;pr.y=p.y;
- for(const q of platforms){const r={x:q[0],y:q[1],w:q[2],h:q[3]};if(!rect(pr,r))continue;
-   if(isSemiPlatform(q)){
-     const currBottom=p.y+p.h;
-     if(p.vy>=0 && prevBottom<=r.y+10 && currBottom>=r.y){if(p.vy>330){p.land=.14;puff(p.x+31,r.y,5)}p.y=r.y-p.h;p.vy=0;p.on=true;pr.y=p.y}
-   }else{
-     if(p.vy>0 && prevBottom<=r.y+18){if(p.vy>330){p.land=.14;puff(p.x+31,r.y,5)}p.y=r.y-p.h;p.vy=0;p.on=true}
-     else if(p.vy<0 && prevY>=r.y+r.h-18){p.y=r.y+r.h;p.vy=30}
-     pr.y=p.y
-   }
- }
- for(const r of rocks){if(rect(pr,r)){if(p.vy>0&&prevBottom<=r.y+18){if(p.vy>330){p.land=.14;puff(p.x+31,r.y,4)}p.y=r.y-p.h;p.vy=0;p.on=true}else if(p.vy<0&&prevY>=r.y+r.h-18){p.y=r.y+r.h;p.vy=30}pr.y=p.y}}
+ const jumpPressed=J&&!prevJ;if(jumpPressed)p.jumpBuffer=.12;else if(p.jumpBuffer>0)p.jumpBuffer=Math.max(0,p.jumpBuffer-dt);if(p.on)p.coyote=.10;else if(p.coyote>0)p.coyote=Math.max(0,p.coyote-dt);
+ if(p.jumpBuffer>0&&(p.on||p.coyote>0)&&!p.crouch){p.vy=-535;p.on=false;p.coyote=0;p.jumpBuffer=0;p.takeoff=.16;puff(p.x+31,p.y+p.h,4)}if(S&&!prevS&&p.slide<=0)p.spin=.58;prevJ=J;prevS=S;prevDown=D;if(p.spin>0)p.spin-=dt;p.vy=Math.min(780,p.vy+1400*dt);
+ const prevY=p.y,prevBottom=p.y+p.h;
+ if(!resolvePlayerHorizontal(p.vx*dt))return;
+ resolvePlayerVertical(p.vy*dt,prevY,prevBottom);
+ depenetratePlayerFromSolids();
+ // Mantém contato com a superfície sem inventar chão sobre buracos.
+ if(!p.on&&p.vy>=0)snapPlayerToGround(4);
+ let pr={x:p.x,y:p.y,w:p.w,h:p.h};
  if(p.y>H+180){lose();return}
  for(const st of spikeTraps){const z=spikeTrapState(st);if(z.active){const hit={x:st.x+8,y:st.y-z.h+9,w:st.w-16,h:z.h-8};if(rect(pr,hit)){lose();return}}}
  for(const sw of swingingLogs){const z=swingTrapState(sw);const hit={x:z.cx-36,y:z.cy-48,w:72,h:96};if(rect(pr,hit)){lose();return}}
  for(const ps of stonePresses){const z=pressTrapState(ps);if(z.active){const hit={x:ps.x+16,y:z.y+34,w:150,h:78};if(rect(pr,hit)){lose();return}}}
- for(const h of hazards){if(h.type==='pit')continue;if(h.type==='gust'&&rect(pr,{x:h.x,y:h.y,w:h.w,h:h.h})){p.x=Math.max(0,Math.min(worldW-p.w,p.x+h.dir*h.power*dt));p.vx+=h.dir*h.power*.18*dt;continue}if(rect(pr,{x:h.x+8,y:h.y+8,w:h.w-16,h:h.h-8})){lose();return}}
- for(const b of normal){
-   if(b.hit)continue;
-   const br={x:b.x,y:b.y,w:b.w,h:b.h};
-   if(!rect(pr,br))continue;
-   const currBottom=p.y+p.h, currTop=p.y;
-   const cameFromAbove=p.vy>0&&prevBottom<=b.y+14&&currBottom>=b.y;
-   const cameFromBelow=p.vy<0&&prevY>=b.y+b.h-12&&currTop<=b.y+b.h;
-   if(p.spin>0||p.slide>0){breakBox(b,p.slide>0?'slide':'spin')}
-   else if(cameFromAbove){breakBox(b,'stomp');p.y=b.y-p.h;p.vy=-335;p.on=false;p.land=.16;p.stompSquash=.16;pr.y=p.y}
-   else if(cameFromBelow){p.y=b.y+b.h;p.vy=70;pr.y=p.y}
-   else {
-     const prevRight=p.x-p.vx*dt+p.w, prevLeft=p.x-p.vx*dt;
-     if(p.vx>0&&prevRight<=b.x+b.w*0.5)p.x=b.x-p.w;
-     else if(p.vx<0&&prevLeft>=b.x+b.w*0.5)p.x=b.x+b.w;
-     else if(p.x+p.w/2<b.x+b.w/2)p.x=b.x-p.w; else p.x=b.x+b.w;
-     p.vx=0;pr.x=p.x;
-   }
- }
- for(const t of tnts){
-   if(t.dead){if(t.blast>0)t.blast-=dt;continue}
-   if(t.active){t.t-=dt;if(t.t<=0)explode(t)}
-   const tr={x:t.x,y:t.y,w:t.w,h:t.h};
-   if(!rect(pr,tr))continue;
-   const currBottom=p.y+p.h, currTop=p.y;
-   const cameFromAbove=p.vy>0&&prevBottom<=t.y+14&&currBottom>=t.y;
-   const cameFromBelow=p.vy<0&&prevY>=t.y+t.h-12&&currTop<=t.y+t.h;
-   if(p.spin>0||p.slide>0){explode(t);forceDeath();return}
-   else if(cameFromAbove){p.y=t.y-p.h;p.vy=-365;p.on=false;if(!t.active){t.active=true;t.t=3.0;toast='TNT: 3...';toastT=.9}p.stompSquash=.13;spawnImpact(t.x+t.w/2,t.y,0.7);pr.y=p.y}
-   else if(cameFromBelow){p.y=t.y+t.h;p.vy=70;pr.y=p.y}
-   else {
-     if(p.vx>0)p.x=t.x-p.w; else if(p.vx<0)p.x=t.x+t.w; else if(p.x+p.w/2<t.x+t.w/2)p.x=t.x-p.w; else p.x=t.x+t.w;
-     p.vx=0;pr.x=p.x;
-   }
+ for(const h of hazards){
+   if(h.type==='pit')continue;
+   if(h.type==='gust'&&rect(pr,{x:h.x,y:h.y,w:h.w,h:h.h})){p.x=Math.max(0,Math.min(worldW-p.w,p.x+h.dir*h.power*dt));p.vx+=h.dir*h.power*.18*dt;pr.x=p.x;continue}
+   if(h.type==='spikes'){const z=floorSpikeState(h);if(z.active){const hit={x:h.x+8,y:h.y+55-z.h+8,w:h.w-16,h:Math.max(10,z.h-8)};if(rect(pr,hit)){lose();return}}continue}
+   if(rect(pr,{x:h.x+8,y:h.y+8,w:h.w-16,h:h.h-8})){lose();return}
  }
  for(const f of fruitList){if(!f.t&&rect(pr,{x:f.x,y:f.y,w:42,h:42})){f.t=true;fruits++;score+=25;if(fruits>=100){fruits-=100;lives++;toast='100 frutas = +1 vida!';toastT=2}}}
  for(const m of masks){if(!m.t&&rect(pr,{x:m.x,y:m.y,w:54,h:65})){m.t=true;aku=Math.min(2,aku+1);akuFx.push({x:m.x+27,y:m.y+26,t:.7,kind:'pickup'});score+=500;toast=aku===2?'Aku Aku reforçado!':'Aku Aku adquirido!';toastT=1.7}}
@@ -400,17 +437,19 @@ for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.
        e.y=e.baseY;
        const er=enemyRect(e);
        if(rect(pr,er)){
-         const stomp=p.vy>0&&p.y+p.h<e.y+18;
+         const currBottom=p.y+p.h;
+         const stomp=p.vy>0&&prevBottom<=e.y+12&&currBottom>=e.y;
+         const fromBelow=p.vy<0&&prevY>=e.y+e.h-10&&p.y<=e.y+e.h;
          if(p.spin>0||p.slide>0){
            turtleLaunch(e,(p.facing||Math.sign(p.vx)||1));
            score+=150;
            toast='Casco lançado!';toastT=.8;
            shake=Math.max(shake,.1);
          }else if(stomp){
-           p.y=e.y-p.h;p.vy=-640;p.on=false;p.stompSquash=.15;shake=Math.max(shake,.15);spawnImpact(e.x+er.w/2,e.y+er.h,1.3);toast='Super pulo no casco!';toastT=.7;
-         }else if(p.vy<0){
-           p.y=e.y+e.h;p.vy=40;
-         }else if(p.x+p.w/2<e.x+er.w/2)p.x=e.x-p.w; else p.x=e.x+e.w;
+           p.y=e.y-p.h;p.vy=-640;p.on=false;p.stompSquash=.15;shake=Math.max(shake,.15);spawnImpact(e.x+er.w/2,e.y+er.h,1.3);toast='Super pulo no casco!';toastT=.7;pr.y=p.y;
+         }else if(fromBelow){
+           p.y=e.y+e.h;p.vy=40;pr.y=p.y;
+         }else {if(p.x+p.w/2<e.x+er.w/2)p.x=e.x-p.w;else p.x=e.x+e.w;p.vx=0;pr.x=p.x;}
        }
        continue;
      }else if(e.state==='fly'){
@@ -446,7 +485,7 @@ for(let i=enemyFx.length-1;i>=0;i--){let f=enemyFx[i];f.t-=dt;if(f.t<=0)enemyFx.
            turtleEnterShell(e);
            score+=200;
            toast='Tartaruga recolhida!';toastT=.9;
-           p.y=e.y-p.h;p.vy=-395;p.on=false;p.stompSquash=.16;shake=Math.max(shake,.14);spawnImpact(e.x+er.w/2,e.y+er.h,1.15);
+           p.y=e.y-p.h;p.vy=-395;p.on=false;p.stompSquash=.16;shake=Math.max(shake,.14);spawnImpact(e.x+er.w/2,e.y+er.h,1.15);pr.y=p.y;
          }else if(p.spin>0||p.slide>0){
            turtleLaunch(e,(p.facing||Math.sign(p.vx)||1));
            score+=250;
@@ -520,9 +559,9 @@ function drawEnemy(e){drawEnemySprite(e,e.x,e.y,e.w||70,e.h||56,e.type==='turtle
 function draw(){bg();x.save();let sx=shake>0?(Math.random()-.5)*12:0,sy=shake>0?(Math.random()-.5)*8:0;x.translate(-camX+sx,sy);
  // Buracos ficam entre o background e a camada jogável.
  for(const h of hazards)if(h.type==='pit'){x.fillStyle='#020604';x.fillRect(h.x,h.y,h.w,110);x.fillStyle='#101a13';x.fillRect(h.x,h.y,h.w,8);for(let yy=h.y+15;yy<h.y+105;yy+=18){x.globalAlpha=.35;x.fillStyle='#27422d';x.fillRect(h.x+8,yy,h.w-16,3)}x.globalAlpha=1}
- for(const o of scenery){if(!visibleWorldX(o.x,o.w))continue;const srj=jungleSR[o.k];ds(jungleImg,srj,o.x,o.y,o.w,o.h)}for(const o of phaseDeco){if(!visibleWorldX(o.x,o.w))continue;if(biomeTileImg&&biomeTileSR[o.s])ds(biomeTileImg,biomeTileSR[o.s],o.x,o.y,o.w,o.h);else if(jungleImg&&jungleSR[o.s])ds(jungleImg,jungleSR[o.s],o.x,o.y,o.w,o.h);}for(const q of platforms){if(!visibleWorldX(q[0],q[2]))continue;const elevated=q[3]<50;if(currentLevel===3&&biomeTileImg){const ts=elevated?biomeTileSR.swampSmall:biomeTileSR.swampGround,step=elevated?92:180;for(let xx=q[0];xx<q[0]+q[2]-1;xx+=step){const tw=Math.min(step+2,q[0]+q[2]-xx+1);ds(biomeTileImg,ts,xx,q[1]-(elevated?25:50),tw,elevated?q[3]+48:q[3]+30)}}else if(currentLevel===4&&biomeTileImg){const ts=elevated?biomeTileSR.iceSmall:biomeTileSR.iceGround,step=elevated?92:180;for(let xx=q[0];xx<q[0]+q[2]-1;xx+=step){const tw=Math.min(step+2,q[0]+q[2]-xx+1);ds(biomeTileImg,ts,xx,q[1]-(elevated?24:47),tw,elevated?q[3]+50:q[3]+32)}}else if(elevated){ds(tileImg,tileSR.float,q[0],q[1]-23,q[2],q[3]+50)}else{ds(tileImg,tileSR.ground,q[0],q[1]-40,q[2],q[3]+32)}}for(const r of rocks){if(!visibleWorldX(r.x,r.w))continue;ds(jungleImg,jungleSR[r.k],r.x-14,r.y-28,r.w+28,r.h+28)}for(const h of hazards){if(h.s)ds(trapImg,trapSR[h.s],h.x,h.y,h.w,h.h);else if(h.type==='gust'){x.save();x.globalAlpha=.72;x.strokeStyle='#ffd38a';x.lineWidth=4;for(let z=0;z<5;z++){const yy=h.y+28+z*31;x.beginPath();x.moveTo(h.x+18,yy);x.bezierCurveTo(h.x+h.w*.35,yy-18,h.x+h.w*.65,yy+18,h.x+h.w-18,yy-4);x.stroke();x.fillStyle='#fff0b0';x.beginPath();x.moveTo(h.x+h.w-18,yy-4);x.lineTo(h.x+h.w-34,yy-12);x.lineTo(h.x+h.w-29,yy+5);x.closePath();x.fill()}x.globalAlpha=1;x.restore()}else if(h.type==='poison'&&poisonAssetImg)ds(poisonAssetImg,null,h.x,h.y-2,h.w,72);else if(h.type==='poison'){x.fillStyle='#375c16';x.fillRect(h.x,h.y,h.w,24);x.fillStyle='#7ea61d';for(let z=0;z<h.w;z+=24){x.beginPath();x.arc(h.x+10+z,h.y+9+(z%3)*2,5,0,7);x.fill()}x.fillStyle='#18340c';x.fillRect(h.x,h.y+23,h.w,50)}else if(h.type==='iceSpike'&&iceSpikeAssetImg)ds(iceSpikeAssetImg,null,h.x,h.y-2,h.w,h.h+2);else if(h.type==='iceSpike'){x.fillStyle='#dff7ff';for(let z=0;z<h.w;z+=22){x.beginPath();x.moveTo(h.x+z,h.y+h.h);x.lineTo(h.x+z+11,h.y);x.lineTo(h.x+z+22,h.y+h.h);x.closePath();x.fill();x.strokeStyle='#6ac8f0';x.stroke()}}}
+ for(const o of scenery){if(!visibleWorldX(o.x,o.w))continue;const srj=jungleSR[o.k];ds(jungleImg,srj,o.x,o.y,o.w,o.h)}for(const o of phaseDeco){if(!visibleWorldX(o.x,o.w))continue;if(biomeTileImg&&biomeTileSR[o.s])ds(biomeTileImg,biomeTileSR[o.s],o.x,o.y,o.w,o.h);else if(jungleImg&&jungleSR[o.s])ds(jungleImg,jungleSR[o.s],o.x,o.y,o.w,o.h);}for(const q of platforms){if(!visibleWorldX(q[0],q[2]))continue;const elevated=q[3]<50;if(currentLevel===3&&biomeTileImg){const ts=elevated?biomeTileSR.swampSmall:biomeTileSR.swampGround,step=elevated?92:180;for(let xx=q[0];xx<q[0]+q[2]-1;xx+=step){const tw=Math.min(step+2,q[0]+q[2]-xx+1);ds(biomeTileImg,ts,xx,q[1]-(elevated?25:50),tw,elevated?q[3]+48:q[3]+30)}}else if(currentLevel===4&&biomeTileImg){const ts=elevated?biomeTileSR.iceSmall:biomeTileSR.iceGround,step=elevated?92:180;for(let xx=q[0];xx<q[0]+q[2]-1;xx+=step){const tw=Math.min(step+2,q[0]+q[2]-xx+1);ds(biomeTileImg,ts,xx,q[1]-(elevated?24:47),tw,elevated?q[3]+50:q[3]+32)}}else if(elevated){ds(tileImg,tileSR.float,q[0],q[1]-23,q[2],q[3]+50)}else{ds(tileImg,tileSR.ground,q[0],q[1]-40,q[2],q[3]+32)}}for(const r of rocks){if(!visibleWorldX(r.x,r.w))continue;ds(jungleImg,jungleSR[r.k],r.x-14,r.y-28,r.w+28,r.h+28)}for(const h of hazards){if(h.type==='spikes'&&floorSpikeAssetImg){const z=floorSpikeState(h),fullH=78,bottom=h.y+60,visH=Math.max(14,Math.round(fullH*(z.h/55)));const imgH=floorSpikeAssetImg.naturalHeight||floorSpikeAssetImg.height;const imgW=floorSpikeAssetImg.naturalWidth||floorSpikeAssetImg.width;x.save();x.globalAlpha=z.h>0?.98:.65;x.drawImage(floorSpikeAssetImg,0,imgH-(imgH*(visH/fullH)),imgW,imgH*(visH/fullH),h.x,bottom-visH,h.w,visH);if(z.warning){x.globalAlpha=.78;x.fillStyle='#ffd45b';for(let i=0;i<3;i++)x.fillRect(h.x+14+i*28,bottom-10,14,3)}x.restore()}else if(h.s)ds(trapImg,trapSR[h.s],h.x,h.y,h.w,h.h);else if(h.type==='gust'){x.save();x.globalAlpha=.72;x.strokeStyle='#ffd38a';x.lineWidth=4;for(let z=0;z<5;z++){const yy=h.y+28+z*31;x.beginPath();x.moveTo(h.x+18,yy);x.bezierCurveTo(h.x+h.w*.35,yy-18,h.x+h.w*.65,yy+18,h.x+h.w-18,yy-4);x.stroke();x.fillStyle='#fff0b0';x.beginPath();x.moveTo(h.x+h.w-18,yy-4);x.lineTo(h.x+h.w-34,yy-12);x.lineTo(h.x+h.w-29,yy+5);x.closePath();x.fill()}x.globalAlpha=1;x.restore()}else if(h.type==='poison'&&poisonAssetImg)ds(poisonAssetImg,null,h.x,h.y-2,h.w,72);else if(h.type==='poison'){x.fillStyle='#375c16';x.fillRect(h.x,h.y,h.w,24);x.fillStyle='#7ea61d';for(let z=0;z<h.w;z+=24){x.beginPath();x.arc(h.x+10+z,h.y+9+(z%3)*2,5,0,7);x.fill()}x.fillStyle='#18340c';x.fillRect(h.x,h.y+23,h.w,50)}else if(h.type==='iceSpike'&&iceSpikeAssetImg)ds(iceSpikeAssetImg,null,h.x,h.y-2,h.w,h.h+2);else if(h.type==='iceSpike'){x.fillStyle='#dff7ff';for(let z=0;z<h.w;z+=22){x.beginPath();x.moveTo(h.x+z,h.y+h.h);x.lineTo(h.x+z+11,h.y);x.lineTo(h.x+z+22,h.y+h.h);x.closePath();x.fill();x.strokeStyle='#6ac8f0';x.stroke()}}}
  // Espinhos retráteis: dicas visuais antes de ficarem perigosos.
- for(const st of spikeTraps){if(!visibleWorldX(st.x,st.w))continue;const z=spikeTrapState(st);x.save();if(spikeAssetImg){x.globalAlpha=z.h>0?.98:.72;ds(spikeAssetImg,null,st.x-8,groundY-108,st.w+16,108);x.globalAlpha=1}else{x.fillStyle='#314c2b';x.fillRect(st.x,groundY-8,st.w,8);const count=Math.max(3,Math.floor(st.w/22));for(let i=0;i<count;i++){const sx=st.x+i*(st.w/count),sw=st.w/count+1;x.fillStyle='#8e8c7f';x.beginPath();x.moveTo(sx,groundY);x.lineTo(sx+sw/2,groundY-z.h);x.lineTo(sx+sw,groundY);x.closePath();x.fill();}}if(z.warning){x.globalAlpha=.75;x.fillStyle='#ffd45b';for(let i=0;i<3;i++)x.fillRect(st.x+18+i*34,groundY-14,18,3);x.globalAlpha=1}x.restore()}
+ for(const st of spikeTraps){if(!visibleWorldX(st.x,st.w))continue;const z=spikeTrapState(st);x.save();if(spikeAssetImg){const fullH=104,visH=Math.max(12,Math.round(fullH*(z.h/55)));const imgH=spikeAssetImg.naturalHeight||spikeAssetImg.height;const imgW=spikeAssetImg.naturalWidth||spikeAssetImg.width;x.globalAlpha=z.h>0?.98:.72;x.drawImage(spikeAssetImg,0,imgH-(imgH*(visH/fullH)),imgW,imgH*(visH/fullH),st.x-8,groundY-visH,st.w+16,visH);x.globalAlpha=1}else{x.fillStyle='#314c2b';x.fillRect(st.x,groundY-8,st.w,8);const count=Math.max(3,Math.floor(st.w/22));for(let i=0;i<count;i++){const sx=st.x+i*(st.w/count),sw=st.w/count+1;x.fillStyle='#8e8c7f';x.beginPath();x.moveTo(sx,groundY);x.lineTo(sx+sw/2,groundY-z.h);x.lineTo(sx+sw,groundY);x.closePath();x.fill();}}if(z.warning){x.globalAlpha=.75;x.fillStyle='#ffd45b';for(let i=0;i<3;i++)x.fillRect(st.x+18+i*34,groundY-14,18,3);x.globalAlpha=1}x.restore()}
  // Tronco balançando: pivô, corda e corpo giram juntos, sem sprite-sheet desalinhado.
  for(const sw of swingingLogs){if(!visibleWorldX(sw.x,180,260))continue;const z=swingTrapState(sw);x.save();x.strokeStyle='#8b6230';x.lineWidth=7;x.beginPath();x.moveTo(z.px,z.py);x.lineTo(z.cx,z.cy);x.stroke();x.fillStyle='#5f7e38';x.fillRect(z.px-38,z.py-12,76,16);x.translate(z.cx,z.cy);x.rotate(-z.a*.82);if(logAssetImg)ds(logAssetImg,null,-78,-96,156,192);else{x.fillStyle='#6f3d1d';x.fillRect(-30,-48,60,96);x.fillStyle='#9c5a2b';for(let yy=-38;yy<=30;yy+=22)x.fillRect(-24,yy,48,8)}x.restore()}
  // Prensa: ciclo com aviso, queda rápida, pausa no chão e subida lenta.

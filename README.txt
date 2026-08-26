@@ -1,4 +1,4 @@
-CRASH BANDICOOT FÃ GAME — V0.9.1
+CRASH BANDICOOT FÃ GAME — V1.0.4
 
 COMO ABRIR
 1. Extraia o ZIP inteiro.
@@ -112,3 +112,15 @@ V0.9.7 - CORREÇÃO DE SOBREPOSIÇÃO DE ARMADILHAS
 - Fase 1: espinhos e armadilha suspensa foram afastados.
 - Caixa e TNT do corredor foram reposicionadas.
 - Nova verificação automática remove caixas/TNT de zonas de ação de armadilhas.
+
+
+V1.0.4 — REVISÃO ESTRUTURAL DE COLISÕES
+- física separada por eixo X e eixo Y;
+- colisão lateral não pode mais cancelar ou inverter o pulo;
+- plataformas, pedras, caixas e TNT usam resolução consistente;
+- posição do frame anterior define contato por cima/baixo;
+- jump buffer e coyote time mantidos;
+- correção de quinas e micro-penetrações sem empurrar Crash para baixo;
+- encaixe automático de até 4 px no chão para estabilidade sem criar piso sobre buracos;
+- casco da tartaruga corrigido para distinguir lado, topo e parte inferior;
+- formato de save mantido para preservar compatibilidade com saves anteriores.
