@@ -3,22 +3,23 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Crash Bandicoot Fã Game - v0.9.1</title>
+<title>Crash Bandicoot Fã Game - v0.9.4</title>
 <link rel="stylesheet" href="css/style.css" />
-<script src="js/game.js?v=0.9.1" defer></script>
+<script src="js/game.js?v=0.9.4" defer></script>
 </head>
 <body>
 <div id="wrap"><canvas id="game" width="960" height="540"></canvas></div>
 <div id="touch-controls" aria-label="Controles por toque">
-  <div class="touch-dpad">
-    <button data-action="left" aria-label="Esquerda">◀</button>
-    <button data-action="down" aria-label="Agachar ou deslizar">▼</button>
-    <button data-action="right" aria-label="Direita">▶</button>
+  <div class="touch-joystick" id="touch-joystick" aria-label="Direcional virtual">
+    <div class="joystick-ring"></div>
+    <div class="joystick-knob" id="joystick-knob"></div>
+    <span class="joy-hint">MOVER</span>
   </div>
   <div class="touch-actions">
-    <button class="spin" data-action="spin" aria-label="Girar">GIRO</button>
-    <button class="jump" data-action="jump" aria-label="Pular">PULO</button>
+    <button class="spin" data-action="spin" aria-label="Girar"><span>GIRO</span></button>
+    <button class="jump" data-action="jump" aria-label="Pular"><span>PULO</span></button>
   </div>
+  <button class="touch-pause" data-ui-action="pause" aria-label="Pausar jogo">Ⅱ</button>
 </div>
 <div id="help">Controles configuráveis no menu • 3 slots de save • P/Start pausa • Gamepad</div>
 </body>

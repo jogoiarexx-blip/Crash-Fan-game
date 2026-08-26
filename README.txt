@@ -98,3 +98,11 @@ V0.9.1 — ESTABILIZAÇÃO
 - Culling visual reduz desenhos de objetos muito fora da câmera.
 - Incluído INICIAR-JOGO.bat para iniciar servidor local e evitar problemas do protocolo file://.
 - Identificação interna atualizada para V0.9.1.
+
+
+V0.9.4 - CONTROLES MOBILE
+- Joystick virtual com zona morta e movimento deslizante.
+- Multitouch real: mover + pular + girar simultaneamente.
+- Botao de pausa dedicado.
+- Reset automatico de toques para evitar comandos presos.
+- Layout responsivo com safe areas para celulares com notch.

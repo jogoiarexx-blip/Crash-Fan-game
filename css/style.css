@@ -3,14 +3,23 @@
 canvas{background:#65b8e8;image-rendering:pixelated;max-width:100vw;max-height:100vh;box-shadow:0 0 55px #000c;border:3px solid #17394d}
 #help{position:fixed;left:12px;bottom:10px;font-size:12px;color:#d8f3ff;background:#00131dcc;padding:7px 10px;border-radius:8px;pointer-events:none}
 
-/* Controles touch: aparecem apenas em dispositivos com toque/ponteiro impreciso. */
-#touch-controls{display:none;position:fixed;inset:0;pointer-events:none;z-index:20;touch-action:none;user-select:none;-webkit-user-select:none}
-#touch-controls button{pointer-events:auto;touch-action:none;border:2px solid #ffffff66;background:#07151dcc;color:#fff;font-weight:900;box-shadow:0 4px 14px #0008;backdrop-filter:blur(2px)}
-.touch-dpad{position:absolute;left:max(14px,env(safe-area-inset-left));bottom:max(22px,env(safe-area-inset-bottom));display:flex;gap:8px;align-items:flex-end}
-.touch-dpad button{width:64px;height:64px;border-radius:18px;font-size:27px}
-.touch-actions{position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(22px,env(safe-area-inset-bottom));display:flex;gap:12px;align-items:flex-end}
-.touch-actions button{width:76px;height:76px;border-radius:50%;font-size:14px}
-.touch-actions .jump{width:88px;height:88px;font-size:15px}
-#touch-controls button:active{transform:scale(.94);background:#1f5d52dd}
-@media (pointer:coarse),(hover:none){#touch-controls{display:block}#help{display:none}canvas{border-width:0;box-shadow:none}}
-@media (max-width:700px){.touch-dpad button{width:56px;height:56px}.touch-actions button{width:66px;height:66px}.touch-actions .jump{width:78px;height:78px}}
+/* Controles mobile: joystick virtual + ações multitouch. */
+#touch-controls{display:none;position:fixed;inset:0;pointer-events:none;z-index:20;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+#touch-controls.mobile-visible{display:block}
+.touch-joystick{pointer-events:auto;touch-action:none;position:absolute;left:max(18px,env(safe-area-inset-left));bottom:max(24px,env(safe-area-inset-bottom));width:156px;height:156px;border-radius:50%;background:#07151d66;border:2px solid #ffffff33;box-shadow:0 5px 22px #0009,inset 0 0 28px #0006;backdrop-filter:blur(2px)}
+.joystick-ring{position:absolute;inset:22px;border-radius:50%;border:2px solid #ffffff25;background:#0b283477}
+.joystick-knob{position:absolute;left:50%;top:50%;width:68px;height:68px;margin:-34px;border-radius:50%;background:#173d48dd;border:3px solid #ffffff88;box-shadow:0 4px 12px #0009,inset 0 0 14px #61c8bb33;transform:translate3d(0,0,0);transition:transform .035s linear}
+.joy-hint{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:9px;font-weight:900;letter-spacing:1.5px;color:#ffffff88;pointer-events:none}
+.touch-actions{position:absolute;right:max(18px,env(safe-area-inset-right));bottom:max(24px,env(safe-area-inset-bottom));width:180px;height:150px;pointer-events:none}
+.touch-actions button,.touch-pause{pointer-events:auto;touch-action:none;border:2px solid #ffffff66;color:#fff;font-weight:900;box-shadow:0 5px 16px #0009;backdrop-filter:blur(2px);outline:none}
+.touch-actions button{position:absolute;border-radius:50%;display:grid;place-items:center}
+.touch-actions button span{pointer-events:none}
+.touch-actions .jump{right:0;bottom:12px;width:92px;height:92px;font-size:15px;background:#245f52df}
+.touch-actions .spin{left:0;top:0;width:78px;height:78px;font-size:13px;background:#93402cdf}
+.touch-pause{position:absolute;right:max(16px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));width:50px;height:44px;border-radius:14px;font-size:22px;background:#07151dcc}
+.touch-actions button.pressed,.touch-pause.pressed{transform:scale(.91);filter:brightness(1.25);border-color:#fff}
+.touch-joystick.active{background:#0a202acc;border-color:#ffffff66}
+@media (pointer:coarse),(hover:none){#help{display:none}canvas{border-width:0;box-shadow:none}}
+@media (max-width:700px){.touch-joystick{width:138px;height:138px}.joystick-ring{inset:20px}.joystick-knob{width:62px;height:62px;margin:-31px}.touch-actions{width:166px;height:138px}.touch-actions .jump{width:84px;height:84px}.touch-actions .spin{width:70px;height:70px}.touch-pause{width:46px;height:40px}}
+@media (max-height:470px){.touch-joystick{width:126px;height:126px;bottom:max(12px,env(safe-area-inset-bottom))}.joystick-ring{inset:18px}.joystick-knob{width:58px;height:58px;margin:-29px}.touch-actions{width:154px;height:122px;bottom:max(12px,env(safe-area-inset-bottom))}.touch-actions .jump{width:78px;height:78px}.touch-actions .spin{width:64px;height:64px}.touch-pause{top:max(8px,env(safe-area-inset-top))}}
+
