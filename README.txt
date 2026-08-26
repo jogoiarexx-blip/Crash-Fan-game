@@ -1,4 +1,4 @@
-CRASH BANDICOOT FÃ GAME — V1.0.4
+CRASH BANDICOOT FÃ GAME — V1.0.8
 
 COMO ABRIR
 1. Extraia o ZIP inteiro.
@@ -124,3 +124,19 @@ V1.0.4 — REVISÃO ESTRUTURAL DE COLISÕES
 - encaixe automático de até 4 px no chão para estabilidade sem criar piso sobre buracos;
 - casco da tartaruga corrigido para distinguir lado, topo e parte inferior;
 - formato de save mantido para preservar compatibilidade com saves anteriores.
+
+
+V1.0.7 — ORGANIZAÇÃO DE CAIXAS / TNT / CHECKPOINT
+- Checkpoint agora possui posição própria por fase e nunca é desenhado sobre buraco ou dentro de plataforma.
+- Caixa normal, TNT e checkpoint não podem ocupar o mesmo espaço.
+- Objetos são validados para ficar totalmente apoiados em uma superfície válida.
+- Conflitos com pedras, espinhos, prensas e armadilhas são reposicionados em vez de apagados.
+- A contagem original de caixas e TNT é preservada em todas as fases.
+- Fase 1: removida a sobreposição direta entre checkpoint e TNT.
+
+
+V1.0.8 — BACKGROUND DE FASE TRAVADO
+- Background sempre obtido pelo currentLevel; nunca reutiliza imagem da fase anterior.
+- Removido fallback bgImg anterior em bindPhaseAssets.
+- Fase 5 agora possui background_fase5.webp próprio para CÂNION RUBRO.
+- Pré-carregamento da próxima fase não altera o cenário visível da fase atual.
