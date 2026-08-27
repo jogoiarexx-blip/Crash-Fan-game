@@ -1,0 +1,672 @@
+{
+  "source": "jungle_sheet.webp",
+  "format": "PNG RGBA",
+  "coordinate_origin": "top-left",
+  "assets": [
+    {
+      "id": "waterfall_cliff_large",
+      "file": "01_waterfall_cliff_large.png",
+      "category": "environment",
+      "width": 425,
+      "height": 684,
+      "source_rect": {
+        "x": 1111,
+        "y": 0,
+        "w": 425,
+        "h": 684
+      },
+      "key": "waterfall",
+      "role": "background environment"
+    },
+    {
+      "id": "platform_long_roots",
+      "file": "02_platform_long_roots.png",
+      "category": "platform",
+      "width": 244,
+      "height": 233,
+      "source_rect": {
+        "x": 700,
+        "y": 5,
+        "w": 244,
+        "h": 233
+      },
+      "key": "platformLongRoots",
+      "role": "solid grass-top platform",
+      "collision_profile": {
+        "top": 28,
+        "left": 7,
+        "right": 7,
+        "depth": 62
+      }
+    },
+    {
+      "id": "platform_extra_long_vines",
+      "file": "03_platform_extra_long_vines.png",
+      "category": "platform",
+      "width": 392,
+      "height": 178,
+      "source_rect": {
+        "x": 8,
+        "y": 6,
+        "w": 392,
+        "h": 178
+      },
+      "key": "platformLong",
+      "role": "solid grass-top platform",
+      "collision_profile": {
+        "top": 31,
+        "left": 8,
+        "right": 8,
+        "depth": 64
+      }
+    },
+    {
+      "id": "platform_tall_vine",
+      "file": "04_platform_tall_vine.png",
+      "category": "platform",
+      "width": 170,
+      "height": 330,
+      "source_rect": {
+        "x": 969,
+        "y": 17,
+        "w": 170,
+        "h": 330
+      },
+      "key": "platformTall",
+      "role": "solid grass-top platform",
+      "collision_profile": {
+        "top": 22,
+        "left": 8,
+        "right": 8,
+        "depth": 58
+      }
+    },
+    {
+      "id": "platform_medium_hanging_vines",
+      "file": "05_platform_medium_hanging_vines.png",
+      "category": "platform",
+      "width": 237,
+      "height": 216,
+      "source_rect": {
+        "x": 428,
+        "y": 18,
+        "w": 237,
+        "h": 216
+      },
+      "key": "platformMedium",
+      "role": "solid grass-top platform",
+      "collision_profile": {
+        "top": 22,
+        "left": 7,
+        "right": 7,
+        "depth": 58
+      }
+    },
+    {
+      "id": "platform_medium_stalactite",
+      "file": "06_platform_medium_stalactite.png",
+      "category": "platform",
+      "width": 176,
+      "height": 176,
+      "source_rect": {
+        "x": 1155,
+        "y": 46,
+        "w": 176,
+        "h": 176
+      },
+      "key": "platformMediumRock",
+      "role": "solid grass-top platform",
+      "collision_profile": {
+        "top": 26,
+        "left": 8,
+        "right": 8,
+        "depth": 58
+      }
+    },
+    {
+      "id": "stone_block_single",
+      "file": "07_stone_block_single.png",
+      "category": "terrain",
+      "width": 62,
+      "height": 55,
+      "source_rect": {
+        "x": 927,
+        "y": 159,
+        "w": 62,
+        "h": 55
+      },
+      "key": "stoneBlock",
+      "role": "solid terrain/stone",
+      "collision_profile": {
+        "top": 1,
+        "left": 2,
+        "right": 2,
+        "depth": 50
+      }
+    },
+    {
+      "id": "platform_small",
+      "file": "08_platform_small.png",
+      "category": "platform",
+      "width": 161,
+      "height": 128,
+      "source_rect": {
+        "x": 348,
+        "y": 168,
+        "w": 161,
+        "h": 128
+      },
+      "key": "platformSmall",
+      "role": "solid grass-top platform",
+      "collision_profile": {
+        "top": 16,
+        "left": 7,
+        "right": 7,
+        "depth": 50
+      }
+    },
+    {
+      "id": "slope_down_long",
+      "file": "09_slope_down_long.png",
+      "category": "slope",
+      "width": 432,
+      "height": 263,
+      "source_rect": {
+        "x": 8,
+        "y": 169,
+        "w": 432,
+        "h": 263
+      },
+      "key": "slopeDown",
+      "role": "walkable sloped terrain",
+      "collision_profile": {
+        "leftTop": 20,
+        "rightTop": 205,
+        "left": 8,
+        "right": 9,
+        "depth": 48
+      }
+    },
+    {
+      "id": "stair_platform",
+      "file": "10_stair_platform.png",
+      "category": "platform",
+      "width": 286,
+      "height": 235,
+      "source_rect": {
+        "x": 630,
+        "y": 173,
+        "w": 286,
+        "h": 235
+      },
+      "key": "stairPlatform",
+      "role": "solid grass-top platform",
+      "collision_profile": {
+        "top": 20,
+        "left": 6,
+        "right": 7,
+        "depth": 48,
+        "segments": [
+          [
+            0,
+            0,
+            86
+          ],
+          [
+            83,
+            34,
+            90
+          ],
+          [
+            172,
+            72,
+            107
+          ]
+        ]
+      }
+    },
+    {
+      "id": "stone_blocks_pair",
+      "file": "11_stone_blocks_pair.png",
+      "category": "terrain",
+      "width": 85,
+      "height": 76,
+      "source_rect": {
+        "x": 1123,
+        "y": 188,
+        "w": 85,
+        "h": 76
+      },
+      "key": "stoneBlocksPair",
+      "role": "solid terrain/stone",
+      "collision_profile": {
+        "top": 2,
+        "left": 3,
+        "right": 3,
+        "depth": 58
+      }
+    },
+    {
+      "id": "floating_rock_small",
+      "file": "12_floating_rock_small.png",
+      "category": "terrain",
+      "width": 62,
+      "height": 82,
+      "source_rect": {
+        "x": 929,
+        "y": 239,
+        "w": 62,
+        "h": 82
+      },
+      "key": "floatingRock",
+      "role": "solid terrain/stone",
+      "collision_profile": {
+        "top": 3,
+        "left": 4,
+        "right": 4,
+        "depth": 54
+      }
+    },
+    {
+      "id": "stepped_platform",
+      "file": "13_stepped_platform.png",
+      "category": "platform",
+      "width": 207,
+      "height": 161,
+      "source_rect": {
+        "x": 457,
+        "y": 273,
+        "w": 207,
+        "h": 161
+      },
+      "key": "steppedPlatform",
+      "role": "solid grass-top platform",
+      "collision_profile": {
+        "top": 12,
+        "left": 5,
+        "right": 5,
+        "depth": 48,
+        "segments": [
+          [
+            0,
+            98,
+            67
+          ],
+          [
+            60,
+            52,
+            69
+          ],
+          [
+            125,
+            8,
+            77
+          ]
+        ]
+      }
+    },
+    {
+      "id": "vine_pole_01",
+      "file": "14_vine_pole_01.png",
+      "category": "climbable",
+      "width": 31,
+      "height": 341,
+      "source_rect": {
+        "x": 948,
+        "y": 344,
+        "w": 31,
+        "h": 341
+      },
+      "key": "vinePole1",
+      "role": "decoration until climbing exists"
+    },
+    {
+      "id": "vine_pole_02",
+      "file": "15_vine_pole_02.png",
+      "category": "climbable",
+      "width": 52,
+      "height": 327,
+      "source_rect": {
+        "x": 998,
+        "y": 344,
+        "w": 52,
+        "h": 327
+      },
+      "key": "vinePole2",
+      "role": "decoration until climbing exists"
+    },
+    {
+      "id": "vine_pole_03",
+      "file": "16_vine_pole_03.png",
+      "category": "climbable",
+      "width": 51,
+      "height": 295,
+      "source_rect": {
+        "x": 1061,
+        "y": 365,
+        "w": 51,
+        "h": 295
+      },
+      "key": "vinePole3",
+      "role": "decoration until climbing exists"
+    },
+    {
+      "id": "rope_bridge_small",
+      "file": "17_rope_bridge_small.png",
+      "category": "bridge",
+      "width": 233,
+      "height": 162,
+      "source_rect": {
+        "x": 680,
+        "y": 373,
+        "w": 233,
+        "h": 162
+      },
+      "key": "bridgeSmall",
+      "role": "one-way wooden surface",
+      "collision_profile": {
+        "top": 76,
+        "left": 25,
+        "right": 25,
+        "depth": 16
+      }
+    },
+    {
+      "id": "palm_tree_large",
+      "file": "18_palm_tree_large.png",
+      "category": "decoration",
+      "width": 250,
+      "height": 320,
+      "source_rect": {
+        "x": 0,
+        "y": 411,
+        "w": 250,
+        "h": 320
+      },
+      "key": "palmLarge",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "flower_red_small",
+      "file": "19_flower_red_small.png",
+      "category": "decoration",
+      "width": 97,
+      "height": 81,
+      "source_rect": {
+        "x": 278,
+        "y": 432,
+        "w": 97,
+        "h": 81
+      },
+      "key": "flowerRed",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "foliage_bush_01",
+      "file": "20_foliage_bush_01.png",
+      "category": "decoration",
+      "width": 108,
+      "height": 104,
+      "source_rect": {
+        "x": 371,
+        "y": 464,
+        "w": 108,
+        "h": 104
+      },
+      "key": "bush1",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "foliage_bush_02",
+      "file": "21_foliage_bush_02.png",
+      "category": "decoration",
+      "width": 143,
+      "height": 97,
+      "source_rect": {
+        "x": 492,
+        "y": 473,
+        "w": 143,
+        "h": 97
+      },
+      "key": "bush2",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "foliage_flower_red",
+      "file": "22_foliage_flower_red.png",
+      "category": "decoration",
+      "width": 126,
+      "height": 102,
+      "source_rect": {
+        "x": 647,
+        "y": 505,
+        "w": 126,
+        "h": 102
+      },
+      "key": "foliageRed",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "palm_tree_small",
+      "file": "23_palm_tree_small.png",
+      "category": "decoration",
+      "width": 189,
+      "height": 197,
+      "source_rect": {
+        "x": 151,
+        "y": 528,
+        "w": 189,
+        "h": 197
+      },
+      "key": "palmSmall",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "mushrooms_red",
+      "file": "24_mushrooms_red.png",
+      "category": "decoration",
+      "width": 144,
+      "height": 163,
+      "source_rect": {
+        "x": 784,
+        "y": 551,
+        "w": 144,
+        "h": 163
+      },
+      "key": "mushrooms",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "foliage_cluster_red",
+      "file": "25_foliage_cluster_red.png",
+      "category": "decoration",
+      "width": 216,
+      "height": 109,
+      "source_rect": {
+        "x": 369,
+        "y": 576,
+        "w": 216,
+        "h": 109
+      },
+      "key": "clusterRed",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "foliage_flower_purple",
+      "file": "26_foliage_flower_purple.png",
+      "category": "decoration",
+      "width": 95,
+      "height": 86,
+      "source_rect": {
+        "x": 601,
+        "y": 599,
+        "w": 95,
+        "h": 86
+      },
+      "key": "foliagePurple",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "grass_tuft_01",
+      "file": "27_grass_tuft_01.png",
+      "category": "decoration",
+      "width": 68,
+      "height": 53,
+      "source_rect": {
+        "x": 708,
+        "y": 631,
+        "w": 68,
+        "h": 53
+      },
+      "key": "grass1",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "grass_tuft_02",
+      "file": "28_grass_tuft_02.png",
+      "category": "decoration",
+      "width": 64,
+      "height": 45,
+      "source_rect": {
+        "x": 293,
+        "y": 671,
+        "w": 64,
+        "h": 45
+      },
+      "key": "grass2",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "torch_fire",
+      "file": "29_torch_fire.png",
+      "category": "object",
+      "width": 51,
+      "height": 160,
+      "source_rect": {
+        "x": 1032,
+        "y": 690,
+        "w": 51,
+        "h": 160
+      },
+      "key": "torch",
+      "role": "decorative or optional obstacle"
+    },
+    {
+      "id": "rope_bridge_large",
+      "file": "30_rope_bridge_large.png",
+      "category": "bridge",
+      "width": 408,
+      "height": 160,
+      "source_rect": {
+        "x": 1119,
+        "y": 697,
+        "w": 408,
+        "h": 160
+      },
+      "key": "bridgeLarge",
+      "role": "one-way wooden surface",
+      "collision_profile": {
+        "top": 74,
+        "left": 30,
+        "right": 30,
+        "depth": 16
+      }
+    },
+    {
+      "id": "sign_arrow_right",
+      "file": "31_sign_arrow_right.png",
+      "category": "object",
+      "width": 92,
+      "height": 148,
+      "source_rect": {
+        "x": 672,
+        "y": 699,
+        "w": 92,
+        "h": 148
+      },
+      "key": "signRight",
+      "role": "decorative or optional obstacle"
+    },
+    {
+      "id": "rock_formation_01",
+      "file": "32_rock_formation_01.png",
+      "category": "decoration",
+      "width": 160,
+      "height": 149,
+      "source_rect": {
+        "x": 358,
+        "y": 700,
+        "w": 160,
+        "h": 149
+      },
+      "key": "rock1",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "stone_totem",
+      "file": "33_stone_totem.png",
+      "category": "object",
+      "width": 126,
+      "height": 149,
+      "source_rect": {
+        "x": 532,
+        "y": 700,
+        "w": 126,
+        "h": 149
+      },
+      "key": "totem",
+      "role": "decorative or optional obstacle",
+      "collision_profile": {
+        "top": 0,
+        "left": 22,
+        "right": 22,
+        "depth": 125
+      }
+    },
+    {
+      "id": "fallen_log",
+      "file": "34_fallen_log.png",
+      "category": "decoration",
+      "width": 247,
+      "height": 108,
+      "source_rect": {
+        "x": 774,
+        "y": 736,
+        "w": 247,
+        "h": 108
+      },
+      "key": "fallenLog",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "rock_formation_02",
+      "file": "35_rock_formation_02.png",
+      "category": "decoration",
+      "width": 191,
+      "height": 107,
+      "source_rect": {
+        "x": 11,
+        "y": 741,
+        "w": 191,
+        "h": 107
+      },
+      "key": "rock2",
+      "role": "non-colliding scenery"
+    },
+    {
+      "id": "rock_formation_03",
+      "file": "36_rock_formation_03.png",
+      "category": "decoration",
+      "width": 118,
+      "height": 100,
+      "source_rect": {
+        "x": 222,
+        "y": 748,
+        "w": 118,
+        "h": 100
+      },
+      "key": "rock3",
+      "role": "non-colliding scenery"
+    }
+  ]
+}
