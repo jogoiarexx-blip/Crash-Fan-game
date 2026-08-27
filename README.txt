@@ -165,3 +165,9 @@ V1.0.8 — BACKGROUND DE FASE TRAVADO
 - Removido fallback bgImg anterior em bindPhaseAssets.
 - Fase 5 agora possui background_fase5.webp próprio para CÂNION RUBRO.
 - Pré-carregamento da próxima fase não altera o cenário visível da fase atual.
+
+v1.02 - Cristais por fase
+- Adicionado 1 cristal azul coletável em cada uma das 5 fases.
+- Cristais são registrados individualmente no save e permanecem obtidos após coleta.
+- HUD, resultados e seletor de fases exibem o progresso dos cristais.
+- Asset: assets/items/crystal_blue.webp.

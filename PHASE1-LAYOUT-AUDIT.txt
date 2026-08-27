@@ -1,0 +1,46 @@
+FASE 1 v1.02 — AUDITORIA DA RECONSTRUÇÃO
+=========================================
+Setores: 6
+Terreno/estruturas: 32
+Buracos: 90, 135, 140, 95 px | maior: 140 px
+Caixas normais: 20 | TNT: 4 | Caixa 10: 1
+Wumpas-guia: 56 | inimigos: 7
+Objetos sem apoio: 0 OK
+Sobreposições caixa/TNT: 0 OK
+Perigos próximos do checkpoint x=2760: 0 OK
+Perigos após x=5250 (zona final): 0 OK
+Inimigos invadindo zona final: 0 OK
+Tartarugas da Fase 1: [
+  { x: 730, role: 'inimigo normal' },
+  { x: 3290, role: 'segredo opcional' },
+  { x: 4630, role: 'inimigo normal' }
+]
+Rampa de subida: [
+  {
+    x0: 1717.9952,
+    x1: 1873.3712,
+    y0: 455,
+    y1: 385.736,
+    asset: 'slopeDown',
+    type: 'slopeUp'
+  }
+]
+Rampa de descida: [
+  {
+    x0: 2277.4192,
+    x1: 2402.9152,
+    y0: 400,
+    y1: 455.944,
+    asset: 'slopeDown',
+    type: 'slopeDown'
+  }
+]
+
+DECISÕES DE LEVEL DESIGN
+- Linha principal: Y 455 predominante; elevações em passos de 25 px na região vertical.
+- Buracos: 90/135/140/95 px; os de ponte permanecem visualmente estruturados.
+- Checkpoint: preferência x=2760, sem TNT, inimigo ou armadilha na zona imediata.
+- Rota alta: opcional, contém Caixa de 10 Pulos e segredo; não é necessária para chegar ao portal.
+- Tartaruga especial: x=3290, utilizada apenas para o segredo superior em Y=190.
+- Portal: últimos ~350 px sem perigo ou inimigo.
+- Câmera: maior visão à frente ao correr para a direita e à esquerda ao retornar.

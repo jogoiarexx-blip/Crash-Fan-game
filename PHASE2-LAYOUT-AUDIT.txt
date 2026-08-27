@@ -1,0 +1,16 @@
+FASE 2 — TEMPLO PERDIDO — RECONSTRUÇÃO v1.02
+
+Objetivo: aplicar a mesma correção estrutural da Fase 1.
+
+- Rota principal próxima de Y=455.
+- Subida gradual: 455 -> 430 -> 405 -> 380 e retorno gradual.
+- Rota alta é opcional e contém recompensas.
+- Tartaruga não é necessária para concluir a fase.
+- Única tartaruga especial próxima da rota alta serve como opção de exploração.
+- Caixa de 10 pulos foi movida para rota opcional.
+- Buracos normais: 100 px, 100 px e 130 px.
+- Checkpoint encontra área segura próxima de x=3050 (~54,5% da fase).
+- Zona final antes do portal permanece sólida.
+- Wumpas reorganizadas como guia de salto/subida.
+- Caixas agrupadas em encontros em vez de espaçamento uniforme.
+- Armadilhas separadas por áreas de respiro.
