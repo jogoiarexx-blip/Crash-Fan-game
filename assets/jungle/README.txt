@@ -11,3 +11,5 @@ Categorias sugeridas no jogo:
 
 O manifest.json contém nome, categoria, tamanho e retângulo original de cada imagem.
 Para pixel art no Canvas, use: ctx.imageSmoothingEnabled = false;
+
+Atualização 2026-08-27: jungle_sheet substituído pelo sprite sheet enviado pelo usuário e convertido para WEBP.

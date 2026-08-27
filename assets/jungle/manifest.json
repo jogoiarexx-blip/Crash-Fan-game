@@ -52,9 +52,9 @@
         "h": 178
       },
       "key": "platformLong",
-      "role": "solid grass-top platform",
+      "role": "solid grass-top platform — replaced sprite 2026-08-27",
       "collision_profile": {
-        "top": 31,
+        "top": 49,
         "left": 8,
         "right": 8,
         "depth": 64
