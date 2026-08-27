@@ -1,58 +1,98 @@
-V0.8 — ASSET MANAGER
+CRASH BANDICOOT FÃ GAME — ASSET MANIFEST — V1.02
 
-CORE (menu)
-- menu_logo.webp
+Estrutura organizada por categoria. Todos os caminhos abaixo são relativos à raiz do projeto.
 
-SHARED (carregados ao entrar em qualquer fase)
-- player_clean.webp
-- crash_crouch_slide.webp
-- aku_sheet_transparent.webp
-- tnt_sheet_transparent.webp
-- jungle_sheet.webp
-- traps_sheet.jpg
-- swing_log_sheet.webp
-- stone_press_sheet.jpg
-- portal_sheet.webp
-- checkpoint_sheet.webp
-- death_soul_sheet.webp
-- death_winged_soul.webp
-- tileset_v05.webp
-- turtle_walk_better.png
-- armadillo_enemy.webp
-- trap_retractable_spikes.png
-- trap_swinging_log.png
-- trap_stone_press.png
-- trap_poison_surface.png
-- trap_ice_spikes.png
-- volcanic_magma_beetle.png
-- volcanic_ember_bat.png
-
-FASE 1 — ILHA SELVAGEM
-- background_fase1.webp
-- usa tileset_v05 + scenery de jungle_sheet
-
-FASE 2 — TEMPLO PERDIDO
-- background_fase2.webp
-
-FASE 3 — PÂNTANO SOMBRIO
-- background_fase3.webp
-- swamp_tiles.webp
-- swamp_enemies.webp
-
-FASE 4 — PICOS CONGELADOS
-- background_fase4.webp
-- ice_tiles.webp
-- ice_enemies.webp
-
-FASE 5 — CÂNION RUBRO
-- reutiliza background_fase2.webp com composição cromática inédita
-- reutiliza tiles e sprites compartilhados
-- novos desafios: rajadas de vento, plataformas alternadas, TNT em cadeia, prensas e troncos
-- inimigos exclusivos: Besouro de magma e Morcego de brasa
-
-ESTRATÉGIA
-- menu carrega apenas CORE;
-- fase carrega SHARED + grupo da fase;
-- assets compartilhados permanecem em cache;
-- fim de uma fase pré-carrega o grupo da próxima;
-- sprites de teste/debug foram removidos do pacote final.
+assets/audio/aku.wav
+assets/audio/box.wav
+assets/audio/checkpoint.wav
+assets/audio/death.wav
+assets/audio/enemy.wav
+assets/audio/explosion.wav
+assets/audio/fruit.wav
+assets/audio/hurt.wav
+assets/audio/jump.wav
+assets/audio/land.wav
+assets/audio/menu.wav
+assets/audio/music_phase1.wav
+assets/audio/music_phase2.wav
+assets/audio/music_phase3.wav
+assets/audio/music_phase4.wav
+assets/audio/music_phase5.wav
+assets/audio/portal.wav
+assets/audio/spin.wav
+assets/audio/tnt_tick.wav
+assets/backgrounds/background_fase1.webp
+assets/backgrounds/background_fase2.webp
+assets/backgrounds/background_fase3.webp
+assets/backgrounds/background_fase4.webp
+assets/backgrounds/background_fase5.webp
+assets/backgrounds/end_ruin_portal.png
+assets/boxes/checkpoint_sheet.webp
+assets/boxes/checkpoint_sheet_user.png
+assets/boxes/tnt_sheet_transparent.webp
+assets/characters/aku_sheet_transparent.webp
+assets/characters/crash_crouch_slide.webp
+assets/characters/player_clean.webp
+assets/effects/death_soul_sheet.webp
+assets/effects/death_winged_soul.webp
+assets/enemies/armadillo_enemy.webp
+assets/enemies/ice_enemies.webp
+assets/enemies/swamp_enemies.webp
+assets/enemies/turtle_walk_better.png
+assets/enemies/volcanic_ember_bat.png
+assets/enemies/volcanic_magma_beetle.png
+assets/environment/portal_sheet.webp
+assets/jungle/01_waterfall_cliff_large.png
+assets/jungle/02_platform_long_roots.png
+assets/jungle/03_platform_extra_long_vines.png
+assets/jungle/04_platform_tall_vine.png
+assets/jungle/05_platform_medium_hanging_vines.png
+assets/jungle/06_platform_medium_stalactite.png
+assets/jungle/07_stone_block_single.png
+assets/jungle/08_platform_small.png
+assets/jungle/09_slope_down_long.png
+assets/jungle/10_stair_platform.png
+assets/jungle/11_stone_blocks_pair.png
+assets/jungle/12_floating_rock_small.png
+assets/jungle/13_stepped_platform.png
+assets/jungle/14_vine_pole_01.png
+assets/jungle/15_vine_pole_02.png
+assets/jungle/16_vine_pole_03.png
+assets/jungle/17_rope_bridge_small.png
+assets/jungle/18_palm_tree_large.png
+assets/jungle/19_flower_red_small.png
+assets/jungle/20_foliage_bush_01.png
+assets/jungle/21_foliage_bush_02.png
+assets/jungle/22_foliage_flower_red.png
+assets/jungle/23_palm_tree_small.png
+assets/jungle/24_mushrooms_red.png
+assets/jungle/25_foliage_cluster_red.png
+assets/jungle/26_foliage_flower_purple.png
+assets/jungle/27_grass_tuft_01.png
+assets/jungle/28_grass_tuft_02.png
+assets/jungle/29_torch_fire.png
+assets/jungle/30_rope_bridge_large.png
+assets/jungle/31_sign_arrow_right.png
+assets/jungle/32_rock_formation_01.png
+assets/jungle/33_stone_totem.png
+assets/jungle/34_fallen_log.png
+assets/jungle/35_rock_formation_02.png
+assets/jungle/36_rock_formation_03.png
+assets/jungle/README.txt
+assets/jungle/jungle_sheet_numbered.png
+assets/jungle/manifest.json
+assets/tiles/ice_tiles.webp
+assets/tiles/jungle_sheet.webp
+assets/tiles/swamp_tiles.webp
+assets/tiles/tileset_ground_custom.webp
+assets/tiles/tileset_v05.webp
+assets/traps/stone_press_sheet.jpg
+assets/traps/swing_log_sheet.webp
+assets/traps/trap_ice_spikes.png
+assets/traps/trap_poison_surface.png
+assets/traps/trap_spikes_16bit_sheet.webp
+assets/traps/trap_stone_press.png
+assets/traps/trap_swinging_log.png
+assets/traps/traps_sheet.jpg
+assets/ui/level_select_user.png
+assets/ui/menu_logo.webp

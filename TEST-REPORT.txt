@@ -1,0 +1,53 @@
+CRASH BANDICOOT FÃ GAME — V1.02 — RELATÓRIO DE VALIDAÇÃO
+
+INTEGRAÇÃO JUNGLE
+- 36/36 assets do manifest.json presentes em assets/jungle/.
+- 36/36 assets registrados no registry central e utilizados na Fase 1.
+- Dimensões reais dos 36 PNGs conferidas contra o manifest.json.
+- manifest.json enriquecido com key, role e collision_profile.
+- js/jungle-phase.js carrega antes de js/game.js.
+
+COLISÕES / LEVEL DESIGN
+- 29 superfícies sólidas/one-way geradas por dados.
+- 4 superfícies de ponte one-way: colisão somente por cima.
+- 1 rampa com superfície inclinada contínua.
+- Caixas e TNT auditadas: todas possuem apoio e não se sobrepõem.
+- Patrulhas dos inimigos limitadas a superfícies válidas; um inimigo acompanha a inclinação da rampa.
+- Climbables e decorações não criam paredes invisíveis.
+- Cachoeira permanece em background e sem piso sólido sobre a água.
+- Totem usa colisão opcional somente no corpo de pedra.
+
+PIXEL ART / RENDER
+- Canvas: imageSmoothingEnabled = false.
+- CSS: image-rendering: pixelated e crisp-edges.
+- Escala global da floresta: JUNGLE_SCALE = 0.72.
+- Não há stretch independente por eixo para os novos assets.
+- Ordem de desenho da floresta centralizada por camadas.
+
+COMPATIBILIDADE
+- game.js passou em node --check.
+- jungle-phase.js passou em node --check.
+- Todos os caminhos literais de imagem/áudio usados pelo JS apontam para arquivos existentes.
+- Controles mobile e CSS touch preservados.
+- INICIAR-JOGO.bat preservado para abertura por dois cliques no Windows.
+- Saves, HUD, menus, áudio, caixas, inimigos e demais fases foram mantidos.
+
+OBSERVAÇÃO
+- A validação automatizada cobre estrutura, assets, colisões de dados e referências. O ambiente de execução desta sessão não fornece um teste físico em aparelho celular real; por isso o suporte mobile foi validado pela preservação das rotinas touch e CSS responsivo existentes.
+
+=== AKU AKU 3 / INVENCIBILIDADE — atualização ===
+- 3º Aku Aku integrado à v1.02: OK
+- Duração configurada: 20 segundos
+- Sprite de ativação: assets/characters/crash_aku3_sheet_user.png
+- Música intensa: camada assets/audio/invincible_layer.wav + leve aceleração da música da fase
+- Retorno automático da música ao normal: OK
+- Trilha de afterimages durante a invencibilidade: OK
+- Anéis/giro visual especial: OK
+- Caixas normais quebram automaticamente no contato horizontal ou por baixo: OK
+- Colisão por cima mantém quebra normal: OK
+- Inimigos tocados durante invencibilidade são derrotados: OK
+- Buracos/queda fora do mapa continuam fatais: OK
+- Morte encerra invencibilidade e música especial: OK
+- Temporizador exibido no HUD: OK
+- Estado akuInvT incluído no save sem remover campos antigos: OK
+- game.js validado com node --check: OK

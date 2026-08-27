@@ -1,0 +1,31 @@
+Crash Bandicoot Fangame v1.02 - Auditoria de level design
+
+Alteracoes:
+- Revisadas as rotas altas das 5 fases.
+- Adicionadas tartarugas de apoio antes de trechos altos para permitir:
+  1) pisar na tartaruga;
+  2) aguardar/rebater no casco virado;
+  3) executar o super-pulo do casco.
+- Mantido o super-pulo existente do casco (impulso vertical -640).
+- Adicionada 1 Caixa de 10 Pulos em cada fase, posicionada em rota elevada.
+- Cada quique por cima concede 1 Wumpa.
+- A caixa mostra quantos pulos faltam e quebra no 10o impacto.
+- Giro/slide ainda podem destruir a caixa antecipadamente.
+- A caixa participa da contagem de caixas/gema da fase.
+- Progresso parcial da Caixa de 10 Pulos e salvo/restaurado.
+- Verificada sustentacao das tartarugas e caixas especiais nas fases 2-5.
+- Na Fase 1, as novas posicoes usam as superficies do sistema jungle data-driven.
+
+Posicoes de apoio principais:
+Fase 1: tartaruga na rota 300px + apoio final; caixa 10 na plataforma de surfaceY 250.
+Fase 2: tartarugas antes das rotas 255/245; caixa 10 na plataforma de surfaceY 255.
+Fase 3: tartarugas antes das rotas 250/245; caixa 10 na plataforma de surfaceY 250.
+Fase 4: tartarugas antes das rotas 245; caixa 10 na plataforma alta da segunda metade.
+Fase 5: tartarugas antes das rotas 240/250; caixa 10 na plataforma alta da segunda metade.
+
+Validacoes automaticas:
+- js/game.js: sintaxe OK
+- js/jungle-phase.js: sintaxe OK
+- caminhos de assets referenciados: verificados
+- controles mobile preservados
+- save antigo permanece compativel; normalBounce e opcional

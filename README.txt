@@ -1,4 +1,19 @@
-CRASH BANDICOOT FÃ GAME — V1.0.8
+CRASH BANDICOOT FÃ GAME — V1.02
+
+
+V1.02 — FLORESTA RECONSTRUÍDA COM JUNGLE_TILES_SEPARADOS
+- 36 PNGs integrados em assets/jungle/, todos registrados e utilizados na Fase 1.
+- assets/jungle/manifest.json enriquecido com key, role e collision_profile.
+- js/jungle-phase.js centraliza registry, escala global, dados da fase e gameplay da floresta.
+- escala global JUNGLE_SCALE = 0.72; nenhuma imagem é esticada por eixo.
+- plataformas/terrain usam colisão apenas na área sólida sob a grama.
+- ponte pequena/grande: colisão one-way apenas na madeira; é possível passar por baixo.
+- rampa slope_down_long: colisão inclinada real, acompanhada pelo personagem e inimigo configurado para a rampa.
+- climbables permanecem decorativos enquanto não houver mecânica de escalada.
+- cachoeira fica no background e não cria piso sobre a água.
+- objetos decorativos não bloqueiam; totem usa apenas obstáculo coerente com o corpo de pedra.
+- ordem: background > ambiente distante > terreno > decoração traseira > gameplay > Crash > foreground > HUD.
+- caixas, TNT e patrulhas foram auditadas para permanecer apoiadas.
 
 COMO ABRIR
 1. Extraia o ZIP inteiro.
@@ -11,7 +26,17 @@ ESTRUTURA DO PROJETO
 - index.html               -> entrada única do jogo
 - css/style.css            -> todo o visual da página/canvas
 - js/game.js               -> gameplay, menus, saves, AssetManager e fases
-- assets/                  -> sprites, tilesets, backgrounds e efeitos
+- assets/                  -> recursos organizados por categoria
+  - characters/            -> Crash e Aku Aku
+  - enemies/               -> inimigos
+  - boxes/                 -> caixas, TNT e checkpoint
+  - traps/                 -> armadilhas
+  - tiles/                 -> tilesets e cenário modular
+  - backgrounds/           -> backgrounds e ruína do portal
+  - ui/                    -> menu e seletor de fases
+  - effects/               -> sprites de efeitos/morte
+  - environment/           -> portal e objetos de ambiente
+  - audio/                 -> músicas e efeitos sonoros
 - ASSET-MANIFEST.txt       -> relação dos assets carregados
 
 V0.6 — FASE 1 REFEITA
@@ -75,7 +100,7 @@ V0.7 — MELHORIAS DE ARMADILHAS E ESTABILIDADE
 - desbloqueio ajustado às cinco fases implementadas;
 - arquivos JPEG corrigidos para extensão .jpg e MIME compatível.
 
-Os novos sprites ficam em assets/trap_*.png e são carregados junto dos recursos compartilhados.
+Os novos sprites ficam em assets/traps/trap_* e são carregados junto dos recursos compartilhados.
 
 V0.8 — CÂNION RUBRO
 A quinta fase usa os tiles existentes em uma composição inédita de cânion vulcânico, com filtro cromático, rajadas que empurram Crash, plataformas alternadas, três troncos, duas prensas, trechos de espinhos, quatro TNTs em sequência, rota superior e novos posicionamentos de inimigos e colecionáveis.
