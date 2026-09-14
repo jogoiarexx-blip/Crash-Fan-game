@@ -21,7 +21,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat \
+          : > /tmp/v125-changes.tar.gz
+          for p in \
             .publish-v125/archive/part-00 \
             .publish-v125/archive/part-01 \
             .publish-v125/archive/part-02 \
@@ -29,9 +30,10 @@ jobs:
             .publish-v125/archive/part-04 \
             .publish-v125/archive/part-05 \
             .publish-v125/archive/part-06 \
-            .publish-v125/archive/part-07 \
-            > /tmp/v125.b64
-          base64 -d /tmp/v125.b64 > /tmp/v125-changes.tar.gz
+            .publish-v125/archive/part-07
+          do
+            base64 -d "$p" >> /tmp/v125-changes.tar.gz
+          done
           tar -tzf /tmp/v125-changes.tar.gz >/tmp/v125-files.txt
           tar -xzf /tmp/v125-changes.tar.gz -C .
           test -f index.html
