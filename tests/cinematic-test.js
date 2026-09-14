@@ -1,0 +1,13 @@
+const fs=require('fs'),path=require('path'),{spawnSync}=require('child_process');
+const root=path.resolve(__dirname,'..'),video=path.join(root,'assets','cinematics','abertura_v116.mp4');
+if(!fs.existsSync(video))throw new Error('vídeo de abertura ausente');
+const probe=spawnSync('ffprobe',['-v','error','-show_entries','format=duration,size','-show_entries','stream=codec_name,width,height,r_frame_rate,sample_rate,channels','-of','json',video],{encoding:'utf8'});
+if(probe.status!==0)throw new Error('ffprobe falhou: '+probe.stderr);
+const data=JSON.parse(probe.stdout),v=data.streams.find(s=>s.codec_name==='h264'),a=data.streams.find(s=>s.codec_name==='aac'),duration=Number(data.format.duration),bytes=Number(data.format.size);
+if(!v||v.width!==1280||v.height!==720||v.r_frame_rate!=='30/1')throw new Error('vídeo fora do padrão 720p/30fps/H.264');
+if(!a||a.channels!==1)throw new Error('trilha AAC mono ausente');
+if(Math.abs(duration-18)>.05||bytes>4*1024*1024)throw new Error('duração ou tamanho da cinemática fora do esperado');
+const index=fs.readFileSync(path.join(root,'index.html'),'utf8'),game=fs.readFileSync(path.join(root,'js','game.js'),'utf8');
+if(!index.includes('assets/cinematics/abertura_v116.mp4')||!index.includes('cinematic-skip'))throw new Error('vídeo ou botão de pular não integrado');
+if(!game.includes('playOpeningCinematic')||!game.includes("newGameAtSlot(i){activeSlot=i;playOpeningCinematic"))throw new Error('nova campanha não inicia pela cinemática');
+console.log(`PASS: abertura ${duration.toFixed(1)}s, 1280×720/30fps, H.264 + AAC, ${(bytes/1024/1024).toFixed(2)} MiB, integrada e pulável.`);

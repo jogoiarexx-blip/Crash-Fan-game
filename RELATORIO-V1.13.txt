@@ -1,0 +1,27 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.13
+
+TRILHA SONORA
+- Fases 1–9 possuem composições próprias de 16 segundos.
+- Cada tema usa andamento, escala, melodia, baixo, percussão e timbre adequados ao cenário.
+- As músicas têm entrada e saída suavizadas para repetição sem estalos.
+
+EFEITOS
+- Pulo: subida tonal curta.
+- Giro: movimento circular com ruído controlado.
+- Caixa e pouso: impactos graves diferentes.
+- TNT e explosão: alerta agudo e explosão com grave/ruído.
+- Wumpa, Aku Aku e checkpoint: confirmações melódicas distintas.
+- Dano, morte e inimigo: impactos próprios e legíveis.
+- Portal: varredura crescente de energia.
+- Menu: clique curto e discreto.
+- Invencibilidade: camada musical acelerada independente.
+
+OTIMIZAÇÃO
+- Áudio mono PCM 16-bit em 22,05 kHz.
+- Pool cria e reutiliza até quatro vozes por efeito, somente quando necessário.
+- Ganho individual evita que explosão, dano e giro saturem a mixagem.
+- Músicas continuam carregadas e liberadas junto de cada fase.
+
+VALIDAÇÃO
+- 24 arquivos WAV válidos, diferentes, normalizados e sem clipping.
+- Loader, gameplay, controles, saves e as nove fases permaneceram funcionais.

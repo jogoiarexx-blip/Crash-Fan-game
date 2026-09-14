@@ -1,0 +1,25 @@
+CRASH BANDICOOT FÃ GAME — V1.03
+RELATÓRIO DE AUDITORIA, CORREÇÕES E VALIDAÇÃO
+
+CORREÇÕES
+- Carry-over de frutas preservado após morte antes do checkpoint.
+- phaseStartFruits integrado ao save; saves antigos continuam aceitos.
+- Caixa de vida concede a recompensa no instante da quebra e não duplica após a animação.
+- Teclas e comandos touch são limpos ao perder foco, evitando movimento contínuo involuntário.
+- O jogo pausa automaticamente quando a aba/app fica em segundo plano.
+- Controles salvos inválidos são substituídos por valores seguros.
+- A tela de controles aberta pelo pause mantém a fase carregada e retorna corretamente ao pause.
+- Reiniciar fase não permite duplicar frutas já coletadas na tentativa atual.
+
+VALIDAÇÃO
+- Sintaxe: game.js, jungle-phase.js e level-loader.js aprovados.
+- Fases 1 a 5: dados, plataformas, caixas, TNT, checkpoints e recursos aprovados.
+- Loader: apenas core, shared e a fase atual permanecem em memória.
+- Gameplay automatizado: movimento horizontal e pulo aprovados.
+- Estados renderizados: menu, jogo, pause, resultados e seletor aprovados sem exceções.
+- Caixa de vida: +1 imediato e nenhuma segunda concessão após a animação.
+- Reset de entrada: teclado e toque retornam ao estado neutro.
+- Pacote: referências de assets e respostas HTTP locais validadas.
+
+OBSERVAÇÃO
+O navegador remoto da sessão bloqueou o endereço do servidor local. Por isso a execução foi validada pelo runtime automatizado do próprio projeto, com simulação do loop, entradas, transições e renderização em canvas, além do servidor HTTP local.

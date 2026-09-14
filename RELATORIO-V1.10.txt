@@ -1,0 +1,34 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.10
+
+GAMEPLAY DAS FASES ESPECIAIS
+- Frutas e esquivas próximas alimentam uma corrente temporária de combo.
+- A cada três ações seguidas, o multiplicador de pontos aumenta até o limite seguro.
+- Saltar um obstáculo na mesma faixa é reconhecido como esquiva; simplesmente mudar para outra faixa não gera bônus indevido.
+- Colidir interrompe o combo imediatamente.
+- O HUD mostra combos a partir de ×2 e destaca correntes maiores.
+- A tela de resultado informa total de esquivas e melhor combo.
+
+LEITURA E CÂMERA
+- Ameaças próximas na faixa escolhida recebem um alerta pulsante.
+- Trocas de faixa inclinam suavemente a pista para reforçar velocidade e direção.
+- A Avalanche Alpina recebe vibração visual sutil quando a bola de neve está muito próxima.
+- Movimento reduzido e qualidade Baixa desativam a inclinação dinâmica.
+
+OTIMIZAÇÃO
+- Fragmentos de caixa variam por perfil gráfico: 4 no Baixo, 7 no Médio e 10 no Alto para caixas especiais.
+- Caixas comuns usam 4, 6 ou 9 fragmentos conforme o perfil.
+- Nenhuma nova imagem foi adicionada: o pacote mantém 96 mídias, todas utilizadas.
+- Raster de gameplay permanece em WebP; PNG continua restrito aos ícones PWA.
+
+SAVE E CHECKPOINT
+- Contadores de esquiva das fases 6 e 7 foram adicionados de forma compatível com saves anteriores.
+- Respawn no checkpoint mantém colisões e esquivas acumuladas.
+- Correntes temporárias não são restauradas, impedindo bônus artificial após morrer.
+
+VALIDAÇÃO
+- Sintaxe dos arquivos JavaScript: PASS.
+- Fases 1–7 carregadas em sequência: PASS.
+- Combo, multiplicador, expiração e esquiva: PASS.
+- Avalanche, Corrida Polar, mortes específicas e assets seletivos: PASS.
+- Movimento, pulo, save, checkpoint, pause e renderização: PASS.
+- Organização e integridade dos assets: PASS.

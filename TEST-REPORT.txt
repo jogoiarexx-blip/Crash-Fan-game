@@ -1,4 +1,128 @@
-CRASH BANDICOOT FÃ GAME — V1.02 — RELATÓRIO DE VALIDAÇÃO
+CRASH BANDICOOT FÃ GAME — V1.16 — RELATÓRIO DE VALIDAÇÃO
+
+=== V1.16 — CINEMÁTICA DE ABERTURA ===
+- Vídeo H.264 1280×720 a 30 fps: PASS
+- Duração de 18 segundos e tamanho abaixo de 4 MiB: PASS
+- Trilha AAC e rugido sincronizado: PASS
+- Três cenas, títulos e crédito Luis Paulo Alves: integrado
+- Reprodução ao criar nova campanha: integrado
+- Botão, teclado, toque e gamepad podem pular: PASS
+- preload metadata e carregamento da Fase 1 após o vídeo: integrado
+- Preferência de movimento reduzido respeitada: integrado
+- 119 mídias presentes e referenciadas; duplicatas ou sem uso: 0
+
+=== V1.15 — GUARDIÃO DAS NOVE GEMAS ===
+- Décima fase e modo de batalha final: PASS
+- Chefe com 9 pontos de vida, vulnerabilidade e conclusão: PASS
+- Três estágios (selva, cânion e gelo) e quatro famílias de ataque: PASS
+- Sprite WebP 4×3 com repouso, ataques, dano e derrota: PASS
+- Arena exclusiva, cinemática, HUD e final: integrado
+- Música do chefe e sete efeitos exclusivos: PASS
+- Phase10 isolada em memória e liberada ao sair: PASS
+- Persistência de bossHp, bossDefeated e troféu guardiao: integrado
+- Crédito Luis Paulo Alves no menu e na conclusão: integrado
+- 32 WAV válidos, distintos e normalizados: PASS
+- 118 mídias referenciadas; duplicatas ou sem uso: 0
+
+=== V1.14 — SELETOR E PROGRESSÃO INDIVIDUAL ===
+- Nove registros independentes de fase no save: PASS
+- Gemas e cristais permanentes por fase: PASS
+- Migração de save V1.13 para schema 1.2.0: PASS
+- Melhor tempo, pontuação, caixas, mortes e colisões por fase: PASS
+- Preview sob demanda após liberar a fase anterior: integrado
+- Indicadores de gema, cristal e conclusão nos pedestais: integrado
+- Templo da Conquista e tela final de campanha: integrado
+- Troféus paginados e dentro dos limites do canvas: integrado
+- Inicialização de nove cristais em nova campanha: PASS
+- Regressão das nove fases e 124 superfícies: PASS
+
+=== V1.13 — ÁUDIO ORIGINAL E OTIMIZADO ===
+- Nove músicas exclusivas de 16 segundos: PASS
+- Quatorze efeitos distintos e uma camada de invencibilidade: PASS
+- WAV mono 22,05 kHz/16-bit, sem clipping ou duplicação: PASS
+- Bordas suavizadas para evitar estalo no início/final: PASS
+- Volume individual e pool reutilizável de efeitos: PASS
+- Carregamento de música continua exclusivo da fase atual: PASS
+
+=== V1.12 — FUNDOS, OBSTÁCULOS E MÚSICAS EXCLUSIVAS ===
+- Quatro backgrounds especiais diferentes em 1536×617 WebP: PASS
+- Cartelas de obstáculos gelo/selva em 4×2 células transparentes: PASS
+- Formas provisórias substituídas no render das pistas: PASS
+- Quatro músicas próprias e carregadas por fase: PASS
+- Fases 6–9 carregam a cartela correta e liberam a anterior: PASS
+- Fases de plataforma não carregam obstáculos de pista: PASS
+- Mídias referenciadas/presentes: 108/108; duplicatas ou sem uso: 0
+
+=== V1.11 — PEDRA DA SELVA, JAVALI E ORDEM POR BIOMAS ===
+- Nove fases carregadas em sequência: PASS
+- Ordem narrativa interna [1,8,9,2,3,5,4,6,7]: PASS
+- Arco Selva nas posições 1–3 e arco Gelo nas posições 7–9: PASS
+- Pedra da Selva: faixa, salto, avanço, checkpoint, conclusão e morte boulder: PASS
+- Corrida do Javali: faixa, salto, combo, checkpoint e conclusão: PASS
+- Sprites exclusivos WebP: pedra 6×256 e javali 8×256: PASS
+- Fases 8 e 9 não carregam bola de neve, urso ou alma alada: PASS
+- Migração de saves antigos e nove cristais: PASS
+- 124/124 superfícies técnicas alcançáveis: PASS
+- Mídias referenciadas/presentes: 98/98; duplicatas ou sem uso: 0
+
+=== V1.10 — COMBO, ESQUIVA E CÂMERA DINÂMICA ===
+- Corrente de combo nas fases 6 e 7: PASS
+- Multiplicador progressivo de pontuação: PASS
+- Esquiva próxima contabilizada somente ao saltar o perigo: PASS
+- Combo encerrado após o tempo limite ou colisão: PASS
+- Alertas de obstáculo na faixa ativa: integrado
+- Inclinação de câmera desativada em movimento reduzido e qualidade Baixa: integrado
+- Esquivas preservadas em save e respawn por checkpoint: PASS
+- Fragmentos de caixas escalados por qualidade gráfica: integrado
+- Resultado especial mostra esquivas e melhor combo: integrado
+- Regressão completa das sete fases: PASS
+- Mídias referenciadas/presentes: 96/96; duplicatas ou sem uso: 0
+
+=== V1.09 — MORTES ESPECÍFICAS E QUALIDADE GRÁFICA ===
+- Nove perfis de morte possuem movimentos distintos: PASS
+- Impacto, queda, espinhos, explosão, prensa, gelo e veneno usam alma alada: PASS
+- Avalanche e Corrida Polar não carregam nem exibem a alma alada: PASS
+- Fase 5 carrega a alma; fases 6 e 7 liberam o recurso ao trocar de fase: PASS
+- Qualidade Auto/Baixa/Média/Alta integrada às Configurações e ao pause: PASS
+- Densidade de partículas, cenário e Mode 7 varia com a qualidade: PASS
+- Retorno de Controles ao pause após a nova opção gráfica: PASS
+- Fases 1–7, checkpoints, saves, movimento, render e conclusão: PASS
+- Mídias referenciadas/presentes: 96/96
+- Duplicatas exatas ou mídias sem uso: 0
+
+=== V1.08 — CÂMERA FRONTAL E CINEMÁTICA POLAR ===
+- Fase 6 usa modo avalanche frontal em três faixas: PASS
+- Troca de faixa, salto, avanço, checkpoint e morte snowball: PASS
+- Bola de neve varia de escala conforme a distância de segurança: integrado
+- Colisões aproximam a avalanche e o HUD mostra o perigo: integrado
+- Fase 7 possui montagem automática e gesto de sobrancelha antes da largada: integrado
+- Introduções podem ser puladas e respeitam movimento reduzido: integrado
+- Fases especiais usam somente uma superfície técnica cada: 1/1 + 1/1 PASS
+- Mídias referenciadas/presentes: 96/96
+- Duplicatas exatas ou mídias sem uso: 0
+
+=== V1.07 — FASES ESPECIAIS E MORTES POR CAUSA ===
+- Fases jogáveis carregadas em sequência: 1–7 PASS
+- Apenas core + shared + phaseN atual permanecem em memória: PASS
+- Avalanche Alpina avança, acelera e aciona morte snowball: PASS
+- Corrida Polar responde a troca de faixa e salto: PASS
+- Corrida Polar conclui ao atingir a distância final: PASS
+- Checkpoint intermediário da Corrida Polar: integrado
+- Mortes específicas: fall, spikes, explosion, crush, freeze, poison, snowball, ride e impact
+- Sprite da avalanche: 6 quadros WebP recortados
+- Sprite de Crash no urso: 8 quadros WebP recortados
+- Mídias referenciadas/presentes: 96/96
+- Duplicatas exatas ou mídias sem uso: 0
+- Superfícies alcançáveis: 137/137
+
+=== V1.06 — ANIMAÇÃO DE MORTE ===
+- Reação, tombo, impacto, achatamento e desaparecimento do corpo: integrados
+- Alma alada em seis quadros com subida, balanço, rastro, auréola e fade: integrada
+- Efeitos pixelados e sobreposição cinematográfica: integrados
+- Queda fora do mapa permanece visível durante a animação: OK
+- Respawn e game over sincronizados ao fim da sequência: OK
+- Modo de movimento reduzido: sequência curta e sem dispersão de partículas
+- Regressão automatizada de morte e respawn: PASS
 
 INTEGRAÇÃO JUNGLE
 - 36/36 assets do manifest.json presentes em assets/jungle/.
@@ -8,8 +132,8 @@ INTEGRAÇÃO JUNGLE
 - js/jungle-phase.js carrega antes de js/game.js.
 
 COLISÕES / LEVEL DESIGN
-- 29 superfícies sólidas/one-way geradas por dados.
-- 4 superfícies de ponte one-way: colisão somente por cima.
+- 31 superfícies sólidas/one-way geradas por dados.
+- 2 superfícies de ponte one-way: colisão somente por cima.
 - 1 rampa com superfície inclinada contínua.
 - Caixas e TNT auditadas: todas possuem apoio e não se sobrepõem.
 - Patrulhas dos inimigos limitadas a superfícies válidas; um inimigo acompanha a inclinação da rampa.
@@ -51,3 +175,69 @@ OBSERVAÇÃO
 - Temporizador exibido no HUD: OK
 - Estado akuInvT incluído no save sem remover campos antigos: OK
 - game.js validado com node --check: OK
+
+=== v1.02 Level Loader Profissional (2026-08-29) ===
+- AssetManager com release de grupos por fase: OK
+- Loading real por recursos: OK
+- Retry + timeout + mensagem de erro: OK
+- Fase 1 -> 2 -> 3 sem acumular phaseN: OK
+- Cleanup deixa apenas core/shared após release: OK
+- Checkpoint preserva progresso: OK
+- Morte sem checkpoint reinicia tentativa: OK
+- Preload automático entre fases removido: OK
+- Música exclusiva integrada ao grupo phaseN: OK
+
+
+=== CORREÇÃO PÓS-AUDITORIA — 2026-08-29 ===
+- tests/jungle-data-test.js: PASS
+- tests/loader-runtime-test.js: PASS
+- game.js / jungle-phase.js / level-loader.js: sintaxe OK
+
+=== V1.03 — ESTABILIDADE E REGRESSÃO ===
+- Carregamento sequencial das fases 1–5: PASS
+- Movimento horizontal e pulo simulados: PASS
+- Render de menu, gameplay, pause, resultados e seletor: PASS
+- Frutas trazidas de outra fase preservadas após morte sem checkpoint: PASS
+- Caixa de vida creditada imediatamente e sem duplicação: PASS
+- Teclado e touch limpos ao perder foco: PASS
+- Tela de controles retorna ao pause sem descarregar a fase: PASS
+- Reinício manual sem duplicação das frutas da tentativa: PASS
+- 36/36 assets da jungle presentes, registrados e usados na Fase 1: OK
+- platformTall, platformMediumRock, stoneBlock, stairPlatform, stoneBlocksPair, floatingRock, steppedPlatform, bridgeLarge e rock1 reintegrados ao cenário: OK
+- 2 pontes one-way reconhecidas: OK
+- Totem com colisão obstacle coerente: OK
+- Patrulhas x=1535, x=1980 e x=3835 limitadas a superfícies realmente apoiadas: OK
+- Arquivos temporários soltos removidos: OK
+- Duplicatas não referenciadas removidas: OK
+- Asset manifest regenerado a partir do pacote final: OK
+- Loader continua liberando phase1 antes da phase2 e phase2 antes da phase3: OK
+
+=== V1.04 — SPRITES, WEBP, PLATAFORMAS E CINEMÁTICAS ===
+- Sintaxe de game.js, jungle-phase.js e level-loader.js: PASS
+- Sprites animados do tatu, besouro de magma e morcego de brasa: integrados
+- Recortes individuais e ancoragem inferior dos novos inimigos: OK
+- Recortes reais dos 17 quadros de agachar/deslizar do Crash: OK
+- Fase 1: 31/31 superfícies alcançáveis
+- Fase 2: 31/31 superfícies alcançáveis
+- Fase 3: 19/19 superfícies alcançáveis
+- Fase 4: 18/18 superfícies alcançáveis
+- Fase 5: 21/21 superfícies alcançáveis
+- 36/36 elementos da selva convertidos e carregáveis em WebP: PASS
+- Todos os arquivos WebP decodificados com sucesso: PASS
+- 97/97 recursos de runtime responderam via servidor HTTP local: PASS
+- PNG mantido apenas nos cinco ícones PWA: OK
+- Loader sequencial e liberação de grupos de fase: PASS
+- Movimento, pulo, checkpoint, restart, caixa de vida, input e estados de render: PASS
+
+=== V1.05 — CONSISTÊNCIA DE SPRITES E ORGANIZAÇÃO ===
+- Comparativo visual de personagens e inimigos concluído.
+- Tatu, besouro de magma e morcego de brasa refeitos no padrão do Crash: OK
+- Crash + Aku Aku com sete quadros e transparência real: OK
+- Recortes individuais das quatro novas folhas: OK
+- 94/94 mídias referenciadas e presentes: PASS
+- Arquivos de mídia sem uso: 0
+- Duplicatas exatas por SHA-256: 0
+- PNG fora de assets/ui/icons/: 0
+- Cartela tropical e fallbacks repetidos removidos: OK
+- AssetManager permanece com core + shared + somente a fase atual: PASS
+- Regressão completa de gameplay e 120/120 superfícies alcançáveis: PASS

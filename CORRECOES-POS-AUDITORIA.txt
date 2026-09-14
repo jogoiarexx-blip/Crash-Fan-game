@@ -1,0 +1,32 @@
+CRASH BANDICOOT FÃ GAME v1.02 — CORREÇÕES PÓS-AUDITORIA
+
+CORRIGIDO
+- Reintegração dos 9 assets da jungle que estavam registrados mas fora da composição atual da Fase 1.
+- Terceira ponte one-way adicionada como rota alta opcional, atravessável por baixo.
+- Totem alterado para obstáculo físico coerente com o perfil de colisão já existente.
+- Patrulhas de três armadillos reduzidas para não atravessarem áreas sem piso.
+- Arquivos temporários da raiz removidos.
+- Duplicatas não utilizadas de life box, checkpoint e atlas numerado removidas.
+- ASSET-MANIFEST.txt regenerado conforme os arquivos realmente presentes.
+
+VALIDAÇÃO
+- node --check js/game.js: PASS
+- node --check js/jungle-phase.js: PASS
+- node --check js/level-loader.js: PASS
+- node tests/jungle-data-test.js: PASS
+  Resultado atual: 36/36 assets, 31 superfícies, 2 pontes one-way, 1 rampa, caixas/TNT sem sobreposição, patrulhas apoiadas.
+- node tests/loader-runtime-test.js: PASS
+  Fase 1 -> Fase 2 -> Fase 3 libera corretamente os grupos anteriores.
+  Checkpoint mantém progresso e restart total restaura a tentativa.
+
+ARQUIVOS REMOVIDOS
+- box10_sheet_transparent.png
+- new_sheet_thresh25.png
+- new_sheet_transparent.png
+- user_press_transparent.png
+- assets/boxes/life_box_sheet.png (WEBP permanece)
+- assets/boxes/checkpoint_sheet.webp (checkpoint_sheet_user.png permanece)
+- assets/jungle/jungle_sheet_numbered.png
+- assets/jungle/jungle_sheet_numbered.webp
+
+Nenhum dos arquivos removidos possuía referência ativa no código final.

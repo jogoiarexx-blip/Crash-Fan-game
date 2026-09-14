@@ -1,0 +1,16 @@
+CORREÇÃO v1.02
+
+FASE 1
+- Restaurado o visual original escuro dos buracos.
+- O bug real era de composição: palmLarge em x=4860 estava apoiado visualmente sobre o pit x=4855..4950.
+- A palmeira foi movida para x=5030, sobre terreno sólido.
+- A bridgeLarge elevada em x=4660 foi removida daquele trecho final.
+- A bridgeLarge foi reaproveitada de forma lógica no pit de x=1315, substituindo a bridgeSmall ali.
+- A outra bridgeSmall continua no pit do setor 5.
+
+FASE 2
+- Armadilhas pendulares elevadas cerca de 40 px.
+- Âncoras Y alteradas de 122/120 para 82/80.
+- No ponto mais baixo, a hitbox deixa aproximadamente 78 px até o chão, suficiente para o Crash agachado (48 px).
+
+Gameplay, save, loader e colisões gerais preservados.

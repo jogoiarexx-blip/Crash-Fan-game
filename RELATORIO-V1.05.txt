@@ -1,0 +1,36 @@
+CRASH BANDICOOT FÃ GAME — V1.05
+AUDITORIA DE PADRÃO VISUAL E ORGANIZAÇÃO
+
+RESULTADO VISUAL
+- Compatíveis com o estilo do Crash e mantidos: Aku Aku, tartaruga, inimigos de pântano e inimigos de gelo.
+- Refeitos: tatu roxo, besouro de magma e morcego de brasa.
+- Substituída: animação especial do Crash equipando Aku Aku.
+- O novo padrão usa pixel art 32-bit, contorno escuro forte, volume, paleta compacta e silhueta legível.
+- As folhas foram produzidas a partir das referências do próprio projeto e integradas em WebP com alfa real.
+- Todos os quadros possuem recorte próprio e são desenhados com ancoragem inferior.
+
+ORGANIZAÇÃO
+- characters/: somente Crash e Aku Aku.
+- enemies/: somente folhas de inimigos.
+- boxes/: caixas, TNT e checkpoint.
+- traps/: armadilhas e suas superfícies.
+- tiles/ e jungle/: terrenos gerais e elementos tropicais individuais.
+- backgrounds/, effects/, environment/, items/, ui/ e audio/: cada categoria separada por função.
+
+REDUNDÂNCIAS REMOVIDAS
+- Folhas v1.04 substituídas dos três inimigos.
+- Antiga folha do Crash + Aku Aku.
+- Cartela jungle_sheet, que repetia recursos existentes em assets/jungle/.
+- Tileset v05 sem referência.
+- Folhas antigas de prensa e tronco mantidas apenas como fallback.
+- Ícone de 64 px sem referência.
+
+VALIDAÇÃO
+- 94 arquivos de mídia e 94 referências de runtime.
+- Zero arquivos ausentes.
+- Zero arquivos de mídia sem uso.
+- Zero duplicatas exatas por SHA-256.
+- WebP validado por decodificação.
+- PNG mantido somente para os ícones PWA requeridos.
+- Sintaxe, loader, saves, controles, movimento, checkpoints e renderização: PASS.
+- Plataformas alcançáveis: 120/120.

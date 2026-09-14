@@ -1,0 +1,43 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.07
+
+CONTEÚDO
+- 7 fases jogáveis implementadas.
+- Fases 8, 9 e 10 continuam reservadas como EM BREVE.
+
+FASE 6 — AVALANCHE ALPINA
+- Plataforma lateral com cenário gelado, plataformas, buracos, espinhos de gelo, caixas, TNT, Aku Aku, inimigos e cristal.
+- Bola de neve gigante com seis quadros distintos de rotação.
+- A avalanche acelera durante a fase e ganha medidor de proximidade no HUD.
+- Checkpoint reposiciona a avalanche a uma distância segura, sem remover a pressão da perseguição.
+- Contato possui animação e mensagem de morte próprias.
+
+FASE 7 — CORRIDA POLAR
+- Perspectiva pseudo-3D inspirada em Mode 7, calculada em Canvas sem biblioteca externa.
+- Pista com três faixas, curvatura visual, marcadores laterais e escala por profundidade.
+- Troca de faixa por teclado, gamepad e controles móveis.
+- Salto com física própria para superar caixas, gelo e pedras.
+- Frutas em profundidade, aumento gradual de velocidade, barra de distância e checkpoint intermediário.
+- Crash e urso usam oito quadros distintos de corrida, desvio, salto e aterrissagem.
+- Gema concedida por descida sem colisões.
+
+MORTES ESPECÍFICAS
+- Queda livre.
+- Espinhos.
+- Explosão de TNT.
+- Esmagamento por prensa.
+- Congelamento em espinhos de gelo.
+- Envenenamento no pântano.
+- Atropelamento pela avalanche.
+- Tombo durante a corrida no urso.
+- Impacto comum contra inimigos e armadilhas.
+
+CARREGAMENTO E ORGANIZAÇÃO
+- avalanche_snowball_sheet_v107.webp pertence exclusivamente à phase6.
+- polar_bear_ride_sheet_v107.webp pertence exclusivamente à phase7.
+- Ao trocar de fase, o AssetManager descarrega o grupo anterior.
+- 96 mídias referenciadas, 96 presentes, 0 sem uso e 0 duplicatas exatas.
+
+COMPATIBILIDADE
+- Saves antigos preservados.
+- Slots que já concluíram a Fase 5 recebem acesso à Fase 6.
+- Progressão, cristais e seletor ampliados de cinco para sete fases.

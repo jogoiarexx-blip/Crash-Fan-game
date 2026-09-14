@@ -1,0 +1,34 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.15
+
+GUARDIÃO DAS NOVE GEMAS
+
+A V1.15 transforma o Templo da Conquista em uma fase final jogável. O chefe original possui nove pontos de vida e muda de comportamento em três estágios: Selva Ancestral, Cânion Ardente e Gelo Eterno. O jogador deve ler o aviso, desviar do ataque e usar o giro quando o núcleo se abre.
+
+ATAQUES E ANIMAÇÕES
+- Impacto no chão cria ondas que atravessam a arena.
+- Rajada lança três gemas na direção do jogador.
+- Cânion Ardente cria colunas de fogo com aviso antecipado.
+- Gelo Eterno cria espinhos de gelo com aviso antecipado.
+- Sprite-sheet WebP transparente 4×3 com quatro repousos, quatro ataques, dois danos e dois quadros de derrota.
+- Barra de vida, nome do estágio, aviso de ataque e indicação de vulnerabilidade.
+
+CINEMÁTICA E FINAL
+- Entrada cinematográfica apresenta o Guardião e as três forças do templo.
+- A introdução pode ser pulada por teclado, gamepad ou toque.
+- A derrota possui animação, clarão de libertação das gemas e tela final.
+- Créditos: Criado e desenvolvido por Luis Paulo Alves.
+
+ÁUDIO E OTIMIZAÇÃO
+- Música exclusiva do chefe com loop de 16 segundos.
+- Sete efeitos exclusivos: rugido, impacto, gema, fogo, gelo, dano e derrota.
+- Todos os novos áudios são mono, 22,05 kHz, 16-bit, normalizados e com bordas suaves.
+- Arena e personagem estão em WebP.
+- Phase10 carrega somente arena, chefe, música e efeitos da batalha; o grupo é liberado ao sair.
+
+VALIDAÇÃO
+- Sintaxe de game.js, final-boss.js e level-loader.js: PASS.
+- Simulação de dano, derrota e vitória do chefe: PASS.
+- Carregamento isolado da fase 10: PASS.
+- 32 WAV válidos e distintos: PASS.
+- 118 mídias presentes e referenciadas: PASS.
+- Arquivos repetidos, sem uso ou PNG de gameplay: 0.

@@ -1,0 +1,21 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.12
+
+ARTE DAS FASES ESPECIAIS
+- Avalanche Alpina: novo vale nevado com avalanche ao fundo.
+- Corrida Polar: nova rota de gelo ao entardecer com aurora, cristais e arcos congelados.
+- Pedra da Selva: nova estrada ancestral em direção ao templo e às cachoeiras.
+- Corrida do Javali: nova pista tropical enlameada com pontes, rios e ruínas.
+
+OBSTÁCULOS
+- Cartela tropical: tronco, rocha, planta espinhosa, barricada, lama, ídolo, ponte quebrada e arbusto.
+- Cartela de gelo: espinhos, rocha nevada, tronco congelado, parede de gelo, monte de neve, cristais, trenó e pinheiro.
+- O código escolhe variações por posição, preservando a lógica de colisão e diversificando a pista.
+
+ÁUDIO E CARREGAMENTO
+- music_phase6.wav a music_phase9.wav são trilhas próprias de 12 segundos.
+- Cada fase especial carrega apenas seu background, cartela do bioma, perseguidor/veículo e música.
+- Os recursos são liberados ao trocar de fase.
+
+VALIDAÇÃO
+- Sintaxe, loader, render, modos especiais, saves e organização de assets: PASS.
+- 108 mídias presentes e referenciadas; zero duplicatas e zero arquivos sem uso.

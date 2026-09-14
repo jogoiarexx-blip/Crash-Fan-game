@@ -1,0 +1,14 @@
+const fs=require('fs'),vm=require('vm'),path=require('path');
+process.chdir(path.join(__dirname,'..'));
+class FakeImage{constructor(){this.complete=false;this.naturalWidth=256;this.naturalHeight=256;this.width=256;this.height=256}set src(v){this._src=v;if(!v)return;this.complete=true;queueMicrotask(()=>this.onload?.())}}
+class FakeAudio{constructor(){this.paused=true;this.listeners={}}addEventListener(n,fn){(this.listeners[n]??=[]).push(fn)}removeEventListener(){}removeAttribute(){}load(){queueMicrotask(()=>this.listeners.loadeddata?.forEach(fn=>fn()))}play(){this.paused=false;return Promise.resolve()}pause(){this.paused=true}}
+const ctx=new Proxy({measureText:t=>({width:String(t).length*8}),createLinearGradient:()=>({addColorStop(){}})}, {get:(o,k)=>k in o?o[k]:(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
+const el=id=>({id,style:{},classList:{toggle(){},add(){},remove(){}},dataset:{},getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:960,height:540}),querySelectorAll:()=>[],closest:()=>null,addEventListener(){},setPointerCapture(){}});
+const elements=new Map(['game','touch-controls','touch-joystick','joystick-knob','help'].map(id=>[id,el(id)]));
+Object.assign(global,{window:global,Image:FakeImage,HTMLImageElement:FakeImage,Audio:FakeAudio,HTMLAudioElement:FakeAudio,performance:{now:()=>Date.now()},localStorage:{getItem:()=>null,setItem(){},removeItem(){}},document:{hidden:false,getElementById:id=>elements.get(id)||el(id),addEventListener(){}},matchMedia:()=>({matches:false}),addEventListener:()=>{},requestAnimationFrame:()=>0});
+Object.defineProperty(global,'navigator',{value:{getGamepads:()=>[],maxTouchPoints:0},configurable:true});
+for(const file of ['js/jungle-phase.js','js/level-loader.js','js/game.js'])vm.runInThisContext(fs.readFileSync(file,'utf8'),{filename:file});
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function gap(a,b){return b[0]>a[0]+a[2]?b[0]-(a[0]+a[2]):a[0]>b[0]+b[2]?a[0]-(b[0]+b[2]):0}
+function reachable(platforms,spawnX){const seen=new Set(),queue=[];platforms.forEach((p,i)=>{if(p[1]===455&&spawnX>=p[0]&&spawnX<=p[0]+p[2]){seen.add(i);queue.push(i)}});while(queue.length){const i=queue.shift(),a=platforms[i];for(let j=0;j<platforms.length;j++){if(seen.has(j)||i===j)continue;const b=platforms[j],rise=a[1]-b[1],g=gap(a,b);if(rise<=126&&rise>=-230&&g<=(rise>80?190:230)){seen.add(j);queue.push(j)}}}return seen}
+(async()=>{await wait(20);for(let level=1;level<=9;level++){await global.__crashDebug.loadLevel(level);const l=global.__crashDebug.getLayout(),seen=reachable(l.platforms,l.spawn.x),missing=l.platforms.map((_,i)=>i).filter(i=>!seen.has(i));console.log(`FASE ${level}: ${seen.size}/${l.platforms.length} superfícies alcançáveis${missing.length?' | revisar '+missing.join(','):''}`);if(missing.length)throw new Error('plataformas inalcançáveis na fase '+level)}console.log('PASS')})().catch(e=>{console.error(e);process.exitCode=1});

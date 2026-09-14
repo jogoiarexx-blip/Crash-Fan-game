@@ -1,0 +1,45 @@
+CRASH BANDICOOT FÃ GAME — V1.04
+RELATÓRIO DE MELHORIAS VISUAIS, OTIMIZAÇÃO E VALIDAÇÃO
+
+SPRITES E ANIMAÇÃO
+- Tatu roxo: folha 4x2 com quatro quadros de caminhada e quatro de rolagem.
+- Besouro de magma: folha 4x2 com caminhada pesada e carga incandescente.
+- Morcego de brasa: folha 4x2 com voo e ataque; o ciclo usa somente quadros completos.
+- Cada quadro possui retângulo de recorte próprio e desenho ancorado pela base.
+- Agachar/deslizar do Crash foi recortado quadro a quadro para remover margens transparentes irregulares.
+
+PLATAFORMAS
+- A conectividade foi verificada por simulação de salto e alcance horizontal.
+- Fase 1: 31/31 superfícies alcançáveis.
+- Fase 2: 31/31 superfícies alcançáveis.
+- Fase 3: 19/19 superfícies alcançáveis.
+- Fase 4: 18/18 superfícies alcançáveis.
+- Fase 5: 21/21 superfícies alcançáveis.
+- A geometria sólida foi preservada; plataformas elevadas ganharam uma borda de pouso mais legível.
+
+CINEMÁTICAS
+- Abertura curta com nome, tema e objetivo de cada fase.
+- Transição de portal com letterbox, brilho progressivo e confirmação de conclusão.
+- Entrada por teclado, gamepad ou toque pode pular a abertura.
+- O cronômetro da fase não corre durante a abertura.
+- prefers-reduced-motion reduz automaticamente a duração e elimina o movimento das barras.
+
+WEBP E TAMANHO
+- Elementos de selva: aproximadamente 1,8 MB em PNG para 332 KB em WebP.
+- Tela de seleção: aproximadamente 2,8 MB para 355 KB.
+- Ruína do portal: aproximadamente 2,0 MB para 269 KB.
+- Folhas de Aku Aku 3, checkpoint, caixa de 10, tartaruga, armadilhas e superfícies também convertidas.
+- O projeto caiu de aproximadamente 41 MB para 23 MB durante a otimização.
+- PNG permanece somente nos ícones PWA, por compatibilidade de instalação.
+
+VALIDAÇÃO
+- Sintaxe de game.js, jungle-phase.js e level-loader.js: PASS.
+- 36/36 assets da selva presentes e utilizados: PASS.
+- Dados das fases 3, 4 e 5: PASS.
+- Teste de alcance das plataformas das fases 1–5: PASS.
+- Loader sequencial, liberação de memória, controles, movimento, pulo, saves, checkpoint,
+  reinício, caixa de vida e renderização de estados: PASS.
+- Todas as 97 referências literais de assets usadas em runtime apontam para arquivos existentes.
+
+OBSERVAÇÃO
+- O pacote v1.03 anterior preserva os arquivos-fonte removidos nesta otimização.

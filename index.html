@@ -3,13 +3,28 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Crash Bandicoot Fã Game - v1.02</title>
+<title>Crash Bandicoot Fã Game - v1.16</title>
+<link rel="icon" href="favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/ui/icons/icon-32.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="assets/ui/icons/icon-192.png" />
+<link rel="apple-touch-icon" href="assets/ui/icons/apple-touch-icon.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0a3938" />
 <link rel="stylesheet" href="css/style.css" />
-<script src="js/jungle-phase.js?v=1.02" defer></script>
-<script src="js/game.js?v=1.02" defer></script>
+<script src="js/jungle-phase.js?v=1.16" defer></script>
+<script src="js/level-loader.js?v=1.16" defer></script>
+<script src="js/final-boss.js?v=1.16" defer></script>
+<script src="js/game.js?v=1.16" defer></script>
 </head>
 <body>
 <div id="wrap"><canvas id="game" width="960" height="540"></canvas></div>
+<div id="opening-cinematic" class="cinematic" hidden aria-label="Cinemática de abertura">
+  <video id="opening-video" playsinline preload="metadata">
+    <source src="assets/cinematics/abertura_v116.mp4" type="video/mp4" />
+  </video>
+  <div id="cinematic-loading" class="cinematic-loading">CARREGANDO CINEMÁTICA...</div>
+  <button id="cinematic-skip" class="cinematic-skip" type="button">PULAR CINEMÁTICA</button>
+</div>
 <div id="touch-controls" aria-label="Controles por toque">
   <div class="touch-joystick" id="touch-joystick" aria-label="Direcional virtual">
     <div class="joystick-ring"></div>

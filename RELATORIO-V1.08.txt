@@ -1,0 +1,32 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.08
+
+FASE 6 — AVALANCHE ALPINA
+- A fase lateral foi transformada em uma perseguição frontal pseudo-3D.
+- Crash corre em direção à câmera enquanto a bola de neve vem atrás dele.
+- O jogador troca entre três faixas e pula pedras, caixas e gelo.
+- Obstáculos e frutas são projetados por distância e crescem ao chegar perto.
+- A avalanche aumenta visualmente de tamanho conforme diminui a distância segura.
+- Colisões aproximam a bola; ser alcançado usa a morte específica snowball.
+- Há velocidade crescente, medidor de perigo, checkpoint intermediário, cristal e gema por corrida perfeita.
+
+FASE 7 — CORRIDA POLAR
+- A introdução foi ampliada para mostrar Crash correndo, saltando e montando no urso.
+- Depois da montagem aparece um destaque do rosto com uma sobrancelha levantada.
+- A câmera retorna à traseira e libera os controles da corrida Mode 7.
+- ENTER, ESPAÇO, toque ou gamepad podem pular a introdução.
+- A preferência de movimento reduzido usa uma transição curta.
+
+OTIMIZAÇÃO E QUALIDADE
+- Nenhum sprite defeituoso foi mantido no projeto.
+- A animação de montagem reutiliza os sprites carregados exclusivamente pela fase.
+- A avalanche reutiliza os sprites de neve, Crash, obstáculos e cenário já organizados.
+- O AssetManager continua mantendo somente core, shared e a fase atual em memória.
+- 96 mídias presentes e referenciadas, sem arquivos repetidos ou sem uso.
+
+VALIDAÇÃO
+- Sintaxe dos três arquivos JavaScript: PASS.
+- Organização e referências de assets: PASS.
+- Loader das sete fases e liberação de grupos: PASS.
+- Movimento, pulo, checkpoint, conclusão e morte da avalanche: PASS.
+- Corrida Polar, save, pause, reinício, morte e renderização: PASS.
+- Plataformas/superfícies técnicas alcançáveis: PASS.

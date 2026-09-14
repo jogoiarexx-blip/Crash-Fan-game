@@ -1,0 +1,39 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.09
+
+ANIMAÇÕES DE MORTE POR CAUSA
+- Impacto: cambalhota e onda de choque.
+- Queda: descida acelerada para fora da cena.
+- Espinhos: corpo rígido e pontas ascendentes.
+- Explosão: arremesso giratório, clarão e fragmentos quentes.
+- Prensa: achatamento progressivo junto ao piso.
+- Congelamento: pose travada, tom azulado e cristais de gelo.
+- Veneno: cambaleio, tom esverdeado e bolhas tóxicas.
+- Avalanche: Crash gira, afunda e é coberto pela neve em perspectiva frontal.
+- Corrida Polar: Crash e urso tombam juntos e levantam neve.
+
+CARREGAMENTO SELETIVO
+- A alma alada pertence somente aos grupos das fases 1–5.
+- As fases especiais 6 e 7 não carregam esse sprite, pois usam encerramentos próprios.
+- Ao trocar de fase, o AssetManager libera os recursos exclusivos da fase anterior.
+
+QUALIDADE E DESEMPENHO
+- Nova configuração Auto, Baixa, Média ou Alta, acessível no menu e durante o pause.
+- Auto considera memória disponível, núcleos lógicos e movimento reduzido.
+- A qualidade controla partículas, detalhes de fundo, neve, sombras e densidade de objetos em perspectiva.
+- A seleção é persistida no navegador.
+
+ORGANIZAÇÃO VISUAL
+- Nenhuma mídia duplicada foi criada.
+- Os 96 arquivos de mídia estão presentes e referenciados.
+- PNG permanece somente nos ícones PWA; imagens de gameplay usam WebP.
+- A estrutura por função foi preservada: personagens, inimigos, caixas, armadilhas, cenário, efeitos, itens, interface e áudio.
+
+VALIDAÇÃO
+- Sintaxe JavaScript: PASS.
+- Carregamento sequencial das sete fases: PASS.
+- Liberação dos grupos de fase anteriores: PASS.
+- Perfis distintos de morte e seleção da alma: PASS.
+- Configuração gráfica adaptativa: PASS.
+- Movimento, pulo, checkpoints, saves, pause e reinício: PASS.
+- Corrida Polar e Avalanche Alpina: PASS.
+- Organização, referências e duplicatas de assets: PASS.

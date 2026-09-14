@@ -1,0 +1,32 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.14
+
+ATUALIZAÇÃO: PROGRESSÃO E SELEÇÃO DE FASES
+
+IMPLEMENTADO
+- Registro individual das nove fases.
+- Gemas e cristais permanentes por fase.
+- Melhor tempo, pontuação, caixas, mortes, colisões, combo e esquivas.
+- Migração automática dos saves V1.13 para o schema 1.2.0.
+- Pedestais com indicadores de gema, cristal e conclusão.
+- Painel lateral com os dados da fase realmente selecionada.
+- Preview de cenário sob demanda, independente do carregador de gameplay.
+- Botão de retorno visível no seletor para mouse e celular.
+- Templo da Conquista no décimo pedestal.
+- Tela final com porcentagem da campanha.
+- Troféus divididos em páginas e sete novas conquistas.
+- Correção da lista inicial de cristais de sete para nove posições.
+
+VALIDAÇÃO
+- Sintaxe de game.js: PASS.
+- Organização: 108/108 mídias válidas, referenciadas e sem duplicatas.
+- Áudio: 24 WAV válidos, distintos e normalizados.
+- Carregamento e liberação das nove fases: PASS.
+- Migração de save: PASS.
+- Progresso individual: PASS.
+- Rotas: 124/124 superfícies alcançáveis.
+- Render de gameplay, resultados, seletor, troféus e conclusão: PASS.
+
+COMPATIBILIDADE
+- Saves antigos são preservados.
+- Teclado, gamepad, mouse e controles mobile permanecem ativos.
+- Assets continuam carregados por fase.

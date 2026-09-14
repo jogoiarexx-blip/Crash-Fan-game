@@ -5,7 +5,7 @@
   "assets": [
     {
       "id": "waterfall_cliff_large",
-      "file": "01_waterfall_cliff_large.png",
+      "file": "01_waterfall_cliff_large.webp",
       "category": "environment",
       "width": 425,
       "height": 684,
@@ -20,7 +20,7 @@
     },
     {
       "id": "platform_long_roots",
-      "file": "02_platform_long_roots.png",
+      "file": "02_platform_long_roots.webp",
       "category": "platform",
       "width": 244,
       "height": 233,
@@ -41,7 +41,7 @@
     },
     {
       "id": "platform_extra_long_vines",
-      "file": "03_platform_extra_long_vines.png",
+      "file": "03_platform_extra_long_vines.webp",
       "category": "platform",
       "width": 392,
       "height": 178,
@@ -62,7 +62,7 @@
     },
     {
       "id": "platform_tall_vine",
-      "file": "04_platform_tall_vine.png",
+      "file": "04_platform_tall_vine.webp",
       "category": "platform",
       "width": 170,
       "height": 330,
@@ -83,7 +83,7 @@
     },
     {
       "id": "platform_medium_hanging_vines",
-      "file": "05_platform_medium_hanging_vines.png",
+      "file": "05_platform_medium_hanging_vines.webp",
       "category": "platform",
       "width": 237,
       "height": 216,
@@ -104,7 +104,7 @@
     },
     {
       "id": "platform_medium_stalactite",
-      "file": "06_platform_medium_stalactite.png",
+      "file": "06_platform_medium_stalactite.webp",
       "category": "platform",
       "width": 176,
       "height": 176,
@@ -125,7 +125,7 @@
     },
     {
       "id": "stone_block_single",
-      "file": "07_stone_block_single.png",
+      "file": "07_stone_block_single.webp",
       "category": "terrain",
       "width": 62,
       "height": 55,
@@ -146,7 +146,7 @@
     },
     {
       "id": "platform_small",
-      "file": "08_platform_small.png",
+      "file": "08_platform_small.webp",
       "category": "platform",
       "width": 161,
       "height": 128,
@@ -167,7 +167,7 @@
     },
     {
       "id": "slope_down_long",
-      "file": "09_slope_down_long.png",
+      "file": "09_slope_down_long.webp",
       "category": "slope",
       "width": 432,
       "height": 263,
@@ -189,7 +189,7 @@
     },
     {
       "id": "stair_platform",
-      "file": "10_stair_platform.png",
+      "file": "10_stair_platform.webp",
       "category": "platform",
       "width": 286,
       "height": 235,
@@ -227,7 +227,7 @@
     },
     {
       "id": "stone_blocks_pair",
-      "file": "11_stone_blocks_pair.png",
+      "file": "11_stone_blocks_pair.webp",
       "category": "terrain",
       "width": 85,
       "height": 76,
@@ -248,7 +248,7 @@
     },
     {
       "id": "floating_rock_small",
-      "file": "12_floating_rock_small.png",
+      "file": "12_floating_rock_small.webp",
       "category": "terrain",
       "width": 62,
       "height": 82,
@@ -269,7 +269,7 @@
     },
     {
       "id": "stepped_platform",
-      "file": "13_stepped_platform.png",
+      "file": "13_stepped_platform.webp",
       "category": "platform",
       "width": 207,
       "height": 161,
@@ -307,7 +307,7 @@
     },
     {
       "id": "vine_pole_01",
-      "file": "14_vine_pole_01.png",
+      "file": "14_vine_pole_01.webp",
       "category": "climbable",
       "width": 31,
       "height": 341,
@@ -322,7 +322,7 @@
     },
     {
       "id": "vine_pole_02",
-      "file": "15_vine_pole_02.png",
+      "file": "15_vine_pole_02.webp",
       "category": "climbable",
       "width": 52,
       "height": 327,
@@ -337,7 +337,7 @@
     },
     {
       "id": "vine_pole_03",
-      "file": "16_vine_pole_03.png",
+      "file": "16_vine_pole_03.webp",
       "category": "climbable",
       "width": 51,
       "height": 295,
@@ -352,7 +352,7 @@
     },
     {
       "id": "rope_bridge_small",
-      "file": "17_rope_bridge_small.png",
+      "file": "17_rope_bridge_small.webp",
       "category": "bridge",
       "width": 233,
       "height": 162,
@@ -373,7 +373,7 @@
     },
     {
       "id": "palm_tree_large",
-      "file": "18_palm_tree_large.png",
+      "file": "18_palm_tree_large.webp",
       "category": "decoration",
       "width": 250,
       "height": 320,
@@ -388,7 +388,7 @@
     },
     {
       "id": "flower_red_small",
-      "file": "19_flower_red_small.png",
+      "file": "19_flower_red_small.webp",
       "category": "decoration",
       "width": 97,
       "height": 81,
@@ -403,7 +403,7 @@
     },
     {
       "id": "foliage_bush_01",
-      "file": "20_foliage_bush_01.png",
+      "file": "20_foliage_bush_01.webp",
       "category": "decoration",
       "width": 108,
       "height": 104,
@@ -418,7 +418,7 @@
     },
     {
       "id": "foliage_bush_02",
-      "file": "21_foliage_bush_02.png",
+      "file": "21_foliage_bush_02.webp",
       "category": "decoration",
       "width": 143,
       "height": 97,
@@ -433,7 +433,7 @@
     },
     {
       "id": "foliage_flower_red",
-      "file": "22_foliage_flower_red.png",
+      "file": "22_foliage_flower_red.webp",
       "category": "decoration",
       "width": 126,
       "height": 102,
@@ -448,7 +448,7 @@
     },
     {
       "id": "palm_tree_small",
-      "file": "23_palm_tree_small.png",
+      "file": "23_palm_tree_small.webp",
       "category": "decoration",
       "width": 189,
       "height": 197,
@@ -463,7 +463,7 @@
     },
     {
       "id": "mushrooms_red",
-      "file": "24_mushrooms_red.png",
+      "file": "24_mushrooms_red.webp",
       "category": "decoration",
       "width": 144,
       "height": 163,
@@ -478,7 +478,7 @@
     },
     {
       "id": "foliage_cluster_red",
-      "file": "25_foliage_cluster_red.png",
+      "file": "25_foliage_cluster_red.webp",
       "category": "decoration",
       "width": 216,
       "height": 109,
@@ -493,7 +493,7 @@
     },
     {
       "id": "foliage_flower_purple",
-      "file": "26_foliage_flower_purple.png",
+      "file": "26_foliage_flower_purple.webp",
       "category": "decoration",
       "width": 95,
       "height": 86,
@@ -508,7 +508,7 @@
     },
     {
       "id": "grass_tuft_01",
-      "file": "27_grass_tuft_01.png",
+      "file": "27_grass_tuft_01.webp",
       "category": "decoration",
       "width": 68,
       "height": 53,
@@ -523,7 +523,7 @@
     },
     {
       "id": "grass_tuft_02",
-      "file": "28_grass_tuft_02.png",
+      "file": "28_grass_tuft_02.webp",
       "category": "decoration",
       "width": 64,
       "height": 45,
@@ -538,7 +538,7 @@
     },
     {
       "id": "torch_fire",
-      "file": "29_torch_fire.png",
+      "file": "29_torch_fire.webp",
       "category": "object",
       "width": 51,
       "height": 160,
@@ -553,7 +553,7 @@
     },
     {
       "id": "rope_bridge_large",
-      "file": "30_rope_bridge_large.png",
+      "file": "30_rope_bridge_large.webp",
       "category": "bridge",
       "width": 408,
       "height": 160,
@@ -574,7 +574,7 @@
     },
     {
       "id": "sign_arrow_right",
-      "file": "31_sign_arrow_right.png",
+      "file": "31_sign_arrow_right.webp",
       "category": "object",
       "width": 92,
       "height": 148,
@@ -589,7 +589,7 @@
     },
     {
       "id": "rock_formation_01",
-      "file": "32_rock_formation_01.png",
+      "file": "32_rock_formation_01.webp",
       "category": "decoration",
       "width": 160,
       "height": 149,
@@ -604,7 +604,7 @@
     },
     {
       "id": "stone_totem",
-      "file": "33_stone_totem.png",
+      "file": "33_stone_totem.webp",
       "category": "object",
       "width": 126,
       "height": 149,
@@ -625,7 +625,7 @@
     },
     {
       "id": "fallen_log",
-      "file": "34_fallen_log.png",
+      "file": "34_fallen_log.webp",
       "category": "decoration",
       "width": 247,
       "height": 108,
@@ -640,7 +640,7 @@
     },
     {
       "id": "rock_formation_02",
-      "file": "35_rock_formation_02.png",
+      "file": "35_rock_formation_02.webp",
       "category": "decoration",
       "width": 191,
       "height": 107,
@@ -655,7 +655,7 @@
     },
     {
       "id": "rock_formation_03",
-      "file": "36_rock_formation_03.png",
+      "file": "36_rock_formation_03.webp",
       "category": "decoration",
       "width": 118,
       "height": 100,

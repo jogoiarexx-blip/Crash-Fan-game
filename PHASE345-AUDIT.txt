@@ -1,0 +1,53 @@
+CRASH BANDICOOT FANGAME v1.02 — AUDITORIA FASES 3, 4 E 5
+
+CORREÇÕES
+- Corrigida sobreposição da caixa de vida com outra caixa nas Fases 3, 4 e 5.
+- Corrigida sobreposição da caixa de vida com a caixa de 10 pulos nas Fases 4 e 5.
+- Reposicionadas caixas altas para ficarem exatamente apoiadas nas plataformas.
+- Reorganizadas plataformas opcionais altas em degraus alcançáveis pela física normal.
+- Ajustadas as posições das caixas de 10 pulos para as novas alturas.
+- Preservadas as rotas principais, inimigos, armadilhas, cristais, save e loader.
+
+TESTES
+- js/game.js: PASS
+- js/jungle-phase.js: PASS
+- js/level-loader.js: PASS
+- tests/jungle-data-test.js: PASS
+- tests/phase345-data-test.js: PASS
+- tests/loader-runtime-test.js: PASS
+
+FASE 3
+- 19 superfícies
+- 23 caixas
+- 4 TNT
+- 1 caixa de vida
+- 0 sobreposições
+- 0 caixas sem apoio
+- 0 plataformas sem rota alcançável
+- checkpoint válido
+
+FASE 4
+- 18 superfícies
+- 24 caixas
+- 4 TNT
+- 1 caixa de vida
+- 0 sobreposições
+- 0 caixas sem apoio
+- 0 plataformas sem rota alcançável
+- checkpoint válido
+
+FASE 5
+- 21 superfícies
+- 27 caixas
+- 4 TNT
+- 1 caixa de vida
+- 0 sobreposições
+- 0 caixas sem apoio
+- 0 plataformas sem rota alcançável
+- checkpoint válido
+
+LOADER
+- Sequência testada: Fase 1 -> 2 -> 3 -> 4 -> 5.
+- Em cada troca, o grupo da fase anterior é liberado.
+- Ao finalizar o teste, apenas core + shared permanecem no cache ativo.
+- Checkpoint e reinício completo continuaram funcionando.

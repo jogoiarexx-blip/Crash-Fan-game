@@ -1,0 +1,24 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.16
+
+CINEMÁTICA DE ABERTURA
+
+A nova abertura apresenta a Ilha Selvagem e prepara o confronto final sem interromper o ritmo do menu. O vídeo possui três tomadas: visão geral da ilha e dos três biomas; perseguição pela pedra ancestral; encontro com o Guardião das Nove Gemas.
+
+ESPECIFICAÇÕES
+- Duração: 18 segundos.
+- Resolução: 1280×720.
+- Taxa: 30 quadros por segundo.
+- Vídeo: H.264, perfil compatível com navegadores e celulares.
+- Áudio: AAC mono com trilha original e efeito do Guardião.
+- Tamanho otimizado: aproximadamente 1,7 MiB.
+
+INTEGRAÇÃO
+- Exibida ao confirmar um slot de nova campanha.
+- Pode ser pulada por botão, ENTER, ESPAÇO, ESC, A/B/Start do gamepad ou toque.
+- Em caso de erro de reprodução, o jogo continua automaticamente.
+- O menu carrega somente os metadados; o download completo começa quando a cinemática é iniciada.
+- A Fase 1 permanece fora da memória até a abertura terminar ou ser pulada.
+- prefers-reduced-motion ignora o vídeo e começa a campanha diretamente.
+
+CRÉDITO EXIBIDO
+Criado e desenvolvido por Luis Paulo Alves.

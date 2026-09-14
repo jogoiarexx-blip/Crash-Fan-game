@@ -1,0 +1,110 @@
+CRASH BANDICOOT FÃ GAME v1.02 — AUDITORIA / LEVEL LOADER PROFISSIONAL
+Data: 2026-08-29
+
+ARQUITETURA ANTERIOR
+- Já existia um AssetManager e grupos core/shared/phaseN.
+- Problema principal: grupos phaseN permaneciam em cache/named/loaded depois da troca.
+- Existia preload automático da próxima fase ao terminar o portal.
+- O seletor de fases também fazia preload apenas ao navegar entre fases.
+- Resultado: sessões longas podiam acumular assets de várias fases na memória.
+- Havia apenas um requestAnimationFrame global; não foram encontrados loops RAF duplicados por fase.
+- Listeners de teclado/touch/gamepad são globais e criados uma vez; não são recriados por fase.
+- Não existe Service Worker/PWA nesta build, portanto nenhuma funcionalidade offline existente foi removida.
+
+ARQUITETURA NOVA
+CORE
+- menu_logo.webp
+- level_select_user.png
+- permanece carregado desde o boot.
+
+SHARED
+- Crash / sprites globais
+- HUD e caixas compartilhadas
+- Aku Aku, portal, checkpoint e efeitos comuns
+- armadilhas reutilizadas em várias fases
+- tartaruga/armadillo e recursos comuns
+- permanece em cache para evitar recarga inútil.
+
+LEVEL ASSETS
+- definidos centralmente em js/level-loader.js
+- background e recursos exclusivos da fase
+- música da fase
+- tilesets/inimigos específicos de pântano/gelo
+- assets separados da selva na Fase 1
+- recursos exclusivos são descarregados ao sair da fase.
+
+FLUXO
+MENU
+ -> loading real
+ -> carrega SHARED (se necessário) + phaseN
+ -> valida recursos
+ -> setLevel()
+ -> gameplay
+ -> save
+ -> cleanup runtime
+ -> release phaseN
+ -> seletor/menu
+ -> loading da nova fase
+
+LOADING
+- porcentagem baseada em recursos realmente concluídos.
+- inclui imagens e música da fase.
+- timeout de 12 s por tentativa.
+- até 2 tentativas por recurso.
+- erro registra arquivo no console.
+- tela permanece no loading em caso de falha.
+- botão TENTAR NOVAMENTE + ENTER.
+- spinner e dica específica da fase.
+
+CLEANUP
+- pausa música e limpa referência da música de fase.
+- remove source de Audio exclusivo antes de liberar referência.
+- remove src/referência das imagens exclusivas da fase.
+- remove cache entries de phaseN.
+- limpa plataformas, inimigos, caixas, TNT, frutas, hazards e dados mutáveis.
+- limpa partículas/efeitos temporários.
+- não recria listeners globais.
+- mantém CORE e SHARED.
+
+OTIMIZAÇÕES DE CLASSIFICAÇÃO
+- jungle_sheet.webp (~2,1 MB) deixou de ser SHARED: usado apenas nas fases que precisam.
+- tileset_ground_custom.webp (~424 KB) deixou de ser SHARED: fases 2/5.
+- poisonAsset passou para Fase 3.
+- iceSpikeAsset passou para Fase 4.
+- magmaBeetle/emberBat passaram para Fase 5.
+- preload automático no portal removido.
+- preload ao navegar no seletor removido.
+
+SAVE
+- formato/prefixo existente foi mantido.
+- slots antigos não são apagados/migrados.
+- vidas, frutas, Aku Aku, checkpoint, cristais e progresso continuam usando a lógica existente.
+
+TESTES AUTOMATIZADOS
+1. Boot: apenas CORE carregado; arrays da fase vazios.
+2. Fase 1: CORE + SHARED + phase1.
+3. Fase 1 -> 2: phase1 liberada; CORE + SHARED + phase2.
+4. Fase 2 -> 3: phase2 liberada; CORE + SHARED + phase3.
+5. Release: restam apenas CORE + SHARED.
+6. Checkpoint: caixa quebrada/frutas/progresso preservados após respawn.
+7. Sem checkpoint: caixa/frutas/progresso restaurados ao reiniciar a tentativa.
+8. node --check: game.js, jungle-phase.js e level-loader.js.
+9. Referências estáticas de assets verificadas (a única ocorrência não literal é o padrão dinâmico music_phaseN).
+
+OBSERVAÇÃO SOBRE TESTE EM CHROMIUM DO AMBIENTE
+- O Chromium disponível neste ambiente é bloqueado por política organizacional para localhost e file://.
+- Por isso os testes de transição/runtime foram executados em um harness DOM/Canvas/Audio controlado em Node, além das validações estáticas.
+- O launcher INICIAR-JOGO.bat permanece intacto para teste local real no Windows.
+
+ARQUIVOS CRIADOS
+- js/level-loader.js
+- tests/loader-runtime-test.js
+- LOADER-AUDIT.txt
+
+ARQUIVOS MODIFICADOS
+- index.html
+- js/game.js
+
+RECOMENDAÇÃO FUTURA
+- Converter backgrounds muito grandes para dimensões/qualidade adequadas ao viewport mobile caso algum ainda esteja acima do necessário.
+- Se PWA for adicionado futuramente, cache offline deve armazenar arquivos no disco, enquanto AssetManager continua mantendo somente phaseN atual na memória.

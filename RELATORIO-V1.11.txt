@@ -1,0 +1,38 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.11
+
+NOVAS FASES
+- Fase narrativa 2 — Pedra da Selva: perseguição em direção à câmera por uma pedra ancestral.
+- Fase narrativa 3 — Corrida do Javali: Crash monta em um javali e percorre uma pista tropical em três faixas.
+- Ambas preservam combos, esquivas, checkpoints, frutas, cristal, gema perfeita e câmera dinâmica.
+- Padrões de obstáculos e curvas de velocidade foram ajustados para o começo da campanha.
+
+SPRITES CRIADOS E INTEGRADOS
+- assets/traps/jungle_boulder_sheet_v111.webp: 1536×256, seis quadros de rotação.
+- assets/vehicles/jungle_boar_ride_sheet_v111.webp: 2048×256, oito poses de montaria.
+- Fundo transparente, células de 256×256, recorte individual e âncora inferior estável.
+- Nenhum arquivo foi copiado para mais de uma pasta.
+
+ORDEM DA CAMPANHA
+1. Ilha Selvagem
+2. Pedra da Selva
+3. Corrida do Javali
+4. Templo Perdido
+5. Pântano Sombrio
+6. Cânion Rubro
+7. Picos Congelados
+8. Avalanche Alpina
+9. Corrida Polar
+
+COMPATIBILIDADE
+- IDs técnicos antigos foram preservados e mapeados para a nova ordem narrativa.
+- Saves com versão anterior são migrados automaticamente sem apagar progresso.
+- O save passou a comportar nove cristais e nove níveis liberados.
+- Somente a fase atual mantém seus sprites exclusivos em memória.
+
+VALIDAÇÃO
+- Sintaxe JavaScript: PASS.
+- Loader das fases 1–9 e liberação dos grupos anteriores: PASS.
+- Assets 98/98 presentes e referenciados, sem duplicatas: PASS.
+- Pedra da Selva e Corrida do Javali executadas no teste de runtime: PASS.
+- Plataformas e superfícies técnicas 124/124 alcançáveis: PASS.
+- Saves, checkpoints, controles, mortes, combos, pause e renderização: PASS.

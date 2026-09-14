@@ -1,0 +1,29 @@
+CRASH BANDICOOT FÃ GAME — RELATÓRIO V1.06
+
+ESCOPO
+- Melhoria completa da animação de morte sem criar sprites redundantes.
+- Preservação das cinco fases jogáveis, saves, checkpoints e recursos já existentes.
+
+FASES
+- 5 fases jogáveis implementadas: Ilha Selvagem, Templo Perdido, Pântano Sombrio, Picos Congelados e Cânion Rubro.
+- O seletor mantém 10 posições; as fases 6 a 10 continuam marcadas como EM BREVE.
+
+NOVA SEQUÊNCIA DE MORTE
+1. Clarão e reação imediata ao dano.
+2. Tombo usando quadros de salto, queda e giro do próprio Crash.
+3. Impacto com achatamento, onda e fragmentos pixelados.
+4. Alma alada animada em seis quadros, com balanço, rastro e auréola.
+5. Fade e mensagem cinematográfica antes do checkpoint ou game over.
+
+CORREÇÕES
+- O ponto vertical da morte é limitado à área visível quando Crash cai em um abismo.
+- Respawn e game over usam o mesmo temporizador da animação.
+- Removida a possibilidade de o controle retornar entre o fim visual e a tela de game over.
+- O modo prefers-reduced-motion usa duração menor e elimina a dispersão de partículas.
+
+VALIDAÇÃO
+- node --check nos três arquivos JavaScript.
+- Regressão do loader, controles, movimento, checkpoint, reinício, vida e renderização.
+- Teste dedicado à animação de morte e respawn.
+- Auditoria de organização, duplicatas e referências de mídia.
+- Auditoria de alcance das plataformas das cinco fases.
