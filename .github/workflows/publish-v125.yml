@@ -1,0 +1,42 @@
+name: Publish Crash Fan Game v1.25
+
+on:
+  push:
+    paths:
+      - '.publish-v125-final/READY'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rebuild current v1.25 files
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .publish-v125-final/part-* > /tmp/v125.b64
+          base64 -d /tmp/v125.b64 > /tmp/v125-changes.tar.gz
+          tar -xzf /tmp/v125-changes.tar.gz -C .
+          rm -rf .publish-v125 .publish-v125-final
+          rm -f .github/workflows/publish-v125.yml
+
+      - name: Commit final version
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "jogoiarexx-blip"
+          git config user.email "jogoiarexx@gmail.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Publica Crash Fan Game v1.25"
+            git push origin HEAD:main
+          fi
