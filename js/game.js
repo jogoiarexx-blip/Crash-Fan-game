@@ -405,7 +405,8 @@ function sameSupportSafeX(o,x,occupied,reserved=null){
  const test={...o,x};
  if(x<8||x+o.w>worldW-8||!objectSupported(test)||objectCutsPlatform(test)||objectHitsLevelBlocker(test,10))return false;
  if(reserved&&rect({x:test.x-18,y:test.y-8,w:test.w+36,h:test.h+16},reserved))return false;
- return !occupied.some(v=>rect({x:test.x-10,y:test.y-4,w:test.w+20,h:test.h+8},{x:v.x,y:v.y,w:v.w,h:v.h}))
+ const overlapProbe=currentLevel===1?test:{x:test.x-10,y:test.y-4,w:test.w+20,h:test.h+8};
+ return !occupied.some(v=>rect(overlapProbe,{x:v.x,y:v.y,w:v.w,h:v.h}))
 }
 function relocateObjectOnSupport(o,occupied,reserved=null){
  if(sameSupportSafeX(o,o.x,occupied,reserved))return true;
@@ -480,7 +481,7 @@ function bestEnemyPatrolSegment(e,settled=[]){
  const segs=[];let start=samples[0],prev=samples[0];
  for(let i=1;i<samples.length;i++){const v=samples[i];if(v-prev>9){segs.push({start,end:prev});start=v}prev=v}
  segs.push({start,end:prev});
- segs.sort((A,B)=>{const lenA=A.end-A.start,lenB=B.end-B.start;if(lenB!==lenA)return lenB-lenA;const dA=Math.abs(((A.start+A.end)/2)-e.x),dB=Math.abs(((B.start+B.end)/2)-e.x);return dA-dB});
+ segs.sort((A,B)=>{const lenA=A.end-A.start,lenB=B.end-B.start,dA=Math.abs(((A.start+A.end)/2)-e.x),dB=Math.abs(((B.start+B.end)/2)-e.x);if(currentLevel===1){if(dA!==dB)return dA-dB;return lenB-lenA}if(lenB!==lenA)return lenB-lenA;return dA-dB});
  return segs[0];
 }
 function sanitizeEnemyPatrols(){
