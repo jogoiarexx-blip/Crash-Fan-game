@@ -403,9 +403,11 @@ function objectHitsLevelBlocker(o,extraPad=8){
 }
 function sameSupportSafeX(o,x,occupied,reserved=null){
  const test={...o,x};
- if(x<8||x+o.w>worldW-8||!objectSupported(test)||objectCutsPlatform(test)||objectHitsLevelBlocker(test,10))return false;
+ const stackedSupport=currentLevel<=2&&occupied.some(v=>test.x>=v.x-2&&test.x+test.w<=v.x+v.w+2&&Math.abs((test.y+test.h)-v.y)<=3);
+ const supported=objectSupported(test)||stackedSupport;
+ if(x<8||x+o.w>worldW-8||!supported||objectCutsPlatform(test)||objectHitsLevelBlocker(test,10))return false;
  if(reserved&&rect({x:test.x-18,y:test.y-8,w:test.w+36,h:test.h+16},reserved))return false;
- const overlapProbe=currentLevel===1?test:{x:test.x-10,y:test.y-4,w:test.w+20,h:test.h+8};
+ const overlapProbe=currentLevel<=2?test:{x:test.x-10,y:test.y-4,w:test.w+20,h:test.h+8};
  return !occupied.some(v=>rect(overlapProbe,{x:v.x,y:v.y,w:v.w,h:v.h}))
 }
 function relocateObjectOnSupport(o,occupied,reserved=null){
@@ -481,7 +483,7 @@ function bestEnemyPatrolSegment(e,settled=[]){
  const segs=[];let start=samples[0],prev=samples[0];
  for(let i=1;i<samples.length;i++){const v=samples[i];if(v-prev>9){segs.push({start,end:prev});start=v}prev=v}
  segs.push({start,end:prev});
- segs.sort((A,B)=>{const lenA=A.end-A.start,lenB=B.end-B.start,dA=Math.abs(((A.start+A.end)/2)-e.x),dB=Math.abs(((B.start+B.end)/2)-e.x);if(currentLevel===1){if(dA!==dB)return dA-dB;return lenB-lenA}if(lenB!==lenA)return lenB-lenA;return dA-dB});
+ segs.sort((A,B)=>{const lenA=A.end-A.start,lenB=B.end-B.start,dA=Math.abs(((A.start+A.end)/2)-e.x),dB=Math.abs(((B.start+B.end)/2)-e.x);if(currentLevel<=2){if(dA!==dB)return dA-dB;return lenB-lenA}if(lenB!==lenA)return lenB-lenA;return dA-dB});
  return segs[0];
 }
 function sanitizeEnemyPatrols(){
@@ -601,9 +603,10 @@ function setLevel(n=1){
     {x:2830,y:292,k:'vine',w:52,h:160},{x:3500,y:300,k:'tree2',w:126,h:180},{x:4140,y:302,k:'totem',w:108,h:158},
     {x:4740,y:330,k:'torch',w:58,h:110},{x:5100,y:310,k:'mushroom',w:100,h:118}
    );
-   rocks.push(
-    {x:900,y:390,w:86,h:60,k:'rockC'},{x:2040,y:390,w:90,h:62,k:'rockB'},
-    {x:3260,y:390,w:92,h:62,k:'rockA'},{x:4410,y:390,w:90,h:62,k:'rockC'}
+   // Pedras são composição visual: não criam hitbox invisível atravessando caixas/rotas.
+   scenery.push(
+    {x:900,y:390,k:'rockC',w:86,h:60},{x:2040,y:390,k:'rockB',w:90,h:62},
+    {x:3260,y:390,k:'rockA',w:92,h:62},{x:4410,y:390,k:'rockC',w:90,h:62}
    );
 
    platforms.push(
@@ -642,7 +645,7 @@ function setLevel(n=1){
     {type:'spikes',x:1540,y:400,w:92,h:55,s:'spikes'},
     {type:'spikes',x:3310,y:400,w:96,h:55,s:'spikes'},
     {type:'pit',x:4700,y:455,w:130,h:120},
-    {type:'spikes',x:5005,y:400,w:90,h:55,s:'spikes'}
+    {type:'spikes',x:4985,y:400,w:90,h:55,s:'spikes'}
    );
 
    // Armadilhas ficam separadas por áreas de respiro.
@@ -650,14 +653,23 @@ function setLevel(n=1){
    stonePresses.push({x:4010,phase:1.45});
 
    // CAIXAS — pequenos encontros, não uma caixa a cada X pixels.
-   [180,238,430,790,850,1280,1340,1800,1860,3240,3490,4120,4180,4490,4870,5220].forEach((px,i)=>pushBox(px,groundY-58,i%4===2));
-   pushBox(2080,430-58,false);pushBox(2140,430-58,true);
+   [
+    [180,455,false],[238,455,false],[430,455,true],[790,455,false],
+    [730,455,false],[1280,455,false],[1340,455,true],
+    [2050,430,false],[2112,430,false],[3240,455,false],[3490,455,true],
+    [4550,350,false],[4612,350,false],[4620,455,false],[4920,365,true],[5220,455,false]
+   ].forEach(([px,surface,q])=>pushBox(px,surface-58,q));
+   pushBox(2700,380-58,false);pushBox(2860,405-58,true);
    pushBox(900,327,true);pushBox(1120,297,false);
-   pushBox(2295,347,false);pushBox(2515,322,true);
+   pushBox(2950,430-58,false);pushBox(2555,380-58,true);
    pushBox(3440,282,true);pushBox(3790,227,false);
-   pushBox(4960,307,false);
+   pushBox(5010,365-58,false);
 
-   [1160,1990,3340,4560,5095].forEach(px=>pushTNT(px));
+   pushTNT(1160);
+   pushTNT(2180,430-58);
+   pushTNT(3420);
+   pushTNT(4555);
+   pushTNT(5095);
 
    // Caixa de 10 pulos e Aku Aku ficam em rotas opcionais alcançáveis sem serem obrigatórios.
    pushBounceBox(2605,278-58,10);
@@ -673,14 +685,14 @@ function setLevel(n=1){
    [[4260,390],[4400,382],[4540,370],[4670,385],[4870,390],[5000,375],[5140,390],[5280,385]].forEach(v=>pushFruit(v[0],v[1]));
 
    // INIMIGOS — com áreas de patrulha claras e pausas entre encontros.
-   pushEnemy(820,760,1040,56,groundY-56,'turtle');
-   pushEnemy(1450,1260,1580,-54,groundY-56,'armadillo');
-   pushEnemy(1880,1780,2010,50,groundY-56,'armadillo');
-   // Única tartaruga opcional do trecho alto; não é necessária para terminar a fase.
-   pushEnemy(3340,3280,3390,42,groundY-56,'turtle');
-   pushEnemy(4140,4090,4320,-58,groundY-56,'armadillo');
-   pushEnemy(4900,4860,5070,55,groundY-56,'turtle');
-   pushEnemy(5240,5190,5400,-60,groundY-56,'armadillo');
+   pushEnemy(1010,950,1080,56,groundY-56,'turtle');
+   pushEnemy(1450,1405,1480,-54,groundY-56,'armadillo');
+   pushEnemy(2430,2410,2460,50,300-50,'armadillo');
+   // Tartaruga opcional realmente permanece na rota alta, longe dos espinhos do chão.
+   pushEnemy(3600,3580,3640,42,310-56,'turtle');
+   pushEnemy(3920,3890,3960,-58,430-50,'armadillo');
+   pushEnemy(4870,4840,4920,55,groundY-56,'turtle');
+   pushEnemy(3650,3625,3670,-60,430-50,'armadillo');
  } else {
    // FASE 1 v1.02 — construída por dados usando assets/jungle e manifest.json.
    currentLevelName='ILHA SELVAGEM'; currentCheckpointDefault=80; portal.x=5360; portal.y=245;
