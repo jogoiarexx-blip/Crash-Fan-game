@@ -1,0 +1,52 @@
+name: Testes do jogo
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Sintaxe JS
+        run: |
+          node --check js/game.js
+          node --check js/jungle-phase.js
+          node --check js/level-loader.js
+          node --check js/final-boss.js
+
+      - name: Fase 1 e dados da selva
+        run: node tests/jungle-data-test.js
+
+      - name: Rotas das fases
+        run: node tests/platform-route-test.js
+
+      - name: Runtime e regressão
+        run: node tests/loader-runtime-test.js
+
+      - name: Fases 3, 4 e 5
+        run: node tests/phase345-data-test.js
+
+      - name: Organização de assets
+        run: node tests/asset-organization-test.js
+
+      - name: Banco de áudio
+        run: node tests/audio-bank-test.js
+
+      - name: Cinemática
+        run: node tests/cinematic-test.js
