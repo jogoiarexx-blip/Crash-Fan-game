@@ -387,6 +387,10 @@ function objectSupported(o){
  if(platforms.some(q=>o.x>=q[0]-2&&o.x+o.w<=q[0]+q[2]+2&&Math.abs(bottom-q[1])<=3))return true;
  const sl=jungleSlopeUnder(o.x,o.w,bottom,8);return !!(sl&&Math.abs(bottom-sl.y)<=4)
 }
+function objectSupportedByPlaced(o,list){
+ const bottom=o.y+o.h;
+ return list.some(v=>v!==o&&!v.hit&&!v.dead&&o.x>=v.x-2&&o.x+o.w<=v.x+v.w+2&&Math.abs(bottom-v.y)<=3)
+}
 function objectCutsPlatform(o){
  const r={x:o.x+3,y:o.y+3,w:o.w-6,h:o.h-6};
  return platforms.some(q=>rect(r,{x:q[0],y:q[1],w:q[2],h:q[3]}))
@@ -403,7 +407,7 @@ function objectHitsLevelBlocker(o,extraPad=8){
 }
 function sameSupportSafeX(o,x,occupied,reserved=null){
  const test={...o,x};
- const stackedSupport=currentLevel<=2&&occupied.some(v=>test.x>=v.x-2&&test.x+test.w<=v.x+v.w+2&&Math.abs((test.y+test.h)-v.y)<=3);
+ const stackedSupport=currentLevel<=2&&objectSupportedByPlaced(test,occupied);
  const supported=objectSupported(test)||stackedSupport;
  if(x<8||x+o.w>worldW-8||!supported||objectCutsPlatform(test)||objectHitsLevelBlocker(test,10))return false;
  if(reserved&&rect({x:test.x-18,y:test.y-8,w:test.w+36,h:test.h+16},reserved))return false;
@@ -519,7 +523,7 @@ function addHighRouteAssists(level){
 }
 function auditLevelDesign(){
  // Corrige apenas erros evidentes: objetos apoiados e inimigos presos à superfície definida.
- for(const b of normal){if(b.hit)continue;if(!objectSupported(b)&&currentLevel!==1){const supports=platforms.filter(q=>q[0]<=b.x+29&&q[0]+q[2]>=b.x+29).map(q=>q[1]).filter(y=>y>=b.y+b.h-8);if(supports.length)b.y=Math.min(...supports)-b.h}}
+ for(const b of normal){if(b.hit)continue;const stacked=currentLevel<=2&&objectSupportedByPlaced(b,[...normal,...tnts]);if(!objectSupported(b)&&!stacked&&currentLevel!==1){const supports=platforms.filter(q=>q[0]<=b.x+29&&q[0]+q[2]>=b.x+29).map(q=>q[1]).filter(y=>y>=b.y+b.h-8);if(supports.length)b.y=Math.min(...supports)-b.h}}
  for(const e of enemies){if(e.type==='turtle'&&e.baseY!=null)e.y=e.baseY}
 }
 function setLevel(n=1){
