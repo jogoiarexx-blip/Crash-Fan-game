@@ -326,7 +326,7 @@ const jungleSlopes=[];
 const jungleObjectColliders=[];
 const biomeTileSR={
  swampGround:[12,2,554,139],swampFloat:[1069,19,156,197],swampSmall:[1268,171,132,132],swampReeds:[14,431,99,118],swampTree:[362,412,169,220],swampTotem:[538,414,195,199],swampLily:[277,646,157,93],swampLantern:[1007,802,76,107],swampBoat:[773,802,218,112],swampSkull:[1230,787,160,112],
- iceGround:[15,19,588,137],iceFloat:[941,13,284,212],iceSmall:[1263,28,187,142],iceCrystal:[434,478,146,126],iceTotem:[580,465,176,228],iceTree:[402,622,166,146],iceRock:[13,602,198,158],iceBush:[198,496,114,102],iceBridge:[961,431,680,202],
+ iceGround:[12,15,592,143],iceFloat:[939,10,291,220],iceSmall:[1264,26,194,150],iceCrystal:[431,476,154,130],iceTotem:[580,465,176,228],iceTree:[402,620,166,150],iceRock:[13,602,198,158],iceBush:[198,496,117,105],iceBridge:[962,428,688,205],
  templeGround:[0,0,620,140],templeSmall:[0,150,300,128],
  canyonGround:[0,0,620,140],canyonSmall:[0,150,300,128]
 };
