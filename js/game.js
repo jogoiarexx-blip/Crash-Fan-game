@@ -601,7 +601,7 @@ function setLevel(n=1){
    pushLifeBox(4470,355-58);
    masks.push({x:1000,y:250,t:false},{x:3040,y:205,t:false},{x:5120,y:245,t:false});
    [260,590,830,1030,1260,1490,1780,2050,2320,2670,2910,3270,3540,3890,4180,4480,4770,5060,5360].forEach((px,i)=>pushFruit(px,groundY-112-(i%3)*18));
-   pushEnemy(950,940,980,58,groundY-58,'swampTurtle');pushEnemy(2290,2280,2330,42,groundY-52,'frog');pushEnemy(2210,2140,2490,48,315,'mosquito');pushEnemy(3070,3060,3110,-56,groundY-52,'frog');pushEnemy(3490,3410,3900,50,300,'mosquito');pushEnemy(4030,4010,4070,60,300-58,'swampTurtle');pushEnemy(5100,5085,5120,70,355-50,'armadillo');pushEnemy(5040,4980,5080,-46,groundY-52,'frog');
+   pushEnemy(950,940,980,58,groundY-58,'swampTurtle');pushEnemy(2290,2280,2330,42,groundY-52,'frog');pushEnemy(2210,2140,2490,48,315,'mosquito');pushEnemy(3070,3060,3110,-56,groundY-52,'frog');pushEnemy(3490,3410,3900,50,300,'mosquito');pushEnemy(4030,4010,4070,60,300-58,'swampTurtle');pushEnemy(5093,5085,5120,70,355-50,'armadillo');pushEnemy(5040,4980,5080,-46,groundY-52,'frog');
  } else if(n===2){
    // FASE 2 v1.02 — TEMPLO PERDIDO reconstruído com rota principal contínua.
    currentLevelName='TEMPLO PERDIDO'; currentCheckpointDefault=110; portal.x=5310; portal.y=238;
