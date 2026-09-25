@@ -407,11 +407,11 @@ function objectHitsLevelBlocker(o,extraPad=8){
 }
 function sameSupportSafeX(o,x,occupied,reserved=null){
  const test={...o,x};
- const stackedSupport=currentLevel<=3&&objectSupportedByPlaced(test,occupied);
+ const stackedSupport=currentLevel<=4&&objectSupportedByPlaced(test,occupied);
  const supported=objectSupported(test)||stackedSupport;
  if(x<8||x+o.w>worldW-8||!supported||objectCutsPlatform(test)||objectHitsLevelBlocker(test,10))return false;
  if(reserved&&rect({x:test.x-18,y:test.y-8,w:test.w+36,h:test.h+16},reserved))return false;
- const overlapProbe=currentLevel<=3?test:{x:test.x-10,y:test.y-4,w:test.w+20,h:test.h+8};
+ const overlapProbe=currentLevel<=4?test:{x:test.x-10,y:test.y-4,w:test.w+20,h:test.h+8};
  return !occupied.some(v=>rect(overlapProbe,{x:v.x,y:v.y,w:v.w,h:v.h}))
 }
 function relocateObjectOnSupport(o,occupied,reserved=null){
@@ -429,7 +429,7 @@ function checkpointCandidateValid(x){
  return true
 }
 function configureCheckpointForLevel(){
- const preferred={1:2760,2:2850,3:2880,4:2780,5:2460}[currentLevel]||2460;
+ const preferred={1:2760,2:2850,3:2880,4:3000,5:2460}[currentLevel]||2460;
  let chosen=null;
  const candidates=[preferred];
  for(let d=24;d<=700;d+=24){candidates.push(preferred+d,preferred-d)}
@@ -477,12 +477,12 @@ function enemySafeAt(e,nx,settled=[]){
  for(const h of hazards){if(!['pit','spikes','iceSpike','poison'].includes(h.type))continue;const nearBand=Math.abs((e.y+eh)-h.y)<=20||rect(test,{x:h.x,y:h.y,w:h.w,h:h.h});if(nearBand)blockers.push({x:h.x-18,y:h.y-4,w:h.w+36,h:h.h+12})}
  if(checkpointBox?.w)blockers.push({x:checkpointBox.x-18,y:checkpointBox.y-8,w:checkpointBox.w+36,h:checkpointBox.h+16});
  if(portal?.w)blockers.push({x:portal.x-30,y:portal.y-10,w:portal.w+60,h:portal.h+20});
- if(currentLevel===3&&e.y+eh>groundY-90){for(const sw of swingingLogs)blockers.push({x:sw.x-145,y:groundY-90,w:290,h:90})}
+ if(currentLevel===3&&e.y+eh>groundY-90){for(const sw of swingingLogs)blockers.push({x:sw.x-145,y:groundY-90,w:290,h:90})}if(currentLevel===4&&e.y+eh>groundY-90){for(const ps of stonePresses)blockers.push({x:ps.x-20,y:groundY-125,w:210,h:125})}
  for(const s of settled){if(Math.abs((s.y+s.h)-(e.y+eh))<=16)blockers.push({x:s.x-20,y:s.y-4,w:s.w+40,h:s.h+8})}
  return !blockers.some(r=>rect(test,r));
 }
 function bestEnemyPatrolSegment(e,settled=[]){
- const local=currentLevel===3&&Number.isFinite(e.a)&&Number.isFinite(e.b);
+ const local=currentLevel>=3&&currentLevel<=4&&Number.isFinite(e.a)&&Number.isFinite(e.b);
  const left=local?Math.max(8,Math.min(e.a,e.b)-160):8;
  const right=local?Math.min(worldW-(e.w||70)-8,Math.max(e.a,e.b)+160):Math.min(worldW-(e.w||70)-8,worldW-8);
  const samples=[];
@@ -493,7 +493,7 @@ function bestEnemyPatrolSegment(e,settled=[]){
  const segs=[];let start=samples[0],prev=samples[0];
  for(let i=1;i<samples.length;i++){const v=samples[i];if(v-prev>9){segs.push({start,end:prev});start=v}prev=v}
  segs.push({start,end:prev});
- segs.sort((A,B)=>{const lenA=A.end-A.start,lenB=B.end-B.start,dA=Math.abs(((A.start+A.end)/2)-e.x),dB=Math.abs(((B.start+B.end)/2)-e.x);if(currentLevel<=3){if(dA!==dB)return dA-dB;return lenB-lenA}if(lenB!==lenA)return lenB-lenA;return dA-dB});
+ segs.sort((A,B)=>{const lenA=A.end-A.start,lenB=B.end-B.start,dA=Math.abs(((A.start+A.end)/2)-e.x),dB=Math.abs(((B.start+B.end)/2)-e.x);if(currentLevel<=4){if(dA!==dB)return dA-dB;return lenB-lenA}if(lenB!==lenA)return lenB-lenA;return dA-dB});
  return segs[0];
 }
 function sanitizeEnemyPatrols(){
@@ -520,7 +520,7 @@ function addHighRouteAssists(level){
  // Tartarugas ficam antes das rotas altas: pise nelas, espere o casco e use o super-pulo.
  const turtles={
   3:[[2300,2220,2330,50,355],[3710,3660,3740,-52,355]],
-  4:[[2800,2720,2880,54,455],[4420,4320,4515,-56,455]],
+  4:[[2820,2790,2870,54,355],[4420,4320,4515,-56,455]],
   5:[[2410,2340,2500,52,455],[4200,4140,4290,-54,455]]
  }[level]||[];
  for(const [x,a,b,v,surface] of turtles){if(!enemies.some(e=>e.type==='turtle'&&Math.abs(e.x-x)<55))pushEnemy(x,a,b,v,surface-56,'turtle')}
@@ -529,7 +529,7 @@ function addHighRouteAssists(level){
 }
 function auditLevelDesign(){
  // Corrige apenas erros evidentes: objetos apoiados e inimigos presos à superfície definida.
- for(const b of normal){if(b.hit)continue;const stacked=currentLevel<=3&&objectSupportedByPlaced(b,[...normal,...tnts]);if(!objectSupported(b)&&!stacked&&currentLevel!==1){const supports=platforms.filter(q=>q[0]<=b.x+29&&q[0]+q[2]>=b.x+29).map(q=>q[1]).filter(y=>y>=b.y+b.h-8);if(supports.length)b.y=Math.min(...supports)-b.h}}
+ for(const b of normal){if(b.hit)continue;const stacked=currentLevel<=4&&objectSupportedByPlaced(b,[...normal,...tnts]);if(!objectSupported(b)&&!stacked&&currentLevel!==1){const supports=platforms.filter(q=>q[0]<=b.x+29&&q[0]+q[2]>=b.x+29).map(q=>q[1]).filter(y=>y>=b.y+b.h-8);if(supports.length)b.y=Math.min(...supports)-b.h}}
  for(const e of enemies){if(e.type==='turtle'&&e.baseY!=null)e.y=e.baseY}
 }
 function setLevel(n=1){
@@ -581,13 +581,13 @@ function setLevel(n=1){
     [450,355,160,28],[930,355,150,28],[1530,355,170,28],[2250,355,160,28],[2770,355,170,28],[3090,300,150,28],[3550,355,160,28],[4200,355,170,28],[4560,295,150,28],[5050,355,170,28]);
    hazards.push({type:'iceSpike',x:620,y:402,w:140,h:53},{type:'pit',x:1230,y:455,w:150,h:120},{type:'iceSpike',x:1900,y:402,w:160,h:53},{type:'pit',x:2480,y:455,w:160,h:120},{type:'iceSpike',x:3200,y:402,w:180,h:53},{type:'pit',x:3890,y:455,w:160,h:120},{type:'iceSpike',x:4700,y:402,w:170,h:53});
    stonePresses.push({x:1810,phase:.3},{x:3660,phase:1.5});
-   [350,520,860,1060,1460,1660,2140,2310,2720,2920,3110,3470,3650,4140,4330,4560,5000,5200].forEach((px,i)=>pushBox(px,groundY-58,i%4===0));
+   [350,520,860,1060,1460,1660,2140,2310,2720,2920,3110,3470,3400,4140,4330,4560,5000,5200].forEach((px,i)=>pushBox(px,groundY-58,i%4===0));
    pushBox(480,355-58,true);pushBox(1580,355-58,false);pushBox(3115,300-58,true);pushBox(5100,355-58,false);
-   [1130,2380,3740,4620].forEach(px=>pushTNT(px));
+   [1130,2380,4060,4620].forEach(px=>pushTNT(px));
    pushLifeBox(4250,355-58);
    masks.push({x:980,y:255,t:false},{x:3130,y:175,t:false},{x:5050,y:250,t:false});
    [270,600,800,1040,1280,1520,1830,2130,2430,2690,3010,3300,3560,3920,4210,4510,4820,5150,5380].forEach((px,i)=>pushFruit(px,groundY-112-(i%4)*18));
-   pushEnemy(820,780,1140,90,groundY-60,'penguin');pushEnemy(1480,1420,1840,58,groundY-52,'seal');pushEnemy(2160,2090,2410,72,groundY-52,'iceShell');pushEnemy(2860,2710,3160,-96,groundY-60,'penguin');pushEnemy(3480,3410,3840,62,groundY-52,'seal');pushEnemy(4250,4120,4650,76,groundY-52,'iceShell');pushEnemy(5100,4930,5420,-102,groundY-60,'penguin');
+   pushEnemy(780,770,810,90,groundY-60,'penguin');pushEnemy(1540,1530,1580,58,groundY-52,'seal');pushEnemy(2210,2200,2250,72,groundY-52,'iceShell');pushEnemy(2840,2810,2890,-96,groundY-60,'penguin');pushEnemy(3540,3530,3600,62,groundY-52,'seal');pushEnemy(4250,4220,4300,76,groundY-52,'iceShell');pushEnemy(5100,5070,5160,-102,groundY-60,'penguin');
  } else if(n===3){
    currentLevelName='PÂNTANO SOMBRIO'; currentCheckpointDefault=100; portal.x=5310; portal.y=242;
    phaseDeco.push({s:'swampReeds',x:120,y:330,w:125,h:115},{s:'swampTree',x:620,y:250,w:155,h:195},{s:'swampTotem',x:1390,y:270,w:135,h:175},{s:'swampLily',x:2110,y:405,w:135,h:55},{s:'swampLantern',x:2730,y:345,w:65,h:80},{s:'swampBoat',x:3470,y:355,w:145,h:82},{s:'swampSkull',x:4260,y:360,w:110,h:85},{s:'swampTree',x:4920,y:255,w:150,h:190});
