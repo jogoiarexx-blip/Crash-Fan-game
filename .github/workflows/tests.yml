@@ -39,6 +39,9 @@ jobs:
       - name: Runtime e regressão
         run: node tests/loader-runtime-test.js
 
+      - name: Boss final isolado
+        run: node tests/final-boss-logic-test.js
+
       - name: Fases 3, 4 e 5
         run: node tests/phase345-data-test.js
 
