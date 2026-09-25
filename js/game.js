@@ -407,11 +407,11 @@ function objectHitsLevelBlocker(o,extraPad=8){
 }
 function sameSupportSafeX(o,x,occupied,reserved=null){
  const test={...o,x};
- const stackedSupport=currentLevel<=4&&objectSupportedByPlaced(test,occupied);
+ const stackedSupport=currentLevel<=5&&objectSupportedByPlaced(test,occupied);
  const supported=objectSupported(test)||stackedSupport;
  if(x<8||x+o.w>worldW-8||!supported||objectCutsPlatform(test)||objectHitsLevelBlocker(test,10))return false;
  if(reserved&&rect({x:test.x-18,y:test.y-8,w:test.w+36,h:test.h+16},reserved))return false;
- const overlapProbe=currentLevel<=4?test:{x:test.x-10,y:test.y-4,w:test.w+20,h:test.h+8};
+ const overlapProbe=currentLevel<=5?test:{x:test.x-10,y:test.y-4,w:test.w+20,h:test.h+8};
  return !occupied.some(v=>rect(overlapProbe,{x:v.x,y:v.y,w:v.w,h:v.h}))
 }
 function relocateObjectOnSupport(o,occupied,reserved=null){
@@ -429,7 +429,7 @@ function checkpointCandidateValid(x){
  return true
 }
 function configureCheckpointForLevel(){
- const preferred={1:2760,2:2850,3:2880,4:3000,5:2460}[currentLevel]||2460;
+ const preferred={1:2760,2:2850,3:2880,4:3000,5:2364}[currentLevel]||2460;
  let chosen=null;
  const candidates=[preferred];
  for(let d=24;d<=700;d+=24){candidates.push(preferred+d,preferred-d)}
@@ -477,12 +477,12 @@ function enemySafeAt(e,nx,settled=[]){
  for(const h of hazards){if(!['pit','spikes','iceSpike','poison'].includes(h.type))continue;const nearBand=Math.abs((e.y+eh)-h.y)<=20||rect(test,{x:h.x,y:h.y,w:h.w,h:h.h});if(nearBand)blockers.push({x:h.x-18,y:h.y-4,w:h.w+36,h:h.h+12})}
  if(checkpointBox?.w)blockers.push({x:checkpointBox.x-18,y:checkpointBox.y-8,w:checkpointBox.w+36,h:checkpointBox.h+16});
  if(portal?.w)blockers.push({x:portal.x-30,y:portal.y-10,w:portal.w+60,h:portal.h+20});
- if(currentLevel===3&&e.y+eh>groundY-90){for(const sw of swingingLogs)blockers.push({x:sw.x-145,y:groundY-90,w:290,h:90})}if(currentLevel===4&&e.y+eh>groundY-90){for(const ps of stonePresses)blockers.push({x:ps.x-20,y:groundY-125,w:210,h:125})}
+ if(currentLevel===3&&e.y+eh>groundY-90){for(const sw of swingingLogs)blockers.push({x:sw.x-145,y:groundY-90,w:290,h:90})}if(currentLevel===4&&e.y+eh>groundY-90){for(const ps of stonePresses)blockers.push({x:ps.x-20,y:groundY-125,w:210,h:125})}if(currentLevel===5&&e.y+eh>groundY-90){for(const sw of swingingLogs)blockers.push({x:sw.x-145,y:groundY-90,w:290,h:90});for(const ps of stonePresses)blockers.push({x:ps.x-20,y:groundY-125,w:210,h:125})}
  for(const s of settled){if(Math.abs((s.y+s.h)-(e.y+eh))<=16)blockers.push({x:s.x-20,y:s.y-4,w:s.w+40,h:s.h+8})}
  return !blockers.some(r=>rect(test,r));
 }
 function bestEnemyPatrolSegment(e,settled=[]){
- const local=currentLevel>=3&&currentLevel<=4&&Number.isFinite(e.a)&&Number.isFinite(e.b);
+ const local=currentLevel>=3&&currentLevel<=5&&Number.isFinite(e.a)&&Number.isFinite(e.b);
  const left=local?Math.max(8,Math.min(e.a,e.b)-160):8;
  const right=local?Math.min(worldW-(e.w||70)-8,Math.max(e.a,e.b)+160):Math.min(worldW-(e.w||70)-8,worldW-8);
  const samples=[];
@@ -493,7 +493,7 @@ function bestEnemyPatrolSegment(e,settled=[]){
  const segs=[];let start=samples[0],prev=samples[0];
  for(let i=1;i<samples.length;i++){const v=samples[i];if(v-prev>9){segs.push({start,end:prev});start=v}prev=v}
  segs.push({start,end:prev});
- segs.sort((A,B)=>{const lenA=A.end-A.start,lenB=B.end-B.start,dA=Math.abs(((A.start+A.end)/2)-e.x),dB=Math.abs(((B.start+B.end)/2)-e.x);if(currentLevel<=4){if(dA!==dB)return dA-dB;return lenB-lenA}if(lenB!==lenA)return lenB-lenA;return dA-dB});
+ segs.sort((A,B)=>{const lenA=A.end-A.start,lenB=B.end-B.start,dA=Math.abs(((A.start+A.end)/2)-e.x),dB=Math.abs(((B.start+B.end)/2)-e.x);if(currentLevel<=5){if(dA!==dB)return dA-dB;return lenB-lenA}if(lenB!==lenA)return lenB-lenA;return dA-dB});
  return segs[0];
 }
 function sanitizeEnemyPatrols(){
@@ -521,7 +521,7 @@ function addHighRouteAssists(level){
  const turtles={
   3:[[2300,2220,2330,50,355],[3710,3660,3740,-52,355]],
   4:[[2820,2790,2870,54,355],[4420,4320,4515,-56,455]],
-  5:[[2410,2340,2500,52,455],[4200,4140,4290,-54,455]]
+  5:[[2708,2680,2760,52,300],[4256,4230,4300,-54,355]]
  }[level]||[];
  for(const [x,a,b,v,surface] of turtles){if(!enemies.some(e=>e.type==='turtle'&&Math.abs(e.x-x)<55))pushEnemy(x,a,b,v,surface-56,'turtle')}
  const bounce={3:[2590,300],4:[4600,295],5:[4525,300]}[level];
@@ -529,7 +529,7 @@ function addHighRouteAssists(level){
 }
 function auditLevelDesign(){
  // Corrige apenas erros evidentes: objetos apoiados e inimigos presos à superfície definida.
- for(const b of normal){if(b.hit)continue;const stacked=currentLevel<=4&&objectSupportedByPlaced(b,[...normal,...tnts]);if(!objectSupported(b)&&!stacked&&currentLevel!==1){const supports=platforms.filter(q=>q[0]<=b.x+29&&q[0]+q[2]>=b.x+29).map(q=>q[1]).filter(y=>y>=b.y+b.h-8);if(supports.length)b.y=Math.min(...supports)-b.h}}
+ for(const b of normal){if(b.hit)continue;const stacked=currentLevel<=5&&objectSupportedByPlaced(b,[...normal,...tnts]);if(!objectSupported(b)&&!stacked&&currentLevel!==1){const supports=platforms.filter(q=>q[0]<=b.x+29&&q[0]+q[2]>=b.x+29).map(q=>q[1]).filter(y=>y>=b.y+b.h-8);if(supports.length)b.y=Math.min(...supports)-b.h}}
  for(const e of enemies){if(e.type==='turtle'&&e.baseY!=null)e.y=e.baseY}
 }
 function setLevel(n=1){
@@ -569,11 +569,11 @@ function setLevel(n=1){
     [300,355,160,28],[770,355,170,28],[1320,355,160,28],[1510,295,150,28],[1900,355,160,28],[2440,355,170,28],[2700,300,155,28],[3110,355,160,28],[3650,355,170,28],[4240,355,160,28],[4480,300,170,28],[4920,355,180,28]);
    hazards.push({type:'pit',x:560,y:455,w:128,h:120},{type:'gust',x:1000,y:250,w:210,h:205,dir:1,power:120},{type:'pit',x:1108,y:455,w:128,h:120},{type:'spikes',x:1680,y:400,w:134,h:55,s:'spikes'},{type:'gust',x:2030,y:245,w:210,h:210,dir:-1,power:135},{type:'pit',x:2204,y:455,w:128,h:120},{type:'pit',x:2852,y:455,w:128,h:120},{type:'spikes',x:3400,y:400,w:128,h:55,s:'spikes'},{type:'gust',x:3740,y:235,w:230,h:220,dir:1,power:145},{type:'pit',x:3988,y:455,w:128,h:120},{type:'pit',x:4546,y:455,w:138,h:120});
    swingingLogs.push({x:1740,y:105,phase:.8},{x:3270,y:95,phase:2.4},{x:4350,y:100,phase:1.5});stonePresses.push({x:2570,phase:.5},{x:3880,phase:2.2});
-   [260,510,740,980,1280,1450,1880,2070,2380,2680,3030,3260,3580,3810,4160,4430,4760,5010,5280].forEach((px,i)=>pushBox(px,groundY-58,i%3===0));
-   pushBox(820,355-58,true);pushBox(1550,295-58,false);pushBox(2480,355-58,true);pushBox(2730,300-58,false);pushBox(4320,355-58,true);pushBox(4990,355-58,false);
-   [930,2140,3160,4470].forEach(px=>pushTNT(px));pushLifeBox(3700,355-58);masks.push({x:1420,y:265,t:false},{x:2760,y:175,t:false},{x:4400,y:250,t:false});
+   [[260,455],[480,455],[700,455],[1000,455],[1280,455],[1450,455],[1880,455],[2070,455],[2440,355],[2780,455],[2990,455],[3190,355],[3580,455],[3760,455],[4160,455],[4590,300],[4760,455],[5010,455],[5280,455]].forEach(([px,surface],i)=>pushBox(px,surface-58,i%3===0));
+   pushBox(820,355-58,true);pushBox(1550,295-58,false);pushBox(2530,355-58,true);pushBox(2795,300-58,false);pushBox(4340,355-58,true);pushBox(4990,355-58,false);
+   pushTNT(900);pushTNT(2130);pushTNT(3110,355-58);pushTNT(4120);pushLifeBox(3700,355-58);masks.push({x:1420,y:265,t:false},{x:2760,y:175,t:false},{x:4400,y:250,t:false});
    [180,360,620,800,1040,1280,1490,1730,1940,2160,2400,2630,2860,3090,3330,3560,3790,4020,4250,4480,4710,4940,5170,5380].forEach((px,i)=>pushFruit(px,groundY-112-(i%4)*18));
-   pushEnemy(760,700,1050,78,groundY-56,'magmaBeetle');pushEnemy(1320,1260,1600,-72,groundY-56,'turtle');pushEnemy(1880,1840,2160,82,groundY-52,'magmaBeetle');pushEnemy(2440,2380,2730,-88,groundY-56,'turtle');pushEnemy(3040,2990,3300,92,groundY-56,'magmaBeetle');pushEnemy(3590,3550,3860,-76,315,'emberBat');pushEnemy(4180,4140,4470,86,315,'emberBat');pushEnemy(4810,4740,5200,-96,groundY-56,'magmaBeetle');
+   pushEnemy(772,750,830,78,groundY-56,'magmaBeetle');pushEnemy(1360,1330,1420,-72,355-56,'turtle');pushEnemy(1940,1910,1990,82,355-62,'magmaBeetle');pushEnemy(2708,2680,2760,-88,300-56,'turtle');pushEnemy(3070,3050,3130,92,groundY-56,'magmaBeetle');pushEnemy(3590,3550,3860,-76,315,'emberBat');pushEnemy(4072,4070,4140,86,315,'emberBat');pushEnemy(4860,4820,4920,-96,groundY-56,'magmaBeetle');
   }else if(n===4){
    currentLevelName='PICOS CONGELADOS'; currentCheckpointDefault=105; portal.x=5320; portal.y=238;
    phaseDeco.push({s:'iceCrystal',x:260,y:315,w:125,h:125},{s:'iceTree',x:900,y:320,w:135,h:118},{s:'iceTotem',x:1720,y:285,w:115,h:160},{s:'iceCrystal',x:2470,y:315,w:135,h:130},{s:'iceRock',x:3280,y:345,w:125,h:100},{s:'iceTree',x:4010,y:320,w:135,h:118},{s:'iceCrystal',x:4890,y:310,w:140,h:135});
