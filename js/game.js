@@ -571,7 +571,7 @@ function setLevel(n=1){
    swingingLogs.push({x:1740,y:105,phase:.8},{x:3270,y:95,phase:2.4},{x:4350,y:100,phase:1.5});stonePresses.push({x:2570,phase:.5},{x:3880,phase:2.2});
    [[260,455],[480,455],[700,455],[1000,455],[1280,455],[1450,455],[1880,455],[2070,455],[2440,355],[2780,455],[2990,455],[3190,355],[3580,455],[3760,455],[4160,455],[4590,300],[4760,455],[5010,455],[5280,455]].forEach(([px,surface],i)=>pushBox(px,surface-58,i%3===0));
    pushBox(820,355-58,true);pushBox(1550,295-58,false);pushBox(2440,297-58,true);pushBox(2795,300-58,false);pushBox(4340,355-58,true);pushBox(4990,355-58,false);
-   pushTNT(900);pushTNT(2130);pushTNT(3110,355-58);pushTNT(4120);pushLifeBox(3700,355-58);masks.push({x:1420,y:265,t:false},{x:2760,y:175,t:false},{x:4400,y:250,t:false});
+   pushTNT(900);pushTNT(2130);pushTNT(3110,355-58);pushTNT(4470);pushLifeBox(3700,355-58);masks.push({x:1420,y:265,t:false},{x:2760,y:175,t:false},{x:4400,y:250,t:false});
    [180,360,620,800,1040,1280,1490,1730,1940,2160,2400,2630,2860,3090,3330,3560,3790,4020,4250,4480,4710,4940,5170,5380].forEach((px,i)=>pushFruit(px,groundY-112-(i%4)*18));
    pushEnemy(772,750,830,78,groundY-56,'magmaBeetle');pushEnemy(1360,1330,1420,-72,355-56,'turtle');pushEnemy(1940,1910,1990,82,355-62,'magmaBeetle');pushEnemy(2708,2680,2760,-88,300-56,'turtle');pushEnemy(3070,3050,3130,92,groundY-56,'magmaBeetle');pushEnemy(3590,3550,3860,-76,315,'emberBat');pushEnemy(4072,4070,4140,86,315,'emberBat');pushEnemy(4860,4820,4920,-96,groundY-56,'magmaBeetle');
   }else if(n===4){
