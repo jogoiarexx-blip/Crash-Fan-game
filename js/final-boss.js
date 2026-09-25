@@ -6,7 +6,7 @@
  const attacks={1:['slam','gem'],2:['fire','slam','gem'],3:['ice','fire','gem','slam']};
  function create(){return{maxHp:9,hp:9,phase:1,x:690,y:174,w:238,h:281,intro:4.2,clock:0,nextAttack:1.15,attack:null,vulnerable:0,invuln:0,flash:0,projectiles:[],hazards:[],waves:[],attackIndex:0,defeated:false,defeatT:0,winSent:false}}
  function beginAttack(s){const list=attacks[s.phase],kind=list[s.attackIndex++%list.length];s.attack={kind,t:0,duration:kind==='gem'?2.1:2.35,spawned:false};s.vulnerable=0}
- function spawnAttack(s,api){const a=s.attack,p=api.player;if(a.kind==='slam'){s.waves.push({x:s.x+30,y:api.ground-28,w:52,h:28,vx:-380,t:2.2},{x:s.x+s.w-82,y:api.ground-28,w:52,h:28,vx:380,t:2.2});api.sound('bossSlam');api.shake(.55)}
+ function spawnAttack(s,api){const a=s.attack,p=api.player;if(a.kind==='slam'){s.waves.push({x:s.x+30,y:api.ground-28,w:52,h:28,vx:-380,t:2.2},{x:s.x+s.w-82,y:api.ground-28,w:52,h:28,vx:-300,t:2.45});api.sound('bossSlam');api.shake(.55)}
   else if(a.kind==='gem'){for(let i=-1;i<=1;i++){const sx=s.x+s.w*.42,sy=s.y+88+i*38,dx=p.x+p.w/2-sx,dy=p.y+p.h/2-sy,len=Math.max(1,Math.hypot(dx,dy)),speed=250+s.phase*28;s.projectiles.push({x:sx,y:sy,r:13,vx:dx/len*speed,vy:dy/len*speed+i*28,t:3.4,kind:'gem'})}api.sound('bossGem')}
   else {const count=s.phase===3?4:3;for(let i=0;i<count;i++){const x=95+((i*223+s.attackIndex*97)%720);s.hazards.push({kind:a.kind,x,w:a.kind==='ice'?46:70,warning:.62,active:.82,t:1.44,hit:false})}api.sound(a.kind==='ice'?'bossIce':'bossFire')}
  }
