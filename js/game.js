@@ -268,7 +268,7 @@ function applySaveData(i,sl){
  crystalsCollected=Array.from({length:9},(_,n)=>!!sl.crystals?.[n]);configureLevelCrystal(currentLevel);deathAnim=0;portalSeq=0;checkpointAnim=0;
  normal.forEach((b,n)=>{b.hit=!!sl.normal?.[n];b.breakT=0;if(b.kind==='bounce10'){const saved=sl.normalBounce?.[n];b.bounceLeft=b.hit?0:(Number.isFinite(Number(saved))?Math.max(1,Math.min(10,Math.round(Number(saved)))):10)}});
  tnts.forEach((t,n)=>{t.dead=!!sl.tnts?.[n];t.active=false;t.t=3;t.blast=0;t.lastBeep=4});fruitList.forEach((f,n)=>f.t=!!sl.fruitList?.[n]);masks.forEach((m,n)=>m.t=!!sl.masks?.[n]);enemies.forEach((e,n)=>e.dead=!!sl.enemies?.[n]);
- if(currentLevel===10&&bossState){bossState.hp=Math.max(1,Math.min(9,sl.bossHp||9));bossState.phase=bossState.hp>6?1:bossState.hp>3?2:3}
+ if(currentLevel===10&&bossState){bossState.hp=Math.max(1,Math.min(9,sl.bossHp||9));bossState.phase=bossState.hp>6?1:bossState.hp>3?2:3;bossState.intro=0}
  boxFx.length=0;dustFx.length=0;enemyFx.length=0;impactFx.length=0;akuFx.length=0;lifePickupFx.length=0;akuProtectT=0;hudLifePulseT=0;resetP();if(currentLevel===6||currentLevel===8){const start=checkpointActivated?3250:0;avalancheState=buildAvalancheState(start);avalancheState.hits=Math.max(0,sl.avalancheHits||0);avalancheState.nearMisses=Math.max(0,sl.avalancheNearMisses||0);avalancheState.bestCombo=Math.max(0,sl.avalancheBestCombo||0);restoreSpecialObstacleProgress(avalancheState,sl.avalancheObstacles,start)}if((currentLevel===7||currentLevel===9)&&rideState){const start=checkpointActivated?3600:0;rideState.distance=start;rideState.hits=Math.max(0,sl.rideHits||0);rideState.nearMisses=Math.max(0,sl.rideNearMisses||0);rideState.bestCombo=Math.max(0,sl.rideBestCombo||0);restoreSpecialObstacleProgress(rideState,sl.rideObstacles,start)}inv=1;toast='Slot '+i+' carregado';toastT=1.4;beginPhaseIntro(true);if(currentLevel===10){introT=0;if(sl.bossDefeated&&bossState){bossState.hp=0;bossState.defeated=true;state='win'}}
 }
 function applySave(i){const sl=readSlot(i);if(sl.empty)return false;activeSlot=i;const target=Math.max(1,Math.min(10,sl.currentLevel||1));ensurePhase(target,()=>applySaveData(i,sl));return true}
@@ -883,7 +883,7 @@ function restartAttemptAfterDeath(){
  aku=0;akuInvT=0;akuEquipT=0;akuProtectT=0;akuTrail.length=0;stopInvincibleMusic();
  boxFx.length=0;dustFx.length=0;enemyFx.length=0;impactFx.length=0;akuFx.length=0;lifePickupFx.length=0;forcedDeathT=0;hudLifePulseT=0;
  prevJ=false;prevS=false;prevDown=false;
- resetP();if(level===6||level===8)avalancheState=buildAvalancheState();if((level===7||level===9)&&rideState)rideState.distance=0;camX=Math.max(0,Math.min(worldW-W,p.x-W*.35));
+ resetP();if(level===6||level===8)avalancheState=buildAvalancheState();if((level===7||level===9)&&rideState)rideState.distance=0;if(level===10&&bossState)bossState.intro=0;camX=Math.max(0,Math.min(worldW-W,p.x-W*.35));
  startMusicForLevel(true);
  if(activeSlot)saveGame(true);
  toast='Tentativa reiniciada do começo';toastT=1.25;
