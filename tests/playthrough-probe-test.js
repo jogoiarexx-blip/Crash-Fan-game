@@ -91,5 +91,12 @@ async function probeSpecial(level){
  for(const level of [1,2,3,4,5])platform.push(await probePlatform(level));
  const special=[];
  for(const level of [6,7,8,9])special.push(await probeSpecial(level));
+ for(const completed of special){
+  assert.equal(completed.state,'results','Fase especial '+completed.level+' não chegou ao resultado pelo percurso inteiro');
+  assert.equal(completed.progress.deaths,0,'Fase especial '+completed.level+' teve morte durante o percurso');
+  assert.equal(completed.course.hits,0,'Fase especial '+completed.level+' teve impacto durante o percurso');
+  assert(completed.progress.checkpointActivated,'Checkpoint obrigatório não registrado na fase '+completed.level);
+ }
+ console.log('SPECIAL_FULL_RUN_CERTIFIED',special.map(s=>s.level).join(','));
  console.log('PLAYTHROUGH_PROBE_SUMMARY',JSON.stringify({platform:platform.map(x=>({level:x.level,result:x.state,deaths:x.progress.deaths,checkpoint:x.progress.checkpointActivated})),special:special.map(x=>({level:x.level,result:x.state,hits:x.course?.hits}))}));
 })().catch(err=>{console.error('PLAYTHROUGH_PROBE_FAILURE',err);process.exitCode=1});
