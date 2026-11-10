@@ -910,11 +910,12 @@ function updateBossLevel(dt){
  }else{p.vx=p.vy=0;prevJ=prevS=false}
  window.FinalBoss.update(bossState,dt,{player:{x:p.x,y:p.y,w:p.w,h:p.h},attackRect:p.spin>0?spinAttackRect():null,ground:groundY,
   hit:kind=>lose(false,kind),
+  reflect:(px,py)=>{score+=75;shake=Math.max(shake,.10);spawnImpact(px,py,.85);playSfx('box',1.26,.7,.07);toast='GEMA REBATIDA COM O GIRO!';toastT=.7},
   hitBoss:hp=>{score+=1200;shake=Math.max(shake,.42);hitFlash=Math.max(hitFlash,.18);playLoadedSfx('bossHit',1,1);toast='ACERTOU!  VIDA DO GUARDIÃO: '+hp+'/9';toastT=1.05},
   sound:name=>playLoadedSfx(name,1,1),shake:v=>shake=Math.max(shake,v),
   win:()=>{unlockTrophy('guardiao');state='win';saveGame(true)}
  });
- if(wasIntro>0&&bossState.intro<=0){playLoadedSfx('bossRoar',1,1);toast='ESPERE O NÚCLEO ABRIR E ATAQUE COM O GIRO!';toastT=2.5}
+ if(wasIntro>0&&bossState.intro<=0){playLoadedSfx('bossRoar',1,1);toast='PULSE PARA EVITAR ONDAS; GIRE PARA REBATER GEMAS!';toastT=3.2}
 }
 function spikeCycle(c){let h=0,warning=false,frame=0;if(c<1.05){h=0;frame=0}else if(c<1.42){h=5;warning=true;frame=0}else if(c<1.62){const q=(c-1.42)/.20;h=55*q;frame=q<.52?1:2}else if(c<2.42){h=55;frame=2}else if(c<2.68){h=55*(1-(c-2.42)/.26);frame=3}else{h=0;frame=4}return{h,warning,active:h>28,frame}}
 function spikeTrapState(t){return spikeCycle((swingClock+t.phase)%3.25)}
@@ -1445,7 +1446,7 @@ function drawBossLevel(){
  x.save();x.fillStyle='rgba(7,21,29,.90)';x.strokeStyle='#e8c058';x.lineWidth=3;x.beginPath();x.roundRect(156,14,648,86,14);x.fill();x.stroke();x.textAlign='center';x.fillStyle='#fff3bf';x.font='900 18px Arial';x.fillText('GUARDIÃO DAS NOVE GEMAS  •  '+stageName,W/2,37);x.fillStyle='#351925';x.fillRect(244,50,470,18);x.fillStyle=accent;x.fillRect(248,54,462*(s.hp/s.maxHp),10);for(let i=0;i<s.maxHp;i++){x.strokeStyle='rgba(255,255,255,.18)';x.strokeRect(248+i*(462/s.maxHp),54,462/s.maxHp,10)}x.fillStyle='#fff';x.font='bold 12px Arial';x.fillText(s.hp+' / '+s.maxHp,W/2,64);for(let i=0;i<s.maxHp;i++){x.fillStyle=i<s.hp?accent:'rgba(255,255,255,.16)';x.fillRect(270+i*48,76,30,6)}x.fillStyle='#b7d7de';x.font='bold 12px Arial';x.fillText('FASE '+s.phase+'/3',210,86);x.fillText('ATAQUE ATUAL',730,86);x.fillStyle='#fff7cf';x.fillText(s.attack?(names[s.attack.kind]||'ATAQUE!'):(s.vulnerable>0?'VULNERÁVEL':'PREPARANDO'),730,72);x.restore();
  if(s.vulnerable>0&&!s.defeated){x.save();x.textAlign='center';x.font='900 18px Arial';x.fillStyle='#ffe269';x.fillText('NÚCLEO VULNERÁVEL — USE O GIRO!',W/2,118);x.restore()}
  if(s.attack&&!s.attack.spawned){x.save();x.textAlign='center';x.font='900 22px Arial';x.fillStyle='#ffef96';x.fillText(names[s.attack.kind]||'ATAQUE!',W/2,128);x.restore()}
- x.save();x.fillStyle='rgba(6,18,24,.88)';x.strokeStyle=accent;x.lineWidth=2;x.beginPath();x.roundRect(18,18,118,82,12);x.fill();x.stroke();x.fillStyle='#fff';x.font='bold 18px Arial';x.fillText('VIDAS × '+lives,30,45);x.fillText('FRUTAS '+fruits,30,70);x.fillStyle='#badbe1';x.font='11px Arial';x.fillText('DESVIE • ESPERE • GIRE',30,90);x.restore();
+ x.save();x.fillStyle='rgba(6,18,24,.88)';x.strokeStyle=accent;x.lineWidth=2;x.beginPath();x.roundRect(18,18,118,82,12);x.fill();x.stroke();x.fillStyle='#fff';x.font='bold 18px Arial';x.fillText('VIDAS × '+lives,30,45);x.fillText('FRUTAS '+fruits,30,70);x.fillStyle='#badbe1';x.font='11px Arial';x.fillText('GIRE PARA REBATER GEMAS',30,90);x.restore();
  if(s.intro>0){const q=1-s.intro/4.2;x.save();x.fillStyle='#000b';x.fillRect(0,0,W,72);x.fillRect(0,H-72,W,72);x.textAlign='center';x.fillStyle='#ffe16b';x.font='900 34px Arial';x.fillText('GUARDIÃO DAS NOVE GEMAS',W/2,170);x.fillStyle='#e7f6ff';x.font='bold 18px Arial';x.fillText(q<.45?'A selva, o cânion e o gelo protegem o templo.':'Três forças. Nove gemas. Uma batalha final.',W/2,208);x.font='13px Arial';x.fillStyle='#bcd7dd';x.fillText('ENTER / A para pular',W/2,388);x.restore()}
  if(s.defeated){x.save();x.fillStyle='rgba(255,226,99,'+Math.min(.38,(3.15-s.defeatT)*.12)+')';x.fillRect(0,0,W,H);x.textAlign='center';x.fillStyle='#fff6b0';x.font='900 30px Arial';x.fillText('AS NOVE GEMAS ESTÃO LIVRES!',W/2,150);x.restore()}
  if(toastT>0){x.save();x.textAlign='center';x.fillStyle='#00131dee';x.fillRect(W/2-275,405,550,36);x.fillStyle='#fff';x.font='bold 17px Arial';x.fillText(toast,W/2,429);x.restore()}drawDamageFlash();drawDeathCinematicOverlay();if(paused)drawPauseMenu();
@@ -1684,7 +1685,7 @@ function loop(t){let dt=Math.min(.033,(t-last)/1000||0);last=t;gamepadUI();updat
  // não alteram o progresso de saves e não ignoram colisões ou dano.
  function qaSnapshot(){
   const active=levelMode==='ride'?rideState:levelMode==='avalanche'?avalancheState:null;
-  return {state,level:currentLevel,mode:levelMode,paused,introT,deathAnim,portalSeq,
+  return {state,level:currentLevel,mode:levelMode,paused,introT,deathAnim,deathKind,portalSeq,
    player:{x:p.x,y:p.y,w:p.w,h:p.h,vx:p.vx,vy:p.vy,on:p.on,spin:p.spin},
    progress:{lives,deaths,checkpoint,checkpointActivated,score,boxesBroken},
    course:active?{distance:active.distance,lane:active.lane,targetLane:active.targetLane,y:active.y,hits:active.hits,gap:active.gap??null}:null,
