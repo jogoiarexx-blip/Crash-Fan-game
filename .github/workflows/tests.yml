@@ -56,3 +56,6 @@ jobs:
 
       - name: Auditoria completa de layout
         run: node tests/full-layout-audit-test.js
+
+      - name: Gamepad e trajetórias das fases pseudo-3D
+        run: node tests/special-gamepad-test.js
