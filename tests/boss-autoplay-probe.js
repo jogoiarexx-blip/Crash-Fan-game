@@ -10,6 +10,7 @@ Object.defineProperty(global,'navigator',{value:{getGamepads:()=>[],maxTouchPoin
 for(const file of ['js/jungle-phase.js','js/level-loader.js','js/final-boss.js','js/game.js'])vm.runInThisContext(fs.readFileSync(file,'utf8'),{filename:file});
 
 
+const assert=require('node:assert/strict');
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{
  await wait(25);await global.__crashDebug.loadLevel(10);
@@ -43,4 +44,10 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
  }
  s=global.__crashDebug.qaSnapshot();
  console.log('BOSS_AUTOPLAY_PROBE',JSON.stringify({state:s.state,hp:s.boss.hp,lives:s.progress.lives,deaths:s.progress.deaths,ticks:events.length,events:events.slice(0,30),player:s.player}));
+ assert.equal(s.state,'win','Guardião deve chegar à tela de vitória');
+ assert.equal(s.boss.hp,0,'Guardião deve ser derrotado até o último HP');
+ assert.equal(s.progress.deaths,0,'Percurso certificado não pode perder vidas');
+ assert.equal(events.filter(e=>e.event==='boss-hit').length,9,'Devem ocorrer os nove acertos de verdade');
+ assert.equal(events.filter(e=>e.event==='player-death').length,0,'Não pode haver morte silenciosa');
+ console.log('BOSS_COMPLETE_CERTIFIED 9/9 golpes, 3 fases, 0 mortes, tela de vitória');
 })().catch(e=>{console.error('BOSS_QA_FAILURE',e);process.exitCode=1});
