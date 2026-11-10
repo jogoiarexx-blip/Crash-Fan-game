@@ -33,7 +33,7 @@ function controlsForPlatform(s,layout,clock,stall=0){
  if(p.on&&box&&box.x-p.x<80&&box.x-p.x>0)spin=clock%34<23;
  if(enemy&&enemy.x-p.x<95)spin=clock%32<24;
  if(clock%64<34)spin=true;
- const portalBeyond=p.x>layout.portal.x+layout.portal.w-8;
+ const portalBeyond=p.x>layout.portal.x+layout.portal.w-105;
  return {right:!portalBeyond,left:portalBeyond,jump,spin};
 }
 async function probePlatform(level){
@@ -52,7 +52,7 @@ async function probePlatform(level){
   global.__crashDebug.qaStep(1,input);
  }
  state=state||global.__crashDebug.qaSnapshot();
- console.log('PLATFORM_ROUTE_PROBE',JSON.stringify({level,result:state.state,maxX:Math.round(maxX),x:Math.round(state.player.x),deaths:state.progress.deaths,lives:state.progress.lives,checkpoint:state.progress.checkpointActivated,events,hazards:hazards.length}));
+ console.log('PLATFORM_ROUTE_PROBE',JSON.stringify({level,result:state.state,maxX:Math.round(maxX),x:Math.round(state.player.x),y:Math.round(state.player.y),on:state.player.on,portalSeq:state.portalSeq,portal:layout.portal,deaths:state.progress.deaths,lives:state.progress.lives,checkpoint:state.progress.checkpointActivated,events,hazards:hazards.length}));
  return state;
 }
 async function probeSpecial(level){
