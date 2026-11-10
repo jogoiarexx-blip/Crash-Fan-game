@@ -60,6 +60,9 @@ jobs:
       - name: Gamepad e trajetórias das fases pseudo-3D
         run: node tests/special-gamepad-test.js
 
+      - name: Explorar trajetórias completas e registrar bloqueios
+        run: node tests/playthrough-probe-test.js
+
       - name: Preparar Chromium para auditoria visual
         run: |
           command -v google-chrome || command -v google-chrome-stable
