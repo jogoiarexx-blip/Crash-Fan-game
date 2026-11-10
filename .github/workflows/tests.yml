@@ -59,3 +59,20 @@ jobs:
 
       - name: Gamepad e trajetórias das fases pseudo-3D
         run: node tests/special-gamepad-test.js
+
+      - name: Preparar Chromium para auditoria visual
+        run: |
+          command -v google-chrome || command -v google-chrome-stable
+          npm install --no-save --no-package-lock puppeteer-core@24
+
+      - name: Testar execução real das dez fases no Chromium
+        run: node tests/browser-smoke-test.cjs
+
+      - name: Anexar capturas de tela da auditoria
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crash-auditoria-visual
+          path: qa-shots/
+          if-no-files-found: ignore
+          retention-days: 7
