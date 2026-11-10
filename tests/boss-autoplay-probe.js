@@ -20,10 +20,13 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
   if(s.state==='win'||s.state==='gameover'||s.state==='results')break;
   if(s.boss.hp<last.hp){events.push({tick,event:'boss-hit',hp:s.boss.hp,x:Math.round(s.player.x),lives:s.progress.lives});last.hp=s.boss.hp}
   if(s.progress.deaths>last.deaths){events.push({tick,event:'player-death',hp:s.boss.hp,x:Math.round(s.player.x),lives:s.progress.lives});last.deaths=s.progress.deaths}
-  const target=s.boss.vulnerable>.03?675:615,p=s.player;
+  const p=s.player,b=s.boss,target=b.vulnerable>.04?682:638;
   const right=p.x<target-5,left=p.x>target+5;
-  const spin=s.boss.vulnerable>.05&&p.x>645&&p.spin<.1&&tick%2===0;
-  const jump=s.boss.attack&&p.on&&(s.boss.attack==='slam'||s.boss.attack==='gem'||s.boss.attack==='fire'||s.boss.attack==='ice')&&tick%43===0;
+  const spin=b.vulnerable>.06&&p.x>658&&p.spin<.08&&tick%2===0;
+  const wave=b.waves.some(q=>q.x+q.w>p.x-8&&q.x<p.x+220);
+  const gem=b.projectiles.some(q=>q.x>p.x+10&&q.x<p.x+245&&q.y>p.y-160);
+  const floor=b.hazards.some(q=>p.x+p.w>q.x-16&&p.x<q.x+q.w+16&&q.warning<.45&&q.t>0);
+  const jump=p.on&&(wave||gem||floor)&&tick%2===0;
   global.__crashDebug.qaStep(1,{left,right,jump,spin});
  }
  s=global.__crashDebug.qaSnapshot();
