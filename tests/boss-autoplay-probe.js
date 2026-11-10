@@ -26,7 +26,7 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
   const wave=b.waves.some(q=>q.x+q.w>p.x-8&&q.x<p.x+220);
   const gem=b.projectiles.some(q=>q.x>p.x+10&&q.x<p.x+245&&q.y>p.y-160);
   const floor=b.hazards.some(q=>p.x+p.w>q.x-16&&p.x<q.x+q.w+16&&q.warning<.45&&q.t>0);
-  const earlySlam=b.attack==='slam'&&b.attackTime>.45&&b.attackTime<.58;
+  const earlySlam=b.attack==='slam'&&b.attackTime>.61&&b.attackTime<.70;
   const earlyGem=b.attack==='gem'&&b.attackTime>.46&&b.attackTime<.58;
   const jump=p.on&&(earlySlam||earlyGem||wave||gem||floor)&&tick%2===0;
   global.__crashDebug.qaStep(1,{left,right,jump,spin});
