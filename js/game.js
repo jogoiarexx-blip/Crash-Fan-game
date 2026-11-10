@@ -954,7 +954,7 @@ function updateRide(dt){
 }
 function updateAvalanche(dt){
  if(!avalancheState)avalancheState=buildAvalancheState();
- const a=avalancheState,L=actionDown('left'),R=actionDown('right'),J=actionDown('jump');
+ const a=avalancheState,g=pad(),L=actionDown('left')||g.l,R=actionDown('right')||g.r,J=actionDown('jump')||g.j;
  if(L&&!a.prevL){a.targetLane=Math.max(-1,a.targetLane-1);a.lean=-1}
  if(R&&!a.prevR){a.targetLane=Math.min(1,a.targetLane+1);a.lean=1}
  if(J&&!a.prevJ&&a.y<=0){a.vy=510;playSfx('jump',1.06,.78,.08)}
@@ -1281,10 +1281,10 @@ function drawMode7Ground(projection,distance,jungle=false){
    fillMode7Band(projection,d0,d1,-shoulderOuter,shoulderOuter,-roadHalf,roadHalf,jungle?'#675130':'#dfeff6',.20+t*.12);
    fillMode7Band(projection,d0,d1,-roadHalf,roadHalf,-1.70,1.70,jungle?'#b97b42':'#cae6ef',.08+t*.06);
  }
- x.save();x.beginPath();const fl=projection(-roadHalf,far),fr=projection(roadHalf,far),nr=projection(roadHalf,near),nl=projection(-roadHalf,near);x.moveTo(fl.x,fl.y);x.lineTo(fr.x,fr.y);x.lineTo(nr.x,nr.y);x.lineTo(nl.x,nl.y);x.closePath();x.clip();
+ x.save();x.beginPath();for(let k=0;k<=24;k++){const d=far-(far-near)*k/24,p=projection(-roadHalf,d);if(k===0)x.moveTo(p.x,p.y);else x.lineTo(p.x,p.y)}for(let k=24;k>=0;k--){const d=far-(far-near)*k/24,p=projection(roadHalf,d);x.lineTo(p.x,p.y)}x.closePath();x.clip();
  for(let i=0;i<bands;i++){
    const d0=far-(far-near)*i/bands,d1=far-(far-near)*(i+1)/bands,mid=(d0+d1)/2,t=Math.max(0,Math.min(1,1-mid/far)),p0=projection(0,d0),p1=projection(0,d1),l=projection(-roadHalf,mid),r=projection(roadHalf,mid),h=Math.max(2,p1.y-p0.y+2),sy=((Math.floor((distance+d0)*.78))%512+512)%512,sh=Math.max(3,Math.min(86,Math.floor(512/bands*1.8)));
-   x.globalAlpha=.94;x.drawImage(img,0,sy,512,Math.min(sh,512-sy),l.x,p0.y,r.x-l.x,h);
+   x.globalAlpha=.94;const first=Math.min(sh,512-sy),firstH=h*first/sh;x.drawImage(img,0,sy,512,first,l.x,p0.y,r.x-l.x,firstH);if(first<sh)x.drawImage(img,0,0,512,sh-first,l.x,p0.y+firstH,r.x-l.x,h-firstH);
    x.globalAlpha=.10+t*.08;x.fillStyle=jungle?'#2b1c10':'#ffffff';x.fillRect(l.x,p0.y,r.x-l.x,Math.max(1,h*.32));
    x.globalAlpha=.05+t*.10;x.fillStyle=jungle?'#4a3119':'#7bbfd6';const rutL=projection(-.52,mid),rutR=projection(.52,mid),rutW=Math.max(2,24*t);x.fillRect(rutL.x-rutW/2,p0.y,rutW,h);x.fillRect(rutR.x-rutW/2,p0.y,rutW,h);
  }
@@ -1300,7 +1300,7 @@ function drawMode7Roadside(projection,distance,jungle=false){
    if(graphicsTier()>0&&mode7Random(id*17.03)>.74){const side2=-side,lateral2=2.18+mode7Random(id*9.4)*.36,pr2=projection(side2*lateral2,d+18),idx2=(jungle?4:0)+Math.floor(mode7Random(id*21.15)*4),sizeMul2=.76+mode7Random(id*23.8)*.24;entries.push({d:d+18,side:side2,pr:pr2,idx:idx2,sizeMul:sizeMul2,alpha:.28+pr2.scale*.62})}
  }
  entries.sort((a,b)=>b.d-a.d);
- for(const e of entries){const sc=e.pr.scale*(jungle?1.05:.98)*e.sizeMul,w=150*sc,h=150*sc;drawMode7ShadowEllipse(e.pr.x,e.pr.y-2*h*.02,Math.max(8,26*sc),Math.max(4,8*sc),Math.min(.26,e.alpha*.35));x.save();x.globalAlpha=Math.min(1,e.alpha);ds(mode7PropsImg,MODE7_PROP_SR[e.idx],e.pr.x-w/2,e.pr.y-h*.92,w,h,e.side<0);x.restore()}
+ for(const e of entries){const sc=e.pr.scale*(jungle?1.05:.98)*e.sizeMul,w=150*sc,h=150*sc;drawMode7ShadowEllipse(e.pr.x,e.pr.y+1,Math.max(8,26*sc),Math.max(4,8*sc),Math.min(.26,e.alpha*.35));x.save();x.globalAlpha=Math.min(1,e.alpha);ds(mode7PropsImg,MODE7_PROP_SR[e.idx],e.pr.x-w/2,e.pr.y-h,w,h,e.side<0);x.restore()}
 }
 
 function drawMode7BandMarker(projection,rel,label,color,finish=false,jungle=false){
@@ -1670,6 +1670,7 @@ window.__crashDebug={
  getGraphics:()=>({mode:graphicsMode,tier:graphicsTier(),label:graphicsLabel()}),
  getDeathProfiles:()=>Object.fromEntries(Object.entries(DEATH_PROFILES).map(([kind,profile])=>[kind,{...profile}])),
  getLayout:()=>({level:currentLevel,spawn:{x:currentCheckpointDefault,y:groundY-p.standH},portal:{...portal},checkpoint:{...checkpointBox},platforms:platforms.map(q=>q.slice(0,4)),rocks:rocks.map(r=>({...r})),boxes:normal.map(b=>({x:b.x,y:b.y,w:b.w,h:b.h,kind:b.kind})),tnts:tnts.map(t=>({x:t.x,y:t.y,w:t.w,h:t.h})),fruits:fruitList.map(f=>({x:f.x,y:f.y,w:42,h:42})),masks:masks.map(m=>({x:m.x,y:m.y,w:54,h:65})),enemies:enemies.map(e=>({x:e.x,y:e.y,w:e.w,h:e.h,type:e.type,a:e.a,b:e.b})),hazards:hazards.map(h=>({...h}))}),
+ testSpecialPadStep:dt=>{if(levelMode!=='ride'&&levelMode!=='avalanche')return null;state='play';paused=false;introT=0;deathAnim=0;update(Math.max(0,Math.min(1/30,dt)));return window.__crashDebug.getState()},
  getState:()=>({state,currentLevel,currentLevelName,levelMode,paused,loadingProgress,loadingError,levelManager:levelManager.info(),player:{x:p.x,y:p.y},special:{snowballX,snowballSpeed,rideDistance:rideState?.distance||0,rideLane:rideState?.lane||0,rideCombo:rideState?.combo||0,rideNearMisses:rideState?.nearMisses||0,avalancheDistance:avalancheState?.distance||0,avalancheLane:avalancheState?.lane||0,avalancheGap:avalancheState?.gap||0,avalancheCombo:avalancheState?.combo||0,avalancheNearMisses:avalancheState?.nearMisses||0},progress:{fruits,phaseStartFruits,lives,boxesBroken,checkpointActivated},arrays:{enemies:enemies.length,boxes:normal.length,tnts:tnts.length,fruits:fruitList.length,platforms:platforms.length}}),
  loadLevel:(level)=>new Promise(resolve=>ensurePhase(level,()=>{startNow(false);resolve(window.__crashDebug.getState())})),
  testCheckpointRespawn:()=>{if(!normal.length)return null;checkpointActivated=true;checkpoint=checkpointRespawnX;normal[0].hit=true;boxesBroken=1;fruits=17;restartAttemptAfterDeath();return{boxKept:!!normal[0]?.hit,boxesBroken,fruits,checkpointActivated,playerX:p.x,respawnX:checkpointRespawnX}},
