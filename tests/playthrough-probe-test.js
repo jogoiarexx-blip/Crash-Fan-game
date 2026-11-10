@@ -26,13 +26,13 @@ function controlsForPlatform(s,layout,clock,stall=0){
  const enemy=layout.enemies.find(e=>e.y+e.h>p.y+20&&e.y<p.y+p.h+25&&e.x>p.x&&e.x<p.x+120);
  const step=layout.platforms.filter(q=>q[1]<foot-8&&q[1]>foot-115&&q[0]-p.x>20&&q[0]-p.x<108).sort((a,b)=>a[0]-b[0])[0];
  let jump=false,spin=false;
- if(p.on&&next&&ground&&next.x-p.x<76&&next.x-p.x>-8)jump=true;
+ if(p.on&&next&&ground&&next.x-p.x<56&&next.x-p.x>-8)jump=true;
  if(p.on&&tnt&&tnt.x-p.x>15&&tnt.x-p.x<45)jump=true;
- if(p.on&&step&&step[0]-p.x<42)jump=true;
+ // Plataformas elevadas são rotas opcionais; um salto automático nelas podia consumir o salto necessário para o abismo.
  if(p.on&&stall>13&&stall%32===16)jump=true;
  if(p.on&&box&&box.x-p.x<80&&box.x-p.x>0)spin=clock%34<23;
  if(enemy&&enemy.x-p.x<95)spin=clock%32<24;
- if(clock%64<34)spin=true;
+ if(clock%64<34&&!tnt)spin=true; // Evita girar TNTs por acidente.
  const portalBeyond=p.x>layout.portal.x+layout.portal.w-105;
  return {right:!portalBeyond,left:portalBeyond,jump,spin};
 }
