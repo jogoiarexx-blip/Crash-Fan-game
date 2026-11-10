@@ -1688,7 +1688,7 @@ function loop(t){let dt=Math.min(.033,(t-last)/1000||0);last=t;gamepadUI();updat
    player:{x:p.x,y:p.y,w:p.w,h:p.h,vx:p.vx,vy:p.vy,on:p.on,spin:p.spin},
    progress:{lives,deaths,checkpoint,checkpointActivated,score,boxesBroken},
    course:active?{distance:active.distance,lane:active.lane,targetLane:active.targetLane,y:active.y,hits:active.hits,gap:active.gap??null}:null,
-   boss:bossState?{hp:bossState.hp,x:bossState.x,y:bossState.y,w:bossState.w,h:bossState.h,intro:bossState.intro,phase:bossState.phase,attack:bossState.attack?.kind||null,vulnerable:bossState.vulnerable,defeated:bossState.defeated}:null};
+   boss:bossState?{hp:bossState.hp,x:bossState.x,y:bossState.y,w:bossState.w,h:bossState.h,intro:bossState.intro,phase:bossState.phase,attack:bossState.attack?.kind||null,attackTime:bossState.attack?.t||0,vulnerable:bossState.vulnerable,defeated:bossState.defeated,waves:bossState.waves.map(q=>({...q})),projectiles:bossState.projectiles.map(q=>({...q})),hazards:bossState.hazards.map(q=>({...q}))}:null};
  }
  function qaStep(frames=1,inputs={}){
   const count=Math.max(1,Math.min(600,Math.floor(frames)));
