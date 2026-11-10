@@ -5,6 +5,7 @@ on:
     paths:
       - 'js/**'
       - 'tests/playthrough-probe-test.js'
+      - 'tests/boss-autoplay-probe.js'
       - '.github/workflows/qa-routes.yml'
   workflow_dispatch:
 jobs:
@@ -18,3 +19,5 @@ jobs:
           node-version: '20'
       - name: Simular rotas com física e colisões reais
         run: node tests/playthrough-probe-test.js
+      - name: Explorar combate completo do Guardião
+        run: node tests/boss-autoplay-probe.js
