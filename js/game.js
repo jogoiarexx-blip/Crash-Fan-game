@@ -1144,7 +1144,7 @@ function ds(img,s,px,py,w,h,flip=false,a=1){if(!img)return;px=Math.round(px);py=
 // Camadas leves do cânion, sem novos downloads: duas velocidades de parallax.
 function drawCanyonDepth(){
  x.save();
- const glow=x.createRadialGradient(W*.72,158,14,W*.72,158,510);
+ const glow=x.createRadialGradient?.(W*.72,158,14,W*.72,158,510)||x.createLinearGradient(0,0,0,H);
  glow.addColorStop(0,'rgba(255,185,95,.24)');glow.addColorStop(.42,'rgba(243,126,48,.09)');glow.addColorStop(1,'rgba(120,32,18,0)');
  x.fillStyle=glow;x.fillRect(0,0,W,H);
  const layers=[{base:356,amp:65,step:218,pan:.055,color:'#b74b30',alpha:.28},{base:427,amp:38,step:154,pan:.14,color:'#4c1a16',alpha:.22}];
