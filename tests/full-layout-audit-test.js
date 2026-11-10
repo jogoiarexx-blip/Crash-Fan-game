@@ -39,7 +39,7 @@ function support(o,layout,objects){
     for(let j=0;j<layout.platforms.length;j++)if(hits(a,toRect(layout.platforms[j]),5))warn(level,'crate-inside-platform',{index:i,platform:j});
    }
    const cp=layout.checkpoint;
-   if(!support(cp,layout.platforms,[]) && !layout.platforms.some(p=>Math.abs(cp.y+cp.h-p[1])<=4&&cp.x+cp.w>p[0]&&cp.x<p[0]+p[2]))error(level,'unsupported-checkpoint',{rect:cp});
+   if(!layout.platforms.some(p=>Math.abs(cp.y+cp.h-p[1])<=4&&cp.x+cp.w>p[0]&&cp.x<p[0]+p[2]))error(level,'unsupported-checkpoint',{rect:cp});
    for(const e of layout.enemies){
     if(e.a>e.b||e.x<e.a-2||e.x>e.b+2)error(level,'invalid-patrol',{enemy:e});
     if(!['mosquito','emberBat'].includes(e.type)&&!support(e,layout,all))warn(level,'enemy-off-support',{enemy:e});
