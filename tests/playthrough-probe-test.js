@@ -39,20 +39,21 @@ function controlsForPlatform(s,layout,clock,stall=0){
 async function probePlatform(level){
  const start=await global.__crashDebug.loadLevel(level);global.__crashDebug.qaSkipIntro();
  const layout=global.__crashDebug.getLayout(),hazards=layoutHazards(layout);
- let maxX=0,lastX=start.player.x,stall=0,events=[],lastDeaths=0,state=null;
+ let maxX=0,lastX=start.player.x,stall=0,events=[],lastDeaths=0,state=null,fallLogged=false;
  for(let tick=0;tick<4200;tick++){
   const s=global.__crashDebug.qaSnapshot();
   if(s.state==='results'||s.state==='gameover'||s.state==='win'){state=s;break}
   if(s.player.x>maxX)maxX=s.player.x;
   if(Math.abs(s.player.x-lastX)<.3)stall++;else stall=0;
   lastX=s.player.x;
+  if(!fallLogged&&s.player.y>720){fallLogged=true;events.push({tick,event:'BELOW_WORLD',x:+s.player.x.toFixed(1),y:+s.player.y.toFixed(1),portalSeq:s.portalSeq,deathAnim:s.deathAnim,deaths:s.progress.deaths,mode:s.mode})}
   if(s.progress.deaths>lastDeaths){lastDeaths=s.progress.deaths;events.push({tick,event:'death',x:+s.player.x.toFixed(1),y:+s.player.y.toFixed(1),vy:+s.player.vy.toFixed(1),maxX:+maxX.toFixed(1)})}
   if(stall===130){events.push({tick,event:'stalled',x:+s.player.x.toFixed(1),y:+s.player.y.toFixed(1),vy:+s.player.vy.toFixed(1),on:s.player.on,near:layout.platforms.filter(q=>Math.abs(q[0]-s.player.x)<120||Math.abs(q[0]+q[2]-s.player.x)<100).slice(0,3)})}
   const input=controlsForPlatform(s,layout,tick,stall);
   global.__crashDebug.qaStep(1,input);
  }
  state=state||global.__crashDebug.qaSnapshot();
- console.log('PLATFORM_ROUTE_PROBE',JSON.stringify({level,result:state.state,maxX:Math.round(maxX),x:Math.round(state.player.x),y:Math.round(state.player.y),on:state.player.on,portalSeq:state.portalSeq,portal:layout.portal,deaths:state.progress.deaths,lives:state.progress.lives,checkpoint:state.progress.checkpointActivated,events,hazards:hazards.length}));
+ console.log('PLATFORM_ROUTE_PROBE',JSON.stringify({level,result:state.state,maxX:Math.round(maxX),x:Math.round(state.player.x),y:Math.round(state.player.y),on:state.player.on,portalSeq:state.portalSeq,portal:layout.portal,deaths:state.progress.deaths,lives:state.progress.lives,checkpoint:state.progress.checkpointActivated,events,supports:layout.platforms.filter(q=>q[0]+q[2]>layout.portal.x-150&&q[0]<layout.portal.x+250).slice(0,10),hazards:hazards.length}));
  return state;
 }
 async function probeSpecial(level){
