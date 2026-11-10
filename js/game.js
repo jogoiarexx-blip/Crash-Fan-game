@@ -1680,7 +1680,35 @@ function gamepadUI(){
 }
 function loadingScreen(){uiButtons=[];x.fillStyle='#07151d';x.fillRect(0,0,W,H);const lvl=loadingTargetLevel||currentLevel||1,meta=window.LEVEL_CONFIG?.[lvl],tip=window.LOADING_TIPS?.[lvl]||'Explore com calma e observe o cenário.';if(levelPreview.level!==lvl)requestLevelPreview(lvl);if(levelPreview.img){x.save();x.globalAlpha=.26;x.drawImage(levelPreview.img,0,0,levelPreview.img.naturalWidth,levelPreview.img.naturalHeight,0,0,W,H);x.restore()}x.save();const shade=x.createLinearGradient(0,0,0,H);shade.addColorStop(0,'rgba(0,0,0,.28)');shade.addColorStop(.5,'rgba(0,0,0,.52)');shade.addColorStop(1,'rgba(0,0,0,.78)');x.fillStyle=shade;x.fillRect(0,0,W,H);x.restore();if(menuLogoImg&&menuLogoImg.complete&&menuLogoImg.naturalWidth){x.globalAlpha=.9;x.drawImage(menuLogoImg,W/2-175,24,350,158);x.globalAlpha=1}x.save();x.fillStyle='rgba(7,21,29,.88)';x.strokeStyle=loadingError?'#e66d68':'#73d7c2';x.lineWidth=2;x.beginPath();x.roundRect(166,184,628,284,18);x.fill();x.stroke();x.restore();x.textAlign='center';x.fillStyle='#ffd45d';x.font='900 30px Arial';x.fillText(loadingText,W/2,224);x.fillStyle='#d9f5ee';x.font='bold 17px Arial';x.fillText(loadingError?'Falha no carregamento':'Preparando fase...',W/2,254);x.fillStyle='#f3fbff';x.font='bold 14px Arial';x.fillText('Modo: '+(meta?.mode||'plataforma').toUpperCase()+'  •  Tema: '+(meta?.name||'FASE'),W/2,281);x.fillStyle='#102a31';x.fillRect(214,305,532,28);x.strokeStyle=loadingError?'#e66d68':'#73d7c2';x.lineWidth=2;x.strokeRect(214,305,532,28);x.fillStyle=loadingError?'#d56b66':'#75d9c4';x.fillRect(218,309,524*Math.max(0,Math.min(1,loadingProgress)),20);x.fillStyle='#f0fff9';x.font='bold 16px Arial';x.fillText(Math.round(loadingProgress*100)+'%',W/2,360);const ang=performance.now()/180;x.save();x.translate(W/2,392);x.rotate(ang);x.strokeStyle='#ffd45d';x.lineWidth=5;x.beginPath();x.arc(0,0,14,.2,4.7);x.stroke();x.restore();x.fillStyle='#a9c9be';x.font='13px Arial';x.fillText('DICA: '+tip,W/2,417);x.fillStyle='#789c92';x.font='12px Arial';x.fillText('CORE + compartilhados permanecem • somente a fase atual fica ativa',W/2,442);if(loadingError){x.fillStyle='#ff9292';x.font='bold 14px Arial';x.fillText(loadingError,W/2,470);if(loadingErrorDetails){x.fillStyle='#c98c8c';x.font='11px Arial';x.fillText(loadingErrorDetails.slice(0,105),W/2,490)}button(370,502,220,34,'TENTAR NOVAMENTE',true,'ENTER')};x.textAlign='left'}
 function loop(t){let dt=Math.min(.033,(t-last)/1000||0);last=t;gamepadUI();update(dt);syncMusic();syncTouchUI();if(state==='menu')menu();else if(state==='loading')loadingScreen();else if(state==='play')draw();else if(state==='results')results();else if(state==='levelselect')levelSelect();else if(state==='win')campaignEnd();else end('GAME OVER','Tente novamente e chegue ao fim da fase.');requestAnimationFrame(loop)}
-window.__crashDebug={
+// Ferramentas de QA determinísticas: usam a mesma física/controles do jogo,
+ // não alteram o progresso de saves e não ignoram colisões ou dano.
+ function qaSnapshot(){
+  const active=levelMode==='ride'?rideState:levelMode==='avalanche'?avalancheState:null;
+  return {state,level:currentLevel,mode:levelMode,paused,introT,deathAnim,portalSeq,
+   player:{x:p.x,y:p.y,w:p.w,h:p.h,vx:p.vx,vy:p.vy,on:p.on,spin:p.spin},
+   progress:{lives,deaths,checkpoint,checkpointActivated,score,boxesBroken},
+   course:active?{distance:active.distance,lane:active.lane,targetLane:active.targetLane,y:active.y,hits:active.hits,gap:active.gap??null}:null,
+   boss:bossState?{hp:bossState.hp,x:bossState.x,y:bossState.y,w:bossState.w,h:bossState.h,intro:bossState.intro,phase:bossState.phase,attack:bossState.attack?.kind||null,vulnerable:bossState.vulnerable,defeated:bossState.defeated}:null};
+ }
+ function qaStep(frames=1,inputs={}){
+  const count=Math.max(1,Math.min(600,Math.floor(frames)));
+  const names=['left','right','down','jump','spin'];
+  const before=names.map(name=>[keybinds[name],!!keys[keybinds[name]]]);
+  try{
+   for(const name of names)keys[keybinds[name]]=!!inputs[name];
+   for(let i=0;i<count;i++){
+    update(1/60);
+    if(!['play','results','win','gameover'].includes(state))break;
+    if(state!=='play')break;
+   }
+  }finally{for(const [code,value] of before)keys[code]=value}
+  return qaSnapshot();
+ }
+ window.__crashDebug={
+ qaSnapshot,
+ qaStep,
+ qaSkipIntro:()=>{introT=0;if(bossState)bossState.intro=0;return qaSnapshot()},
+
  getControls:()=>({keybinds:{...keybinds},padbinds:{...padbinds}}),
  getCinematic:()=>({active:cinematicActive,source:cinematicVideo?.querySelector?.('source')?.getAttribute?.('src')||'assets/cinematics/abertura_v116.mp4',duration:cinematicVideo?.duration||0}),
  getSpecialCourse:()=>({level:currentLevel,mode:levelMode,length:levelMode==='ride'?rideLength():levelMode==='avalanche'?avalancheLength():0,checkpoint:levelMode==='ride'?3600:levelMode==='avalanche'?3250:0,obstacles:(rideState?.obstacles||avalancheState?.obstacles||[]).map(o=>({...o}))}),
