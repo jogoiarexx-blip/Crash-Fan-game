@@ -53,3 +53,6 @@ jobs:
 
       - name: Cinemática
         run: node tests/cinematic-test.js
+
+      - name: Auditoria completa de layout
+        run: node tests/full-layout-audit-test.js
