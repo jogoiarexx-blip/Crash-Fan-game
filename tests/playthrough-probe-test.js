@@ -89,6 +89,10 @@ async function probeSpecial(level){
  await wait(30);
  const platform=[];
  for(const level of [1,2,3,4,5])platform.push(await probePlatform(level));
+ const temple=platform.find(s=>s.level===2);
+ assert.equal(temple.state,'results','Templo Perdido deve chegar ao portal com movimento e colisões reais');
+ assert.equal(temple.progress.deaths,0,'Rota certificada do Templo Perdido não pode ter mortes');
+ console.log('PLATFORM_PHASE_2_CERTIFIED portal, checkpoint, 0 mortes');
  const special=[];
  for(const level of [6,7,8,9])special.push(await probeSpecial(level));
  for(const completed of special){
