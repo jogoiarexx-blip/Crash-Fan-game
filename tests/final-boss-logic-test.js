@@ -109,4 +109,25 @@ function makeApi(opts={}){
  assert.equal(events.wins,1);
 }
 
+
+{
+ const s=B.create();s.intro=0;s.nextAttack=99;
+ const orb={x:160,y:400,r:13,vx:0,vy:0,t:1.0,kind:'gem'};
+ s.projectiles.push({...orb});
+ const {api,events}=makeApi({player:{x:145,y:375,w:46,h:78},attackRect:{x:132,y:363,w:90,h:98}});
+ let reflected=0;
+ api.reflect=()=>reflected++;
+ B.update(s,1/60,api);
+ assert.equal(reflected,1,'O giro deve rebater a gema em alcance');
+ assert.equal(events.hits.length,0,'Gema rebatida não pode também machucar o jogador');
+ assert.equal(s.projectiles.length,0,'Gema rebatida precisa ser removida do cenário');
+}
+{
+ const s=B.create();s.intro=0;s.nextAttack=99;
+ s.projectiles.push({x:160,y:400,r:13,vx:0,vy:0,t:1,kind:'gem'});
+ const {api,events}=makeApi({player:{x:145,y:375,w:46,h:78}});
+ B.update(s,1/60,api);
+ assert.deepEqual(events.hits,['impact'],'Sem giro, a gema continua perigosa');
+}
+
 console.log('PASS: Guardião com 9 HP, 3 fases, slam/gemas/fogo/gelo, vulnerabilidade, dano corporal e vitória única.');
