@@ -1,0 +1,20 @@
+name: QA de progressão acelerada
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'js/**'
+      - 'tests/playthrough-probe-test.js'
+      - '.github/workflows/qa-routes.yml'
+  workflow_dispatch:
+jobs:
+  routes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Simular rotas com física e colisões reais
+        run: node tests/playthrough-probe-test.js
