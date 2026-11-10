@@ -17,20 +17,24 @@ function layoutHazards(layout){
  for(const p of surface){const end=p[0]+p[2],next=surface.find(q=>q[0]>end+5);if(next){const gap=next[0]-end;if(gap>45&&gap<280&&!dangerous.some(h=>Math.abs(h.x-end)<15))dangerous.push({x:end,w:gap,kind:'gap'})}}
  return dangerous.sort((a,b)=>a.x-b.x);
 }
-function controlsForPlatform(s,layout,clock){
- const p=s.player,foot=p.y+p.h,ground=foot>438&&foot<466;
+function controlsForPlatform(s,layout,clock,stall=0){
+ const p=s.player,foot=p.y+p.h,ground=foot>435&&foot<470;
  const hazards=layoutHazards(layout);
- const next=hazards.find(h=>h.x+h.w>=p.x-10&&h.x<=p.x+280);
+ const next=hazards.find(h=>h.x+h.w>=p.x+8&&h.x<=p.x+260);
  const box=layout.boxes.find(b=>b.y+b.h>p.y+10&&b.y<p.y+p.h+18&&b.x>p.x&&b.x<p.x+135);
  const tnt=layout.tnts.find(b=>b.y+b.h>p.y-15&&b.y<p.y+p.h+30&&b.x>p.x&&b.x<p.x+170);
  const enemy=layout.enemies.find(e=>e.y+e.h>p.y+20&&e.y<p.y+p.h+25&&e.x>p.x&&e.x<p.x+120);
+ const step=layout.platforms.filter(q=>q[1]<foot-8&&q[1]>foot-115&&q[0]-p.x>20&&q[0]-p.x<108).sort((a,b)=>a[0]-b[0])[0];
  let jump=false,spin=false;
- if(p.on&&next&&ground&&next.x-p.x<102&&next.x-p.x>0)jump=true;
- if(p.on&&tnt&&tnt.x-p.x>25&&tnt.x-p.x<110)jump=true;
+ if(p.on&&next&&ground&&next.x-p.x<62&&next.x-p.x>-3)jump=true;
+ if(p.on&&tnt&&tnt.x-p.x>15&&tnt.x-p.x<68)jump=true;
+ if(p.on&&step&&step[0]-p.x<77)jump=true;
+ if(p.on&&stall>13&&stall%32===16)jump=true;
  if(p.on&&box&&box.x-p.x<80&&box.x-p.x>0)spin=clock%34<23;
  if(enemy&&enemy.x-p.x<95)spin=clock%32<24;
  if(clock%64<34)spin=true;
- return {right:true,jump,spin};
+ const portalBeyond=p.x>layout.portal.x+layout.portal.w-8;
+ return {right:!portalBeyond,left:portalBeyond,jump,spin};
 }
 async function probePlatform(level){
  const start=await global.__crashDebug.loadLevel(level);global.__crashDebug.qaSkipIntro();
@@ -42,9 +46,9 @@ async function probePlatform(level){
   if(s.player.x>maxX)maxX=s.player.x;
   if(Math.abs(s.player.x-lastX)<.3)stall++;else stall=0;
   lastX=s.player.x;
-  if(s.progress.deaths>lastDeaths){lastDeaths=s.progress.deaths;events.push({tick,event:'death',x:+s.player.x.toFixed(1),maxX:+maxX.toFixed(1)})}
-  if(stall===130){events.push({tick,event:'stalled',x:+s.player.x.toFixed(1)})}
-  const input=controlsForPlatform(s,layout,tick);
+  if(s.progress.deaths>lastDeaths){lastDeaths=s.progress.deaths;events.push({tick,event:'death',x:+s.player.x.toFixed(1),y:+s.player.y.toFixed(1),vy:+s.player.vy.toFixed(1),maxX:+maxX.toFixed(1)})}
+  if(stall===130){events.push({tick,event:'stalled',x:+s.player.x.toFixed(1),y:+s.player.y.toFixed(1),vy:+s.player.vy.toFixed(1),on:s.player.on,near:layout.platforms.filter(q=>Math.abs(q[0]-s.player.x)<120||Math.abs(q[0]+q[2]-s.player.x)<100).slice(0,3)})}
+  const input=controlsForPlatform(s,layout,tick,stall);
   global.__crashDebug.qaStep(1,input);
  }
  state=state||global.__crashDebug.qaSnapshot();
