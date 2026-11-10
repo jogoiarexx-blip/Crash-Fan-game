@@ -26,7 +26,7 @@ function controlsForPlatform(s,layout,clock,stall=0){
  const enemy=layout.enemies.find(e=>e.y+e.h>p.y+20&&e.y<p.y+p.h+25&&e.x>p.x&&e.x<p.x+120);
  const step=layout.platforms.filter(q=>q[1]<foot-8&&q[1]>foot-115&&q[0]-p.x>20&&q[0]-p.x<108).sort((a,b)=>a[0]-b[0])[0];
  let jump=false,spin=false;
- if(p.on&&next&&ground&&next.x-p.x<37&&next.x-p.x>-8)jump=true;
+ if(p.on&&next&&ground&&next.x-p.x<76&&next.x-p.x>-8)jump=true;
  if(p.on&&tnt&&tnt.x-p.x>15&&tnt.x-p.x<45)jump=true;
  if(p.on&&step&&step[0]-p.x<42)jump=true;
  if(p.on&&stall>13&&stall%32===16)jump=true;
@@ -48,7 +48,7 @@ async function probePlatform(level){
   lastX=s.player.x;
   if(!dropReported&&s.player.y+s.player.h>480){dropReported=true;events.push({tick,event:'BELOW_GROUND',x:+s.player.x.toFixed(1),y:+s.player.y.toFixed(1),vy:+s.player.vy.toFixed(1)})}
   if(!fallLogged&&s.player.y>720){fallLogged=true;events.push({tick,event:'BELOW_WORLD',x:+s.player.x.toFixed(1),y:+s.player.y.toFixed(1),portalSeq:s.portalSeq,deathAnim:s.deathAnim,deaths:s.progress.deaths,mode:s.mode})}
-  if(s.progress.deaths>lastDeaths){lastDeaths=s.progress.deaths;events.push({tick,event:'death',x:+s.player.x.toFixed(1),y:+s.player.y.toFixed(1),vy:+s.player.vy.toFixed(1),maxX:+maxX.toFixed(1)})}
+  if(s.progress.deaths>lastDeaths){lastDeaths=s.progress.deaths;events.push({tick,event:'death',kind:s.deathKind,x:+s.player.x.toFixed(1),y:+s.player.y.toFixed(1),vy:+s.player.vy.toFixed(1),maxX:+maxX.toFixed(1)})}
   if(stall===130){events.push({tick,event:'stalled',x:+s.player.x.toFixed(1),y:+s.player.y.toFixed(1),vy:+s.player.vy.toFixed(1),on:s.player.on,near:layout.platforms.filter(q=>Math.abs(q[0]-s.player.x)<120||Math.abs(q[0]+q[2]-s.player.x)<100).slice(0,3)})}
   const input=controlsForPlatform(s,layout,tick,stall);
   global.__crashDebug.qaStep(1,input);
