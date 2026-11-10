@@ -7,7 +7,16 @@ const el=id=>({id,width:960,height:540,style:{},classList:{toggle(){},add(){},re
 const elements=new Map(['game','touch-controls','touch-joystick','joystick-knob','help'].map(id=>[id,el(id)]));
 Object.assign(global,{window:global,Image:FakeImage,HTMLImageElement:FakeImage,Audio:FakeAudio,HTMLAudioElement:FakeAudio,performance:{now:()=>Date.now()},localStorage:{getItem:()=>null,setItem(){},removeItem(){}},document:{hidden:false,getElementById:id=>elements.get(id)||el(id),addEventListener(){}},matchMedia:()=>({matches:false}),addEventListener:()=>{},requestAnimationFrame:()=>0});
 Object.defineProperty(global,'navigator',{value:{getGamepads:()=>[],maxTouchPoints:0},configurable:true});
-for(const file of ['js/jungle-phase.js','js/level-loader.js','js/final-boss.js','js/game.js'])vm.runInThisContext(fs.readFileSync(file,'utf8'),{filename:file});
+for(const file of ['js/jungle-phase.js','js/level-loader.js','js/final-boss.js','js/game.js']){
+ let source=fs.readFileSync(file,'utf8');
+ if(file==='js/game.js'){
+  const anchor='window.__crashDebug={';
+  assertSource(source.includes(anchor),'Interface de QA não localizada');
+  source=source.replace(anchor,anchor+"\n qaPreviewSave:()=>buildSave(),\n qaRestoreSaveForTest:sl=>{setLevel(10);applySaveData(1,sl);return qaSnapshot()},");
+ }
+ vm.runInThisContext(source,{filename:file});
+}
+function assertSource(condition,message){if(!condition)throw new Error(message)}
 
 
 const assert=require('node:assert/strict');
@@ -49,12 +58,11 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
  assert.equal(s.progress.deaths,0,'Percurso certificado não pode perder vidas');
  assert.equal(events.filter(e=>e.event==='boss-hit').length,9,'Devem ocorrer os nove acertos de verdade');
  assert.equal(events.filter(e=>e.event==='player-death').length,0,'Não pode haver morte silenciosa');
- const victorySave=global.buildSave();
+ const victorySave=global.__crashDebug.qaPreviewSave();
  assert.equal(victorySave.bossDefeated,true,'Vitória precisa ser marcada no save');
  assert.equal(victorySave.bossHp,0,'Save de vitória precisa guardar HP 0');
  assert.equal(victorySave.currentLevel,10,'Save precisa identificar a fase final');
- global.setLevel(10);
- global.applySaveData(1,victorySave);
+ global.__crashDebug.qaRestoreSaveForTest(victorySave);
  assert.equal(global.__crashDebug.qaSnapshot().state,'win','Carregar save de vitória deve restaurar a tela de vitória');
  assert.equal(global.__crashDebug.qaSnapshot().boss.hp,0,'Chefe deve continuar derrotado após recarregar');
  console.log('BOSS_SAVE_RESTORE_CERTIFIED vitória persistente');
