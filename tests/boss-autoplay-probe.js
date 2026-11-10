@@ -2,17 +2,18 @@ const fs=require('fs'),vm=require('vm'),path=require('path');
 process.chdir(path.join(__dirname,'..'));
 class FakeImage{constructor(){this.complete=false;this.naturalWidth=256;this.naturalHeight=256;this.width=256;this.height=256}set src(v){this._src=v;if(!v)return;this.complete=true;queueMicrotask(()=>this.onload?.())}}
 class FakeAudio{constructor(){this.paused=true;this.listeners={}}addEventListener(n,fn){(this.listeners[n]??=[]).push(fn)}removeEventListener(){}removeAttribute(){}load(){queueMicrotask(()=>this.listeners.loadeddata?.forEach(fn=>fn()))}play(){this.paused=false;return Promise.resolve()}pause(){this.paused=true}}
+const savedSlots=new Map();
 const ctx=new Proxy({measureText:t=>({width:String(t).length*8}),createLinearGradient:()=>({addColorStop(){}})}, {get:(o,k)=>k in o?o[k]:(()=>{}),set:(o,k,v)=>(o[k]=v,true)});
 const el=id=>({id,width:960,height:540,style:{},classList:{toggle(){},add(){},remove(){}},dataset:{},getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:960,height:540}),querySelectorAll:()=>[],closest:()=>null,addEventListener(){},setPointerCapture(){}});
 const elements=new Map(['game','touch-controls','touch-joystick','joystick-knob','help'].map(id=>[id,el(id)]));
-Object.assign(global,{window:global,Image:FakeImage,HTMLImageElement:FakeImage,Audio:FakeAudio,HTMLAudioElement:FakeAudio,performance:{now:()=>Date.now()},localStorage:{getItem:()=>null,setItem(){},removeItem(){}},document:{hidden:false,getElementById:id=>elements.get(id)||el(id),addEventListener(){}},matchMedia:()=>({matches:false}),addEventListener:()=>{},requestAnimationFrame:()=>0});
+Object.assign(global,{window:global,Image:FakeImage,HTMLImageElement:FakeImage,Audio:FakeAudio,HTMLAudioElement:FakeAudio,performance:{now:()=>Date.now()},localStorage:{getItem:key=>savedSlots.get(key)||null,setItem:(key,value)=>savedSlots.set(key,String(value)),removeItem:key=>savedSlots.delete(key)},document:{hidden:false,getElementById:id=>elements.get(id)||el(id),addEventListener(){}},matchMedia:()=>({matches:false}),addEventListener:()=>{},requestAnimationFrame:()=>0});
 Object.defineProperty(global,'navigator',{value:{getGamepads:()=>[],maxTouchPoints:0},configurable:true});
 for(const file of ['js/jungle-phase.js','js/level-loader.js','js/final-boss.js','js/game.js']){
  let source=fs.readFileSync(file,'utf8');
  if(file==='js/game.js'){
   const anchor='window.__crashDebug={';
   assertSource(source.includes(anchor),'Interface de QA não localizada');
-  source=source.replace(anchor,anchor+"\n qaPreviewSave:()=>buildSave(),\n qaRestoreSaveForTest:sl=>{setLevel(10);applySaveData(1,sl);return qaSnapshot()},");
+  source=source.replace(anchor,anchor+"\n qaPreviewSave:()=>buildSave(),\n qaRestoreSaveForTest:sl=>{setLevel(10);applySaveData(1,sl);return qaSnapshot()},\n qaSaveSlotForTest:i=>{activeSlot=i;return saveGame(true)},\n qaLoadSlotForTest:i=>{const sl=readSlot(i);setLevel(sl.currentLevel);applySaveData(i,sl);return qaSnapshot()},");
  }
  vm.runInThisContext(source,{filename:file});
 }
@@ -62,7 +63,13 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
  assert.equal(victorySave.bossDefeated,true,'Vitória precisa ser marcada no save');
  assert.equal(victorySave.bossHp,0,'Save de vitória precisa guardar HP 0');
  assert.equal(victorySave.currentLevel,10,'Save precisa identificar a fase final');
- global.__crashDebug.qaRestoreSaveForTest(victorySave);
+ assert.equal(global.__crashDebug.qaSaveSlotForTest(1),true,'Vitória deve gravar o slot');
+ const rawSave=savedSlots.get('crashV091Slot1');
+ assert(rawSave,'Save não foi escrito no localStorage simulado');
+ const diskSave=JSON.parse(rawSave);
+ assert.equal(diskSave.bossDefeated,true,'Vitória deve estar serializada no slot');
+ assert.equal(diskSave.bossHp,0,'HP do Guardião deve ser persistido zerado');
+ global.__crashDebug.qaLoadSlotForTest(1);
  assert.equal(global.__crashDebug.qaSnapshot().state,'win','Carregar save de vitória deve restaurar a tela de vitória');
  assert.equal(global.__crashDebug.qaSnapshot().boss.hp,0,'Chefe deve continuar derrotado após recarregar');
  console.log('BOSS_SAVE_RESTORE_CERTIFIED vitória persistente');
