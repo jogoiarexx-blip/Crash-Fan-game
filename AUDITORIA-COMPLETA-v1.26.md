@@ -111,3 +111,36 @@ Chromium real via workflow `.github/workflows/tests.yml`, que instala `puppeteer
 O projeto tem arquitetura de carregamento por fases, sistemas de save e controles, conteúdo de 10 fases e agora uma cobertura mais ampla de testes geométricos, de controle e de execução em navegador real. Os bugs de gamepad das avalanches e o recorte da pista foram corrigidos no código; melhorias de interface e cenário foram aplicadas.
 
 **Ainda não está certificado como "zerado 100%" nem "sem todos os bugs"**: é indispensável jogar caminhos completos, testar performance real e observar colisões/arte em movimento. A distinção entre correções verificadas e testes pendentes é intencional.
+
+
+---
+
+## 10. Continuação — v1.27 (10/11/2026)
+
+### Certificação automatizada de percurso
+- Teste adicionado: `tests/playthrough-probe-test.js`.
+- A instrumentação `qaStep` em `js/game.js` percorre quadros reais de atualização, usando os controles normais, sem teletransportar Crash, desativar dano ou alterar saves.
+- Workflow dedicado `.github/workflows/qa-routes.yml` executa a simulação sem a sobrecarga do pipeline de assets.
+- **Fases 6, 7, 8 e 9:** concluídas integralmente na simulação, com **0 mortes e 0 impactos**, registrando checkpoint. O CI agora falha caso esses quatro percursos deixem de terminar nessas condições.
+- **Fase 2:** o piloto chegou à tela de resultado após **3 mortes** em uma execução; teste exploratório, sem certificação repetida nem garantia de rota ótima.
+- **Fases 1, 3, 4 e 5:** o piloto não concluiu os percursos com segurança. As falhas podem decorrer da estratégia limitada de salto e desvio; ainda não são defeitos confirmados do jogo.
+- **Fase 10:** piloto de combate real chegou a acertar o chefe pela primeira vez (**9 → 8 HP**), mas perdeu as quatro vidas; a vitória integral não está certificada.
+
+### Correções técnicas de QA
+- Corrigidas as dimensões do canvas simulado para `width:960` e `height:540`. Antes, o limite vertical de queda usava `H=undefined`, permitindo relatórios falsos de Crash abaixo do mundo sem morrer. Após o ajuste, a morte por queda é detectada corretamente no teste.
+- Implementada telemetria de posição, velocidade, estado, checkpoints, portal e ataques do Guardião.
+- O relatório distingue o que foi comprovado pelo teste completo de uma rota de testes de abertura/colisão.
+
+### Ajuste real de gameplay — chefe final
+- Segunda onda do ataque *slam* do Guardião acelerada de `-300` para `-440` unidades/segundo.
+- Objetivo: concentrar as duas ondas em uma janela que pode ser esquivada com um salto bem sincronizado próximo do núcleo, sem remover a ameaça.
+- Novo teste `tests/final-boss-logic-test.js` verifica o intervalo geométrico da segunda onda e evita regressão dessa janela.
+- **Limite:** o chefe ainda não foi vencido no piloto automático; só a primeira redução de HP foi reproduzida. A alteração não equivale à certificação da luta.
+
+### Prioridade seguinte
+1. Melhorar/validar o percurso completo das fases 1, 3, 4 e 5 com entradas reais e simulações reproduzíveis; tratar trechos como bugs somente após reprodução independente.
+2. Desenvolver estratégia de esquiva/ataque do Guardião até nove acertos e vitória, testar save e créditos finais.
+3. Rodar as trajetórias aprovadas no Chromium com controle real de frames, medir FPS e capturar screenshots dos trechos críticos.
+4. Manter o relatório concentrado neste documento, sem multiplicar changelogs por ajuste.
+
+**Situação geral:** v1.27 com melhorias no chefe e testes de progressão. Não foi certificado o jogo inteiro de ponta a ponta.
