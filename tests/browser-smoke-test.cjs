@@ -48,6 +48,13 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
    assert.equal(result.state,'play','fase '+level+' não iniciou: '+JSON.stringify(result));
    assert(result.colors>=10&&result.opaque>=100,'canvas parece vazio na fase '+level+': '+JSON.stringify(result));
    await page.screenshot({path:path.join(SHOTS,'fase-'+String(level).padStart(2,'0')+'.png')});
+   await page.keyboard.press('Enter');
+   await sleep(180);
+   const gameplay=await page.evaluate(()=>window.__crashDebug.getState());
+   assert.equal(gameplay.state,'play','fase saiu do gameplay ao pular a intro: '+level);
+   assert(!gameplay.loadingError,'erro após intro da fase '+level+': '+gameplay.loadingError);
+   await page.screenshot({path:path.join(SHOTS,'fase-'+String(level).padStart(2,'0')+'-jogando.png')});
+   console.log('BROWSER_GAMEPLAY_PASS',JSON.stringify({level,mode:gameplay.levelMode,player:gameplay.player,arrays:gameplay.arrays}));
    console.log('BROWSER_PHASE_PASS',JSON.stringify(result));
   }
   await page.setViewport({width:390,height:844,deviceScaleFactor:2,isMobile:true,hasTouch:true});
