@@ -15,7 +15,15 @@
   if(s.defeated){s.defeatT=Math.max(0,s.defeatT-dt);if(!s.winSent&&s.defeatT<=0){s.winSent=true;api.win()}return}
   if(s.attack){s.attack.t+=dt;if(!s.attack.spawned&&s.attack.t>=.7){s.attack.spawned=true;spawnAttack(s,api)}if(s.attack.t>=s.attack.duration){s.attack=null;s.vulnerable=1.45;s.nextAttack=.65}}
   else if(s.vulnerable<=0){s.nextAttack-=dt;if(s.nextAttack<=0)beginAttack(s)}
-  for(const q of s.projectiles){q.x+=q.vx*dt;q.y+=q.vy*dt;q.t-=dt;if(q.t>0&&overlap({x:q.x-q.r,y:q.y-q.r,w:q.r*2,h:q.r*2},api.player)){q.t=0;api.hit('impact')}}s.projectiles=s.projectiles.filter(q=>q.t>0&&q.x>-80&&q.x<1040&&q.y>-80&&q.y<620);
+  for(const q of s.projectiles){
+   q.x+=q.vx*dt;q.y+=q.vy*dt;q.t-=dt;
+   if(q.t<=0)continue;
+   const orb={x:q.x-q.r,y:q.y-q.r,w:q.r*2,h:q.r*2};
+   // O giro rebate gemas apenas se a área do ataque as alcançar de verdade.
+   // Resolver a defesa antes do dano evita punir um giro acertado no mesmo quadro.
+   if(api.attackRect&&overlap(orb,api.attackRect)){q.t=0;api.reflect?.(q.x,q.y);continue}
+   if(overlap(orb,api.player)){q.t=0;api.hit('impact')}
+  }s.projectiles=s.projectiles.filter(q=>q.t>0&&q.x>-80&&q.x<1040&&q.y>-80&&q.y<620);
   for(const q of s.waves){q.x+=q.vx*dt;q.t-=dt;if(q.t>0&&overlap(q,api.player)){q.t=0;api.hit('crush')}}s.waves=s.waves.filter(q=>q.t>0&&q.x>-100&&q.x<1060);
   for(const q of s.hazards){q.t-=dt;if(q.t<=q.active&&q.t>0&&!q.hit&&overlap({x:q.x,y:api.ground-(q.kind==='ice'?115:70),w:q.w,h:q.kind==='ice'?115:70},api.player)){q.hit=true;api.hit(q.kind==='ice'?'freeze':'explosion')}}s.hazards=s.hazards.filter(q=>q.t>0);
   const body={x:s.x+35,y:s.y+35,w:s.w-65,h:s.h-35};if(s.invuln<=0&&s.vulnerable>0&&overlap(api.attackRect,body)){s.hp=Math.max(0,s.hp-1);s.invuln=.72;s.vulnerable=0;s.flash=.34;s.nextAttack=.62;api.hitBoss(s.hp);if(s.hp<=0){s.defeated=true;s.defeatT=3.15;s.attack=null;s.projectiles.length=s.hazards.length=s.waves.length=0;api.sound('bossDefeat');api.shake(.85)}}
