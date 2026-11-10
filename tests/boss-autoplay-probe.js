@@ -19,14 +19,22 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
   s=global.__crashDebug.qaSnapshot();
   if(s.state==='win'||s.state==='gameover'||s.state==='results')break;
   if(s.boss.hp<last.hp){events.push({tick,event:'boss-hit',hp:s.boss.hp,x:Math.round(s.player.x),lives:s.progress.lives});last.hp=s.boss.hp}
-  if(s.progress.deaths>last.deaths){events.push({tick,event:'player-death',hp:s.boss.hp,x:Math.round(s.player.x),y:Math.round(s.player.y),kind:s.deathKind,attack:s.boss.attack,attackTime:+s.boss.attackTime.toFixed(2),lives:s.progress.lives});last.deaths=s.progress.deaths}
-  const p=s.player,b=s.boss,target=b.vulnerable>.04?682:657;
+  if(s.progress.deaths>last.deaths){events.push({tick,event:'player-death',hp:s.boss.hp,x:Math.round(s.player.x),y:Math.round(s.player.y),kind:s.deathKind,attack:s.boss.attack,attackTime:+s.boss.attackTime.toFixed(2),hazards:s.boss.hazards.map(q=>({x:q.x,w:q.w,t:+q.t.toFixed(2)})),lives:s.progress.lives});last.deaths=s.progress.deaths}
+  const p=s.player,b=s.boss;
+  // Fogo e gelo são colunas altas: a única defesa confiável é sair lateralmente
+  // da faixa marcada durante os 0,62 s de aviso, não saltar através dela.
+  const imminent=b.hazards.filter(q=>q.t>0);
+  const candidates=[220,300,380,450,505,555,610,655,676];
+  const clear=c=>imminent.every(q=>c+46<q.x-18||c>q.x+q.w+18);
+  const valid=candidates.filter(clear);
+  const safe=valid.sort((a,b)=>Math.abs(a-p.x)-Math.abs(b-p.x))[0];
+  const target=imminent.length&&safe!=null?safe:b.vulnerable>.04?682:657;
   const right=p.x<target-5,left=p.x>target+5;
   const incoming=b.projectiles.some(q=>q.t>0&&q.vx<0&&q.x>p.x+34&&q.x<p.x+160&&q.y>p.y-90&&q.y<p.y+p.h+50);
   const spin=(incoming||b.vulnerable>.06&&p.x>658)&&p.spin<.08&&tick%2===0;
   const wave=b.waves.some(q=>q.x+q.w>p.x-8&&q.x<p.x+220);
   const gem=b.projectiles.some(q=>q.x>p.x+10&&q.x<p.x+245&&q.y>p.y-160);
-  const floor=b.hazards.some(q=>p.x+p.w>q.x-16&&p.x<q.x+q.w+16&&q.warning<.45&&q.t>0);
+  const floor=false; // Colunas de gelo/fogo não podem ser evitadas com um salto comum.
   const earlySlam=b.attack==='slam'&&b.attackTime>.61&&b.attackTime<.70;
   // Rajadas de gemas miram na posição do jogador no instante do disparo: esquiva após o lançamento.
   const earlyGem=false;
