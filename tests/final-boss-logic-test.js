@@ -35,6 +35,10 @@ function makeApi(opts={}){
  assert.equal(s.attack?.kind,'slam');
  B.update(s,.71,api);
  assert.equal(s.waves.length,2);
+ // Uma única esquiva precisa cobrir as duas ondas em distância segura do núcleo.
+ const second=s.waves[1],playerX=675;
+ const lastOverlapSeconds=(second.x+second.w-playerX)/Math.abs(second.vx);
+ assert(lastOverlapSeconds<.65,'A segunda onda não sai do alcance durante um salto normal');
 }
 
 {
