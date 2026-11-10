@@ -1,5 +1,5 @@
 (()=>{
-const c=document.getElementById('game'),x=c.getContext('2d');x.imageSmoothingEnabled=false;const W=c.width,H=c.height;const GAME_VERSION='1.26';
+const c=document.getElementById('game'),x=c.getContext('2d');x.imageSmoothingEnabled=false;const W=c.width,H=c.height;const GAME_VERSION='1.27';
 const cinematicRoot=document.getElementById('opening-cinematic'),cinematicVideo=document.getElementById('opening-video'),cinematicSkip=document.getElementById('cinematic-skip');let cinematicActive=false,cinematicFinish=null;
 const reducedMotion=typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 const DEATH_DURATION=reducedMotion?1.35:2.25;
