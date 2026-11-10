@@ -1141,6 +1141,25 @@ function drawPlatformTile(q){
  }
 }
 function ds(img,s,px,py,w,h,flip=false,a=1){if(!img)return;px=Math.round(px);py=Math.round(py);w=Math.max(1,Math.round(w));h=Math.max(1,Math.round(h));x.save();x.globalAlpha=a;if(flip){x.translate(px+w,py);x.scale(-1,1);if(s)x.drawImage(img,...s,0,0,w,h);else x.drawImage(img,0,0,img.naturalWidth||img.width,img.naturalHeight||img.height,0,0,w,h)}else{if(s)x.drawImage(img,...s,px,py,w,h);else x.drawImage(img,0,0,img.naturalWidth||img.width,img.naturalHeight||img.height,px,py,w,h)}x.restore()}
+// Camadas leves do cânion, sem novos downloads: duas velocidades de parallax.
+function drawCanyonDepth(){
+ x.save();
+ const glow=x.createRadialGradient(W*.72,158,14,W*.72,158,510);
+ glow.addColorStop(0,'rgba(255,185,95,.24)');glow.addColorStop(.42,'rgba(243,126,48,.09)');glow.addColorStop(1,'rgba(120,32,18,0)');
+ x.fillStyle=glow;x.fillRect(0,0,W,H);
+ const layers=[{base:356,amp:65,step:218,pan:.055,color:'#b74b30',alpha:.28},{base:427,amp:38,step:154,pan:.14,color:'#4c1a16',alpha:.22}];
+ for(const layer of layers){
+  const offset=((camX*layer.pan)%layer.step+layer.step)%layer.step;
+  x.beginPath();x.moveTo(-layer.step,H);
+  for(let i=-2;i<Math.ceil(W/layer.step)+3;i++){
+   const px=i*layer.step-offset,n=Math.sin((i+3)*2.37),height=layer.amp*(.72+.28*Math.abs(n));
+   x.lineTo(px,layer.base);x.lineTo(px+layer.step*.13,layer.base-height*.42);x.lineTo(px+layer.step*.28,layer.base-height);
+   x.lineTo(px+layer.step*.60,layer.base-height*.90);x.lineTo(px+layer.step*.76,layer.base-height*.36);x.lineTo(px+layer.step,layer.base);
+  }
+  x.lineTo(W+layer.step,H);x.closePath();x.globalAlpha=layer.alpha;x.fillStyle=layer.color;x.fill();
+ }
+ x.restore();
+}
 function bg(){
  // O menu carrega apenas o grupo CORE. Por isso o background da fase pode
  // ainda ser null aqui; nesse caso usamos um fundo leve sem acessar .complete.
@@ -1149,7 +1168,7 @@ function bg(){
    const grd=x.createLinearGradient(0,0,0,H);grd.addColorStop(0,'#174d54');grd.addColorStop(.55,'#123b35');grd.addColorStop(1,'#071a18');x.fillStyle=grd;x.fillRect(0,0,W,H);
    x.globalAlpha=.18;x.fillStyle='#4c8f61';for(let i=0;i<fxCount(5,8,10);i++){const xx=i*115-(i%2)*35;x.beginPath();x.arc(xx,390+(i%3)*15,95+(i%2)*25,Math.PI,Math.PI*2);x.fill()}x.globalAlpha=1;
  }
- if(currentLevel===2&&phaseBg){x.fillStyle='rgba(62,35,18,.22)';x.fillRect(0,0,W,H);x.fillStyle='rgba(15,9,4,.18)';for(let i=0;i<fxCount(4,6,8);i++)x.fillRect(i*140+((camX*.08)%55),265+(i%3)*18,110,170)}else if(currentLevel===3&&phaseBg){x.fillStyle='rgba(25,44,12,.25)';x.fillRect(0,0,W,H);x.globalAlpha=.18;x.fillStyle='#d2d6ae';for(let i=0;i<fxCount(2,4,5);i++)x.fillRect((i*230-(camX*.05)%120),330+i%2*35,260,28);x.globalAlpha=1}else if((currentLevel===4||currentLevel===6||currentLevel===7)&&phaseBg){x.fillStyle='rgba(180,225,255,.10)';x.fillRect(0,0,W,H);x.fillStyle='rgba(235,250,255,.7)';for(let i=0;i<fxCount(7,15,24);i++){let xx=(i*79+(performance.now()/18))%W,yy=(i*47+Math.floor(performance.now()/35))%360;x.fillRect(xx,yy,2+(i%2),2+(i%2))}}else if(currentLevel===5){x.fillStyle='rgba(145,32,18,.38)';x.fillRect(0,0,W,H);x.fillStyle='rgba(255,173,59,.35)';for(let i=0;i<fxCount(4,7,9);i++){x.fillRect((i*137-(camX*.18)%137),300+(i%3)*30,78,7)}}
+ if(currentLevel===2&&phaseBg){x.fillStyle='rgba(62,35,18,.22)';x.fillRect(0,0,W,H);x.fillStyle='rgba(15,9,4,.18)';for(let i=0;i<fxCount(4,6,8);i++)x.fillRect(i*140+((camX*.08)%55),265+(i%3)*18,110,170)}else if(currentLevel===3&&phaseBg){x.fillStyle='rgba(25,44,12,.25)';x.fillRect(0,0,W,H);x.globalAlpha=.18;x.fillStyle='#d2d6ae';for(let i=0;i<fxCount(2,4,5);i++)x.fillRect((i*230-(camX*.05)%120),330+i%2*35,260,28);x.globalAlpha=1}else if((currentLevel===4||currentLevel===6||currentLevel===7)&&phaseBg){x.fillStyle='rgba(180,225,255,.10)';x.fillRect(0,0,W,H);x.fillStyle='rgba(235,250,255,.7)';for(let i=0;i<fxCount(7,15,24);i++){let xx=(i*79+(performance.now()/18))%W,yy=(i*47+Math.floor(performance.now()/35))%360;x.fillRect(xx,yy,2+(i%2),2+(i%2))}}else if(currentLevel===5){x.fillStyle='rgba(145,32,18,.25)';x.fillRect(0,0,W,H);drawCanyonDepth();x.fillStyle='rgba(255,173,59,.35)';for(let i=0;i<fxCount(4,7,9);i++){x.fillRect((i*137-(camX*.18)%137),300+(i%3)*30,78,7)}}
 }
 function drawPlatformAtmosphere(){
  if(levelMode!=='platform'||currentLevel===10)return;
