@@ -1,4 +1,4 @@
-# Crash Bandicoot Fã Game — Auditoria técnica v1.26
+# Crash Bandicoot Fã Game — Auditoria consolidada v1.26–v1.28
 **Data:** 10/11/2026  
 **Repositório:** https://github.com/jogoiarexx-blip/Crash-Fan-game  
 **Jogo publicado:** https://jogoiarexx-blip.github.io/Crash-Fan-game/  
@@ -144,3 +144,40 @@ O projeto tem arquitetura de carregamento por fases, sistemas de save e controle
 4. Manter o relatório concentrado neste documento, sem multiplicar changelogs por ajuste.
 
 **Situação geral:** v1.27 com melhorias no chefe e testes de progressão. Não foi certificado o jogo inteiro de ponta a ponta.
+
+
+---
+
+## 11. Evolução v1.28 — combate final, rota certificada e saves (10/11/2026)
+
+### Alteração de gameplay: giro contra gemas
+- O ataque de giro do Crash agora **rebate as gemas projetadas pelo Guardião**, desde que a hitbox real do giro alcance a esfera. Uma gema rebatida é removida e não pode causar dano no mesmo quadro.
+- O jogador recebe efeito de impacto, som, mensagem e 75 pontos pelo rebote.
+- As ondas de choque ainda exigem salto sincronizado; colunas de fogo e gelo continuam exigindo deslocamento lateral.
+- A HUD do chefe foi atualizada para comunicar a defesa contra as gemas.
+- Teste de lógica `tests/final-boss-logic-test.js`: rebatimento com giro não causa dano; sem giro, o projétil continua perigoso.
+
+### Chefe final: 9/9 golpes, zero mortes e restauração do save
+- `tests/boss-autoplay-probe.js` usa a física, controles e padrões reais do jogo para jogar as três etapas do chefe, executando os **nove golpes**, com **zero mortes**, chegando ao estado `win`.
+- O teste agora contém **assertions obrigatórias** de `hp=0`, `state='win'`, 9 acertos reais e 0 mortes. Se a vitória deixar de funcionar, o GitHub Actions falha.
+- Os dados reais do save são gravados no **localStorage simulado**, lidos pelo leitor de saves do próprio jogo e reabertos. A restauração mantém `bossDefeated=true`, `bossHp=0` e `state='win'`.
+- A instrumentação extra para gravação/leitura só existe no código do teste; não foi adicionada à interface de debug distribuída com o jogo.
+- **Limite da certificação:** a luta foi validada isoladamente, sem obrigar a realização anterior de todas as fases da campanha no mesmo save.
+
+### Fase 2 certificada
+- `tests/playthrough-probe-test.js` concluiu a Fase 2 **até a tela de resultado, com checkpoint ativado e zero mortes**, por comandos e colisões normais.
+- Essa conclusão passa a ser uma **assertion obrigatória** no CI, junto das quatro pistas 6–9 sem mortes/impactos.
+
+### Fases 1, 3, 4 e 5: investigação ainda aberta
+- **Fase 1:** o piloto percorre mais de 3000 unidades e ativa o checkpoint, mas fica preso na navegação da rota elevada (sem reproduzir morte no cenário testado).
+- **Fase 3:** o piloto falha em saltos sobre regiões de veneno/abismos e, em outras tentativas, aciona TNT; a causa pode ser estratégia de navegação inadequada.
+- **Fase 4:** o piloto alcança diferentes trechos, mas falha em saltos sobre espinhos de gelo e obstáculos; o dano de gelo é reproduzível com aquele roteiro.
+- **Fase 5:** o piloto alterna quedas e TNTs detonadas; o percurso completo segue não certificado.
+- **Importante:** essas falhas foram reproduzidas **no piloto automático**, não demonstram sozinhas que a fase é impossível para um jogador humano. Não houve mudança indiscriminada nas colisões nem remoção de armadilhas para maquiar resultados.
+
+### Próximas prioridades
+1. Completar por movimentos reais as fases 1, 3, 4 e 5, com ajuste do piloto e confirmação visual dos pontos de bloqueio.
+2. Certificar a progressão completa da campanha com mesmo slot de save, liberação de todas as fases, chefe e créditos.
+3. Validar performance, estabilidade em sessões longas, controles físicos e mobile em hardware real.
+
+**Resumo verificável v1.28:** fase 2, corridas 6–9 e chefe 10 foram concluídos em testes independentes; o chefe foi derrotado 9/9 sem mortes e o save de vitória passou em gravação/leitura simulada. A campanha inteira ainda não foi certificada.
